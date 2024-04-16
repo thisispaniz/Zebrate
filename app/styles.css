@@ -1,7 +1,7 @@
 
 body {
     background-color: rgba(235, 248, 255, 1);
-    background-image: url('../images/bg-gradiant.svg');
+    background-image: url('bg-gradiant.svg');
     background-repeat: no-repeat;
     background-position: right;
     font-family: 'Inter';
