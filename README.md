@@ -1,6 +1,7 @@
 # Autism-Friendly-Social-Entertainment
 
 once we start putting places, we need to maintain the same database on every computer where the app is tested
+should we even stick to sqlite?
 
 ## backend work
 dont forget:
