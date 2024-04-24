@@ -1,3 +1,6 @@
+
+<!-- WORK IN PROGRESS-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +26,24 @@
 
 
     <div class="container">
-        <h4 id="question">What level of noise are you willing to tolerate?</h4>
+        <h4 id="question">Does your child have any dietary restrictions or special food preferences?
+        </h4>
+        <div class="options">
+            <input type="radio" name="answer" id="option1" value="A">
+            <label for="option1">A. Low</label><br>
+            <input type="radio" name="answer" id="option2" value="B">
+            <label for="option2">B. Medium</label><br>
+            <input type="radio" name="answer" id="option3" value="C">
+            <label for="option3">C. High</label>
+        </div>
+        <button id="submit">Submit Answer</button>
+        <div id="result"></div>
+    </div>
+
+
+    <div class="container">
+        <h4 id="question">How important is it for you to have access to quiet spaces during your outing?
+        </h4>
         <div class="options">
             <input type="radio" name="answer" id="option1" value="A">
             <label for="option1">A. Low</label><br>
