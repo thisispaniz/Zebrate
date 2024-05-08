@@ -1,8 +1,18 @@
 body {
-    width: 1100px;
     color: #EBF8FF;
     font-family: 'Inter';
-    vertical-align: middle;
+    margin-top: 50px;
+}
+
+a {
+    text-decoration: none;
+    color: #25433A;
+    padding: 15px;
+}
+
+.content {
+    width: 1100px;
+    margin: auto;
 }
 
 .navbar {
@@ -17,3 +27,11 @@ body {
 .navbarbtn {
     float: right;
 }
+
+.button {
+    background-color: #001A42;
+    color: #EBF8FF;
+    padding: 15px 40px;
+    border-radius: 100px;
+}
+
