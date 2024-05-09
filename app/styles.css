@@ -10,9 +10,31 @@ a {
     padding: 15px;
 }
 
-.content {
+button {
+    background-color: #0082D1;
+    color: #EBF8FF;
+    padding: 15px 40px;
+    border-radius: 100px;
+    border: none;
+    font-size: 15px;
+    font-weight: 590;
+    font-family: "Inter";
+}
+
+input {
+    padding: 5px 30px 5px 5px;
+    font-size: 15px;
+    font-family: "Inter";
+    border: none;
+    margin-left: 10px;
+    width: 470px;
+}
+
+.contentnav {
     width: 1100px;
     margin: auto;
+    height: 100px;
+    overflow: auto;
 }
 
 .navbar {
@@ -26,6 +48,7 @@ a {
 
 .navbarbtn {
     float: right;
+    padding-top: 20px;
 }
 
 .button {
@@ -33,5 +56,19 @@ a {
     color: #EBF8FF;
     padding: 15px 40px;
     border-radius: 100px;
+    font-size: 15px;
 }
 
+
+
+
+.contentsearchbox {
+    width: 650px;
+    margin-top: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: solid;
+    border-color: #25433A;
+    border-radius: 100px;
+    padding: 5px;
+}
