@@ -19,6 +19,8 @@ button {
     font-size: 15px;
     font-weight: 590;
     font-family: "Inter";
+    cursor: pointer;
+    
 }
 
 input {
@@ -30,7 +32,7 @@ input {
     width: 470px;
 }
 
-.contentnav {
+.content {
     width: 1100px;
     margin: auto;
     height: 100px;
@@ -59,9 +61,6 @@ input {
     font-size: 15px;
 }
 
-
-
-
 .contentsearchbox {
     width: 650px;
     margin-top: 150px;
@@ -70,5 +69,36 @@ input {
     border-style: solid;
     border-color: #25433A;
     border-radius: 100px;
-    padding: 5px;
+    padding: 3px;
+    margin-bottom: 150px;
+}
+
+.homecontent {
+    background-color: #DAEFF3;
+    height: 520px;
+    border: 2px solid rgba(66, 155, 128, 0.1);
+    border-radius: 40px;
+    box-shadow: 0px 0px 20px 0px rgba(0, 26, 66, 0.1);
+    background-image: url('images/homepage\ big\ z.svg');
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: contain;
+    display: flex;
+    align-items: center;
+    padding-left: 50px;
+    margin-bottom: 100px;
+}
+
+.primarytitle {
+    color: rgba(0, 130, 209, 1); 
+    font-weight: 5000;
+    margin-bottom: 20px;
+    font-size: 60px;
+}
+
+.hometext {
+    font-family: 'Inter'; font-size: 20px; color: rgba(0, 43, 52, 1);
+    margin-top: 40px;
+    margin-bottom: 40px;
+    line-height: 40px;
 }
