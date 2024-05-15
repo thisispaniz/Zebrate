@@ -1,12 +1,12 @@
 FROM python:3.10
 
-COPY ./requirements.txt app/requirements.txt
+COPY ./requirements.txt /OneButtonWebpage/app/requirements.txt
 
-WORKDIR /app
+WORKDIR /OneButtonWebpage/app
 
 RUN pip3 install -r requirements.txt
 
-COPY app /app/
+COPY app /OneButtonWebpage/app/
 
 EXPOSE 8000
 
