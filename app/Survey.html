@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey for Parents of Autistic Children</title>
+</head>
+<body>
+    <h1>Survey for Parents of Autistic Children</h1>
+    <form action="/submit-survey" method="post">
+
+
+        <!-- Current Habits and Preferences -->
+        <h2>Current Habits and Preferences</h2>
+        
+        <label>How often do you visit entertainment places with your child?</label><br>
+        <input type="radio" id="daily" name="visit-frequency" value="Daily">
+        <label for="daily">Daily</label><br>
+        <input type="radio" id="weekly" name="visit-frequency" value="Weekly">
+        <label for="weekly">Weekly</label><br>
+        <input type="radio" id="monthly" name="visit-frequency" value="Monthly">
+        <label for="monthly">Monthly</label><br>
+        <input type="radio" id="rarely" name="visit-frequency" value="Rarely">
+        <label for="rarely">Rarely</label><br><br>
+
+        <label>What types of entertainment places do you usually visit? (Select all that apply)</label><br>
+        <input type="checkbox" id="parks" name="places[]" value="Parks">
+        <label for="parks">Parks</label><br>
+        <input type="checkbox" id="museums" name="places[]" value="Museums">
+        <label for="museums">Museums</label><br>
+        <input type="checkbox" id="playgrounds" name="places[]" value="Playgrounds">
+        <label for="playgrounds">Playgrounds</label><br>
+        <input type="checkbox" id="restaurants" name="places[]" value="Restaurants">
+        <label for="restaurants">Restaurants</label><br>
+        <input type="checkbox" id="movie-theaters" name="places[]" value="Movie theaters">
+        <label for="movie-theaters">Movie theaters</label><br>
+        <input type="checkbox" id="others" name="places[]" value="Others">
+        <label for="others">Others (please specify)</label><br>
+        <input type="text" id="other-places" name="other-places"><br><br>
+
+        <!-- Sensory and Environmental Preferences -->
+        <h2>Sensory and Environmental Preferences</h2>
+        
+        <label>How important are the following factors when choosing an entertainment place for your child?</label><br>
+        
+        <label for="noise-level">Noise level</label><br>
+        <select id="noise-level" name="noise-level">
+            <option value="Not important">Not important</option>
+            <option value="Slightly important">Slightly important</option>
+            <option value="Moderately important">Moderately important</option>
+            <option value="Very important">Very important</option>
+            <option value="Extremely important">Extremely important</option>
+        </select><br><br>
+
+        <label for="food-choices">Availability of diverse food choices</label><br>
+        <select id="food-choices" name="food-choices">
+            <option value="Not important">Not important</option>
+            <option value="Slightly important">Slightly important</option>
+            <option value="Moderately important">Moderately important</option>
+            <option value="Very important">Very important</option>
+            <option value="Extremely important">Extremely important</option>
+        </select><br><br>
+
+        <!-- Challenges and Barriers -->
+        <h2>Challenges and Barriers</h2>
+        
+        <label>What are the main challenges you face when visiting entertainment places with your child? (Select all that apply)</label><br>
+        <input type="checkbox" id="lack-of-facilities" name="challenges[]" value="Lack of suitable facilities">
+        <label for="lack-of-facilities">Lack of suitable facilities</label><br>
+        <input type="checkbox" id="untrained-staff" name="challenges[]" value="Staff not trained to handle special needs">
+        <label for="untrained-staff">Staff not trained to handle special needs</label><br>
+        <input type="checkbox" id="unpredictable-environment" name="challenges[]" value="Unpredictable environment">
+        <label for="unpredictable-environment">Unpredictable environment</label><br>
+        <input type="checkbox" id="overcrowding" name="challenges[]" value="Overcrowding">
+        <label for="overcrowding">Overcrowding</label><br>
+        <input type="checkbox" id="other-challenges" name="challenges[]" value="Other">
+        <label for="other-challenges">Other (please specify)</label><br>
+        <input type="text" id="other-challenges-text" name="other-challenges-text"><br><br>
+
+        <!-- Desired Features and Support -->
+        <h2>Desired Features and Support</h2>
+        
+        <label>What features would make an entertainment place more enjoyable for your child? (Select all that apply)</label><br>
+        <input type="checkbox" id="quiet-zones" name="features[]" value="Quiet zones">
+        <label for="quiet-zones">Quiet zones</label><br>
+        <input type="checkbox" id="sensory-play-areas" name="features[]" value="Sensory play areas">
+        <label for="sensory-play-areas">Sensory play areas</label><br>
+        <input type="checkbox" id="trained-staff" name="features[]" value="Trained staff">
+        <label for="trained-staff">Trained staff</label><br>
+        <input type="checkbox" id="flexible-seating" name="features[]" value="Flexible seating arrangements">
+        <label for="flexible-seating">Flexible seating arrangements</label><br>
+        <input type="checkbox" id="visual-schedules" name="features[]" value="Visual schedules or maps">
+        <label for="visual-schedules">Visual schedules or maps</label><br>
+        <input type="checkbox" id="other-features" name="features[]" value="Other">
+        <label for="other-features">Other (please specify)</label><br>
+        <input type="text" id="other-features-text" name="other-features-text"><br><br>
+
+        <!-- General Feedback -->
+        <h2>General Feedback</h2>
+        
+        <label for="additional-comments">Do you have any additional comments or suggestions for improving entertainment places for autistic children?</label><br>
+        <textarea id="additional-comments" name="additional-comments" rows="4" cols="50"></textarea><br><br>
+
+        <!-- Contact Information (Optional) -->
+        <h2>Contact Information (Optional)</h2>
+        
+        <label for="contact-info">Would you be interested in participating in further research or testing our website? If so, please provide your contact information.</label><br>
+        <input type="text" id="contact-info" name="contact-info"><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
