@@ -9,103 +9,88 @@
     <h1>Survey for Parents of Autistic Children</h1>
     <form action="/submit-survey" method="post">
 
+        <!--Main challenges-->
+        <label for="main-challenges">Does your child require a quiet-zone to destress?</label><br>
+        <input type="radio" id="always" name="quiet-zone" value="Always" required>
+        <label for="always">Always</label><br>
+        <input type="radio" id="sometimes" name="quiet-zone" value="Sometimes">
+        <label for="sometimes">Sometimes</label><br>
+        <input type="radio" id="never" name="quiet-zone" value="Never">
+        <label for="never">Never</label><br><br>
 
-        <!-- Current Habits and Preferences -->
-        <h2>Current Habits and Preferences</h2>
-        
-        <label>How often do you visit entertainment places with your child?</label><br>
-        <input type="radio" id="daily" name="visit-frequency" value="Daily">
-        <label for="daily">Daily</label><br>
-        <input type="radio" id="weekly" name="visit-frequency" value="Weekly">
-        <label for="weekly">Weekly</label><br>
-        <input type="radio" id="monthly" name="visit-frequency" value="Monthly">
-        <label for="monthly">Monthly</label><br>
-        <input type="radio" id="rarely" name="visit-frequency" value="Rarely">
-        <label for="rarely">Rarely</label><br><br>
+        <!-- Quiet Zone Requirement -->
+        <label for="quiet-zone">Does your child require a quiet-zone to destress?</label><br>
+        <input type="radio" id="always" name="quiet-zone" value="Always" required>
+        <label for="always">Always</label><br>
+        <input type="radio" id="sometimes" name="quiet-zone" value="Sometimes">
+        <label for="sometimes">Sometimes</label><br>
+        <input type="radio" id="never" name="quiet-zone" value="Never">
+        <label for="never">Never</label><br><br>
 
-        <label>What types of entertainment places do you usually visit? (Select all that apply)</label><br>
-        <input type="checkbox" id="parks" name="places[]" value="Parks">
-        <label for="parks">Parks</label><br>
-        <input type="checkbox" id="museums" name="places[]" value="Museums">
-        <label for="museums">Museums</label><br>
-        <input type="checkbox" id="playgrounds" name="places[]" value="Playgrounds">
-        <label for="playgrounds">Playgrounds</label><br>
-        <input type="checkbox" id="restaurants" name="places[]" value="Restaurants">
-        <label for="restaurants">Restaurants</label><br>
-        <input type="checkbox" id="movie-theaters" name="places[]" value="Movie theaters">
-        <label for="movie-theaters">Movie theaters</label><br>
-        <input type="checkbox" id="others" name="places[]" value="Others">
-        <label for="others">Others (please specify)</label><br>
-        <input type="text" id="other-places" name="other-places"><br><br>
+        <!-- Noise Sensitivity -->
+        <label for="noise-sensitivity">How sensitive is your child to noise?</label><br>
+        <input type="radio" id="highly-sensitive" name="noise-sensitivity" value="Highly sensitive" required>
+        <label for="highly-sensitive">Highly sensitive</label><br>
+        <input type="radio" id="medium-sensitive" name="noise-sensitivity" value="Medium sensitive">
+        <label for="medium-sensitive">Medium sensitive</label><br>
+        <input type="radio" id="low-sensitive" name="noise-sensitivity" value="Low sensitivity">
+        <label for="low-sensitive">Low sensitivity</label><br>
+        <input type="radio" id="never-sensitive" name="noise-sensitivity" value="Never">
+        <label for="never-sensitive">Never</label><br><br>
 
-        <!-- Sensory and Environmental Preferences -->
-        <h2>Sensory and Environmental Preferences</h2>
-        
-        <label>How important are the following factors when choosing an entertainment place for your child?</label><br>
-        
-        <label for="noise-level">Noise level</label><br>
-        <select id="noise-level" name="noise-level">
-            <option value="Not important">Not important</option>
-            <option value="Slightly important">Slightly important</option>
-            <option value="Moderately important">Moderately important</option>
-            <option value="Very important">Very important</option>
-            <option value="Extremely important">Extremely important</option>
-        </select><br><br>
+        <!-- Other Sensory Issues -->
+        <label for="sensory-issues">Besides noise, what other types of sensory issues affect your child? (Select all that apply)</label><br>
+        <input type="checkbox" id="harsh-lighting" name="sensory-issues[]" value="Harsh lighting">
+        <label for="harsh-lighting">Harsh lighting</label><br>
+        <input type="checkbox" id="flashy-colors" name="sensory-issues[]" value="Flashy Colors">
+        <label for="flashy-colors">Flashy Colors</label><br>
+        <input type="checkbox" id="smells" name="sensory-issues[]" value="Smells">
+        <label for="smells">Smells</label><br><br>
 
-        <label for="food-choices">Availability of diverse food choices</label><br>
-        <select id="food-choices" name="food-choices">
-            <option value="Not important">Not important</option>
-            <option value="Slightly important">Slightly important</option>
-            <option value="Moderately important">Moderately important</option>
-            <option value="Very important">Very important</option>
-            <option value="Extremely important">Extremely important</option>
-        </select><br><br>
+        <!-- Crowd Tolerance -->
+        <label for="crowd-tolerance">What is your child's tolerance to crowds?</label><br>
+        <input type="radio" id="high-tolerance" name="crowd-tolerance" value="High tolerance" required>
+        <label for="high-tolerance">High tolerance</label><br>
+        <input type="radio" id="medium-tolerance" name="crowd-tolerance" value="Medium tolerance">
+        <label for="medium-tolerance">Medium tolerance</label><br>
+        <input type="radio" id="low-tolerance" name="crowd-tolerance" value="Low tolerance">
+        <label for="low-tolerance">Low tolerance</label><br>
+        <input type="radio" id="no-tolerance" name="crowd-tolerance" value="No tolerance at all">
+        <label for="no-tolerance">No tolerance at all</label><br><br>
 
-        <!-- Challenges and Barriers -->
-        <h2>Challenges and Barriers</h2>
-        
-        <label>What are the main challenges you face when visiting entertainment places with your child? (Select all that apply)</label><br>
-        <input type="checkbox" id="lack-of-facilities" name="challenges[]" value="Lack of suitable facilities">
-        <label for="lack-of-facilities">Lack of suitable facilities</label><br>
-        <input type="checkbox" id="untrained-staff" name="challenges[]" value="Staff not trained to handle special needs">
-        <label for="untrained-staff">Staff not trained to handle special needs</label><br>
-        <input type="checkbox" id="unpredictable-environment" name="challenges[]" value="Unpredictable environment">
-        <label for="unpredictable-environment">Unpredictable environment</label><br>
-        <input type="checkbox" id="overcrowding" name="challenges[]" value="Overcrowding">
-        <label for="overcrowding">Overcrowding</label><br>
-        <input type="checkbox" id="other-challenges" name="challenges[]" value="Other">
-        <label for="other-challenges">Other (please specify)</label><br>
-        <input type="text" id="other-challenges-text" name="other-challenges-text"><br><br>
+        <!-- Animals Preference -->
+        <label for="animals">Does your kid like animals?</label><br>
+        <input type="radio" id="look-at" name="animals" value="Yes, to look at" required>
+        <label for="look-at">Yes, to look at</label><br>
+        <input type="radio" id="no-animals" name="animals" value="No">
+        <label for="no-animals">No</label><br>
+        <input type="radio" id="pet-animals" name="animals" value="Yes, to pet">
+        <label for="pet-animals">Yes, to pet</label><br><br>
 
-        <!-- Desired Features and Support -->
-        <h2>Desired Features and Support</h2>
-        
-        <label>What features would make an entertainment place more enjoyable for your child? (Select all that apply)</label><br>
-        <input type="checkbox" id="quiet-zones" name="features[]" value="Quiet zones">
-        <label for="quiet-zones">Quiet zones</label><br>
-        <input type="checkbox" id="sensory-play-areas" name="features[]" value="Sensory play areas">
-        <label for="sensory-play-areas">Sensory play areas</label><br>
-        <input type="checkbox" id="trained-staff" name="features[]" value="Trained staff">
-        <label for="trained-staff">Trained staff</label><br>
-        <input type="checkbox" id="flexible-seating" name="features[]" value="Flexible seating arrangements">
-        <label for="flexible-seating">Flexible seating arrangements</label><br>
-        <input type="checkbox" id="visual-schedules" name="features[]" value="Visual schedules or maps">
-        <label for="visual-schedules">Visual schedules or maps</label><br>
-        <input type="checkbox" id="other-features" name="features[]" value="Other">
-        <label for="other-features">Other (please specify)</label><br>
-        <input type="text" id="other-features-text" name="other-features-text"><br><br>
+        <!-- Rules Restricting Noise -->
+        <label for="restrict-noise">Are there rules that restrict children from being loud?</label><br>
+        <input type="radio" id="yes-restrict" name="restrict-noise" value="Yes" required>
+        <label for="yes-restrict">Yes</label><br>
+        <input type="radio" id="no-restrict" name="restrict-noise" value="No">
+        <label for="no-restrict">No</label><br><br>
 
-        <!-- General Feedback -->
-        <h2>General Feedback</h2>
-        
-        <label for="additional-comments">Do you have any additional comments or suggestions for improving entertainment places for autistic children?</label><br>
-        <textarea id="additional-comments" name="additional-comments" rows="4" cols="50"></textarea><br><br>
+        <!-- Importance of Food Options -->
+        <label for="food-options">How important is it to have different varieties of food options?</label><br>
+        <input type="radio" id="important-food" name="food-options" value="Important" required>
+        <label for="important-food">Important</label><br>
+        <input type="radio" id="sometimes-food" name="food-options" value="Sometimes">
+        <label for="sometimes-food">Sometimes</label><br>
+        <input type="radio" id="not-important-food" name="food-options" value="Not Important">
+        <label for="not-important-food">Not Important</label><br><br>
 
-        <!-- Contact Information (Optional) -->
-        <h2>Contact Information (Optional)</h2>
-        
-        <label for="contact-info">Would you be interested in participating in further research or testing our website? If so, please provide your contact information.</label><br>
-        <input type="text" id="contact-info" name="contact-info"><br><br>
+        <!-- Importance of Playgrounds -->
+        <label for="playgrounds">How important is the availability of children playgrounds?</label><br>
+        <input type="radio" id="important-playgrounds" name="playgrounds" value="Important" required>
+        <label for="important-playgrounds">Important</label><br>
+        <input type="radio" id="sometimes-playgrounds" name="playgrounds" value="Sometimes">
+        <label for="sometimes-playgrounds">Sometimes</label><br>
+        <input type="radio" id="not-important-playgrounds" name="playgrounds" value="Not important">
+        <label for="not-important-playgrounds">Not important</label><br><br>
 
         <input type="submit" value="Submit">
     </form>
