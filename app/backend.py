@@ -29,7 +29,7 @@ conn.close()
 
 @app.get("/", response_class=FileResponse)
 def get_html():
-    return FileResponse("Survey.html")
+    return FileResponse("app/Survey.html")
 
 @app.post("/submit-survey/")
 async def submit_survey(
@@ -41,7 +41,7 @@ async def submit_survey(
     animals: str = Form(...),
     restrict_noise: str = Form(...),
     food_options: str = Form(...),
-    playgrounds: str = Form(...),
+    playgrounds: str = Form(...)
 ):
     # Get current timestamp
     current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -59,4 +59,4 @@ async def submit_survey(
     return RedirectResponse(url="/thankyou.html", status_code=303)
 
 # Mount the folder to make files accessible
-app.mount("/", StaticFiles(directory="./"), name="static")
+app.mount("/", StaticFiles(directory="./app"), name="static")
