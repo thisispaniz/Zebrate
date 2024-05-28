@@ -3,6 +3,9 @@
 Google docs link: https://docs.google.com/spreadsheets/d/1OEYaLUanIYfhJpY1-df01Qyry2UkhsVLRXA6aCevobo/edit#gid=0
 <br>
 
+Google forms survey link: https://docs.google.com/forms/d/1tZWLc1JvmDOlcpd0_EDqVqFA7JrCLH2GnLbQf__Dgpc/edit
+<br>
+
 
 
 once we start putting places, we need to maintain the same database on every computer where the app is tested <br>
