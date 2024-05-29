@@ -7,7 +7,7 @@ from datetime import datetime
 app = FastAPI()
 
 # Connect to SQLite database
-conn = sqlite3.connect('app/data.db', check_same_thread=False)
+conn = sqlite3.connect('data.db', check_same_thread=False)
 conn.row_factory = sqlite3.Row  # Allows accessing columns by name
 c = conn.cursor()
 
@@ -47,7 +47,7 @@ async def submit_survey(
     current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Insert survey responses into database
-    with sqlite3.connect('app/data.db', check_same_thread=False) as conn:
+    with sqlite3.connect('data.db', check_same_thread=False) as conn:
         conn.execute('''INSERT INTO survey_responses (
                         main_challenges, quiet_zone, noise_sensitivity, sensory_issues, 
                         crowd_tolerance, animals, restrict_noise, food_options, playgrounds, timestamp)
@@ -58,9 +58,6 @@ async def submit_survey(
 
     return RedirectResponse(url="/static/thankyou.html", status_code=303)
 
-# Mount the folder to make files accessible
-app.mount("/static", StaticFiles(directory="app"), name="static")
-
 @app.get("/view-results/")
 async def view_results():
     with sqlite3.connect('app/data.db', check_same_thread=False) as conn:
@@ -70,3 +67,6 @@ async def view_results():
         rows = cursor.fetchall()
         results = [dict(row) for row in rows]
     return JSONResponse(content=results)
+
+# Mount the folder to make files accessible
+app.mount("/static", StaticFiles(directory="app"), name="static")
