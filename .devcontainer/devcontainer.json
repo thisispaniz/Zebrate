@@ -5,12 +5,15 @@
         "context": ".."
     },
     "forwardPorts": [8000],
-    "settings": { 
+    "settings": {
         "terminal.integrated.shell.linux": "/bin/bash"
     },
     "features": {
         "ghcr.io/warrenbuckley/codespace-features/sqlite:latest": {}
     },
-    "extensions": ["ms-python.python", "qwert.SQLiteViewer"], 
-    "postStartCommand": "cd app && python3 -m uvicorn main:app --reload"   
+    "extensions": [
+        "ms-python.python",
+        "qwerty.sqlite-viewer"
+    ],
+    "postStartCommand": "cd app && python3 -m uvicorn main:app --reload"
 }
