@@ -29,7 +29,7 @@ conn.close()
 
 @app.get("/", response_class=FileResponse)
 def get_html():
-    return FileResponse("app/Survey.html")
+    return FileResponse("Survey.html")
 
 @app.post("/submit-survey/")
 async def submit_survey(
@@ -60,7 +60,7 @@ async def submit_survey(
 
 @app.get("/view-results/")
 async def view_results():
-    with sqlite3.connect('app/data.db', check_same_thread=False) as conn:
+    with sqlite3.connect('data.db', check_same_thread=False) as conn:
         conn.row_factory = sqlite3.Row  # Allows accessing columns by name
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM survey_responses")
@@ -69,4 +69,4 @@ async def view_results():
     return JSONResponse(content=results)
 
 # Mount the folder to make files accessible
-app.mount("/static", StaticFiles(directory="app"), name="static")
+app.mount("/static", StaticFiles(directory="."), name="static")
