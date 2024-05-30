@@ -3,6 +3,16 @@
 Welcome to Zebrate! This project aims to assist parents and caregivers of autistic children in finding suitable entertainment venues that cater to their specific needs. Our platform offers detailed venue reviews and filters to ensure an enjoyable experience for all.
 
 
+## Who We Are
+Group members: Ali Badran, Franziscka Wojtkowski, Paya Karimi, Paniz Ziaie.
+We are a group of health informatics students passionate about leveraging technology to improve the quality of life for individuals with autism and their families. Our team combines expertise in healthcare, technology, business mgmt and user experience design to create a platform that addresses the unique challenges faced by parents and caregivers of autistic children.
+
+## Mission Statement
+Our mission is to empower parents and caregivers of autistic children by providing a reliable and user-friendly platform to find suitable entertainment venues. We aim to create a community-driven resource that promotes inclusivity, accessibility, and joy for all children, regardless of their sensory needs.
+
+## Introduction
+Zebrate is designed to help parents and caregivers of autistic children find entertainment venues that are sensory-friendly and equipped to handle their specific needs. Our platform was developed in response to a survey indicating that 85.18% of our target user group see a need for such a product. Common challenges identified include untrained staff, unpredictable environments, lack of suitable facilities, and overcrowding.
+
 ## Features
 - **Targeted Filters:** Specific filters for different needs such as quiet areas, absence of flashy colors, absence of extreme smells, and uncrowded venues.
 - **Alerts:** Notifications for unusually busy hours or days.
