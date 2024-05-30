@@ -1,4 +1,4 @@
-# Autism-Friendly-Social-Entertainment
+# # Zebrate: Autism-Friendly Social Entertainment
 
 Google docs link: https://docs.google.com/spreadsheets/d/1OEYaLUanIYfhJpY1-df01Qyry2UkhsVLRXA6aCevobo/edit#gid=0
 <br>
