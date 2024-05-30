@@ -1,3 +1,4 @@
+/* Common Styles for Sign Up and Login Pages */
 body {
     color: #EBF8FF;
     font-family: 'Inter';
@@ -20,7 +21,6 @@ button {
     font-weight: 590;
     font-family: "Inter";
     cursor: pointer;
-    
 }
 
 input {
@@ -97,7 +97,9 @@ input {
 }
 
 .hometext {
-    font-family: 'Inter'; font-size: 20px; color: rgba(0, 43, 52, 1);
+    font-family: 'Inter';
+    font-size: 20px;
+    color: rgba(0, 43, 52, 1);
     margin-top: 40px;
     margin-bottom: 40px;
     line-height: 40px;
@@ -178,7 +180,6 @@ input {
 .auth-links.signup-links a:hover {
     text-decoration: underline;
 }
-
 
 /* Login Page Styles */
 .auth-container.login-container {
