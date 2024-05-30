@@ -1,11 +1,8 @@
-
 /* Common Styles for Sign Up and Login Pages */
 body {
-    color: #001A42;
-    font-family: 'Inter', sans-serif;
-    margin: 50px;
-    background-color: #EBF8FF;
-    line-height: 1.6;
+    color: #EBF8FF;
+    font-family: 'Inter';
+    margin-top: 50px;
 }
 
 a {
@@ -26,168 +23,86 @@ button {
     cursor: pointer;
 }
 
-h1, h2 {
-    color: #001A42;
-    font-weight: bold;
-}
-
-h1 {
-    font-size: 36px;
-    text-align: center;
-}
-
-h2 {
-    font-size: 28px;
-}
-
-section {
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: #DAEFF3;
-    border-radius: 8px;
-}
-
-form {
-    background-color: #FFFFFF;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 700px;
-    margin: auto;
-}
-
-form input[type="checkbox"], form input[type="radio"] {
-    margin-right: 10px;
-}
-
-form label {
-    font-size: 16px;
-    color: #001A42;
-    display: block;
-    margin-bottom: 10px;
-}
-
-form textarea {
-    width: 100%;
-    padding: 10px;
+input {
+    padding: 5px 30px 5px 5px;
     font-size: 15px;
     font-family: "Inter";
-    border: 1px solid #25433A;
-    border-radius: 4px;
-    margin-bottom: 20px;
-}
-
-form input[type="submit"] {
-    background-color: #0082D1;
-    color: #EBF8FF;
-    padding: 10px 20px;
-    border-radius: 20px;
     border: none;
-    font-size: 18px;
-    font-weight: 590;
-    font-family: "Inter";
-    cursor: pointer;
+    margin-left: 10px;
+    width: 470px;
 }
 
-form input[type="submit"]:hover {
-    background-color: #006bb3;
+.content {
+    width: 1100px;
+    margin: auto;
+    height: 100px;
+    overflow: auto;
 }
 
-/* Specific Styles for the Survey Page */
-.survey-container {
-    background-color: #EBF8FF;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    margin: 20px auto;
+.navbar {
+    margin-left: 25px;
+    margin-right: 25px;
 }
 
-.survey-container p {
-    font-size: 18px;
-    color: #25433A;
+.navbarlogo {
+    float: left;
 }
 
-.survey-container a {
-    color: #0082D1;
-    text-decoration: underline;
+.navbarbtn {
+    float: right;
+    padding-top: 20px;
 }
 
-.survey-container a:hover {
-    color: #006bb3;
+.button {
+    background-color: #001A42;
+    color: #EBF8FF;
+    padding: 15px 40px;
+    border-radius: 100px;
+    font-size: 15px;
 }
 
-.survey-container section {
-    background-color: #FFFFFF;
-    padding: 20px;
-    border-radius: 8px;
+.contentsearchbox {
+    width: 650px;
+    margin-top: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: solid;
+    border-color: #25433A;
+    border-radius: 100px;
+    padding: 3px;
+    margin-bottom: 150px;
+}
+
+.homecontent {
+    background-color: #DAEFF3;
+    height: 520px;
+    border: 2px solid rgba(66, 155, 128, 0.1);
+    border-radius: 40px;
+    box-shadow: 0px 0px 20px 0px rgba(0, 26, 66, 0.1);
+    background-image: url('images/homepage\ big\ z.svg');
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: contain;
+    display: flex;
+    align-items: center;
+    padding-left: 50px;
+    margin-bottom: 100px;
+}
+
+.primarytitle {
+    color: rgba(0, 130, 209, 1); 
+    font-weight: 5000;
     margin-bottom: 20px;
+    font-size: 60px;
 }
 
-.survey-container h1 {
-    font-size: 32px;
-    margin-bottom: 20px;
-}
-
-.survey-container h2 {
-    font-size: 24px;
-    margin-bottom: 15px;
-}
-
-.survey-container form label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 16px;
-}
-
-.survey-container form input[type="checkbox"], 
-.survey-container form input[type="radio"] {
-    margin-right: 10px;
-}
-
-.survey-container form textarea {
-    margin-top: 10px;
-}
-
-.survey-container form input[type="submit"] {
-    margin-top: 20px;
-}
-
-/* Improved Spacing and Alignment */
-form .form-group {
-    margin-bottom: 20px;
-}
-
-form .form-group label {
-    margin-bottom: 5px;
-}
-
-form .form-group input,
-form .form-group textarea {
-    margin-bottom: 10px;
-}
-
-/* Media Queries for Responsive Design */
-@media (max-width: 768px) {
-    body {
-        margin: 20px;
-    }
-
-    .survey-container {
-        padding: 20px;
-    }
-
-    form {
-        padding: 15px;
-    }
-
-    h1, h2 {
-        text-align: left;
-    }
-
-    form input, form textarea {
-        width: 100%;
-    }
+.hometext {
+    font-family: 'Inter';
+    font-size: 20px;
+    color: rgba(0, 43, 52, 1);
+    margin-top: 40px;
+    margin-bottom: 40px;
+    line-height: 40px;
 }
 
 /* Sign Up Page Styles */
@@ -341,5 +256,3 @@ form .form-group textarea {
 .auth-links.login-links a:hover {
     text-decoration: underline;
 }
-
-
