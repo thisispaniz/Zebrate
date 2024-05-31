@@ -7,9 +7,9 @@ const questions = [
     {
         question: "What level of noise are you willing to tolerate?",
         answers: [
-            { text: "A. Low"},
-            { text: "B. Medium"},
-            { text: "C. High" }
+            { text: "A. Low", correct: false },
+            { text: "B. Medium", correct: true },
+            { text: "C. High", correct: false }
         ]
     },
     // Add more questions here in the same format 
@@ -24,8 +24,8 @@ function loadQuestion() {
     const currentQuestionData = questions[currentQuestion];
 
     questionEl.innerText = currentQuestionData.question;
-    currentQuestionData.answers.forEach(answer => {
-        const option = document.getElementById('option' + (options.length + 1));
+    currentQuestionData.answers.forEach((answer, index) => {
+        const option = options[index];
         option.value = answer.text;
         option.nextElementSibling.innerText = answer.text;
     });
@@ -61,4 +61,4 @@ submitBtn.addEventListener('click', () => {
     }
 });
 
-loadQuestion(); 
+loadQuestion();
