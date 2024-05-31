@@ -6,7 +6,7 @@ Welcome to Zebrate! This project aims to assist parents and caregivers of autist
 ## Who We Are
 Group members: Ali Badran, Franziscka Wojtkowski, Paya Karimi, Paniz Ziaie.
 We are a group of 4th semester health informatics students passionate about leveraging technology to improve the quality of life for individuals with autism and their families. Our team combines expertise in healthcare, technology, business mgmt and user experience design to create a platform that addresses the unique challenges faced by parents and caregivers of autistic children.
-<br> Please update our progressboard according to the work you do https://miro.com/app/board/uXjVKCTQ4XA=/
+
 
 ## Mission Statement
 Our mission is to empower parents and caregivers of autistic children by providing a reliable and user-friendly platform to find suitable entertainment venues. We aim to create a community-driven resource that promotes inclusivity, accessibility, and joy for all children, regardless of their sensory needs.
@@ -38,6 +38,8 @@ Google docs link: https://docs.google.com/spreadsheets/d/1OEYaLUanIYfhJpY1-df01Q
 
 Google forms survey link: https://docs.google.com/forms/d/1tZWLc1JvmDOlcpd0_EDqVqFA7JrCLH2GnLbQf__Dgpc/edit
 <br>
+
+<br> Please update our progressboard according to the work you do https://miro.com/app/board/uXjVKCTQ4XA=/
 
 
 
