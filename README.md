@@ -51,7 +51,5 @@ should we even stick to sqlite?
 
 1. language-wise organisation (keep track of requirements.txt and all this version stuff)
 2. infrastructure (docker containers will do the trick, do not forget to remove pandas from the requirements)
-3. 
+3. Miro board easy task organization (see above)
 
-- need to adapt the dockerfile to the actual versions of what we're using 
-- need to set the requirements.txt
