@@ -1,4 +1,4 @@
-/* Common Styles for Sign Up and Login Pages */
+
 body {
     color: #F7F9F3;
     font-family: 'Outfit', sans-serif;
@@ -33,7 +33,7 @@ input {
 }
 
 .content {
-    width: 1100px;
+    width: 1300px;
     margin: auto;
     height: 100px;
     overflow: auto;
@@ -57,6 +57,7 @@ input {
     border-radius: 100px;
     padding: 3px;
     width: 470px;
+    border-width: 2px;
 }
 
 .searchboxbig {
@@ -67,7 +68,7 @@ input {
 }
 
 .searchboxsmall {
-    width: 300px;
+    width: 350px;
     height: 43px;
     margin-left: 20px;
 }
@@ -271,4 +272,26 @@ input {
 
 .auth-links.login-links a:hover {
     text-decoration: underline;
+}
+
+.same {
+    color: #25433A;
+    display:inline-block;
+    box-sizing: border-box;
+}
+
+.sameparent {
+    width: 1250px; 
+    margin: auto; 
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+.ratings {
+    height: 440px;
+    width: 380px;
+    border: 1.5px solid rgba(37, 67, 58, 1);    
+    border-radius: 20px;
+    padding: 25px 45px;
+    box-sizing: border-box;
 }
