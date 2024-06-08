@@ -29,6 +29,7 @@ input {
     font-family: 'Outfit', sans-serif;
     border: none;
     margin-left: 10px;
+    background-color: #F7F9F3;
     
 }
 
@@ -62,9 +63,11 @@ input {
 
 .searchboxbig {
     padding: 3px;
+    margin: auto;
     margin-bottom: 150px;
     width: 650px;
     margin-top: 150px;
+
 }
 
 .searchboxsmall {
