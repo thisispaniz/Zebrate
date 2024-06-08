@@ -1,6 +1,6 @@
 
 body {
-    color: #F7F9F3;
+    background-color: #F7F9F3;
     font-family: 'Outfit', sans-serif;
     margin-top: 50px;
 }
@@ -33,7 +33,7 @@ input {
 }
 
 .content {
-    width: 1300px;
+    width: 1200px;
     margin: auto;
     height: 100px;
     overflow: auto;
@@ -281,17 +281,19 @@ input {
 }
 
 .sameparent {
-    width: 1250px; 
+    width: 1150px; 
     margin: auto; 
     overflow: auto;
     box-sizing: border-box;
 }
 
 .ratings {
-    height: 440px;
-    width: 380px;
     border: 1.5px solid rgba(37, 67, 58, 1);    
     border-radius: 20px;
     padding: 25px 45px;
     box-sizing: border-box;
+}
+
+#locarion {
+     height: 100px; width: 200px; overflow: hidden; height: 440px;
 }
