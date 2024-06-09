@@ -1,6 +1,6 @@
 import sqlite3
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Template
 from pathlib import Path
@@ -10,9 +10,11 @@ app = FastAPI()
 # Define the path to the app directory
 app_path = Path(__file__).parent
 
-# Database connection to venue.db
-conn = sqlite3.connect(app_path / 'venues.db', check_same_thread=False)
-conn.row_factory = sqlite3.Row  # Allows accessing columns by name
+# Database connection to venues.db
+db_path = app_path / 'venues.db'
+
+# Serve the entire app directory as static files
+app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 def get_index():
@@ -22,35 +24,40 @@ def get_index():
     return FileResponse(app_path / "index.html")
 
 @app.get("/search-venues/", response_class=HTMLResponse)
-async def search_venues(
-    request: Request,
-    query: str = ""
-):
+async def search_venues(request: Request):
     """
     Handles the initial search and shows venues based on the general search term.
+    If no query is provided, display all venues.
     """
-    # Build the SQL query to search across multiple fields
-    sql_query = """
-        SELECT * FROM venues WHERE
-        name LIKE ? OR
-        address LIKE ? OR
-        playground LIKE ? OR
-        fenced LIKE ? OR
-        quiet_zones LIKE ? OR
-        colors LIKE ? OR
-        smells LIKE ? OR
-        food_own LIKE ? OR
-        defined_duration LIKE ?
-    """
-    parameters = [f"%{query}%"] * 9  # Apply the search term to all fields
+    query = request.query_params.get('query', '')
 
-    with sqlite3.connect(app_path / 'venue.db', check_same_thread=False) as conn:
+    # Determine the SQL query to use based on the presence of the search query
+    if query:
+        sql_query = """
+            SELECT * FROM venues WHERE
+            name LIKE ? OR
+            address LIKE ? OR
+            playground LIKE ? OR
+            fenced LIKE ? OR
+            quiet_zones LIKE ? OR
+            colors LIKE ? OR
+            smells LIKE ? OR
+            food_own LIKE ? OR
+            defined_duration LIKE ?
+        """
+        parameters = [f"%{query}%"] * 9  # Apply the search term to all fields
+    else:
+        sql_query = "SELECT * FROM venues"
+        parameters = []  # No parameters needed for a full table query
+
+    # Connect to the database and execute the query
+    with sqlite3.connect(db_path, check_same_thread=False) as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute(sql_query, parameters)
         venues = cursor.fetchall()
 
-    # Load filter.html template and render it with the initial search results
+    # Load filter.html template and render it with the search results
     template_path = app_path / "filter.html"
     with open(template_path, "r") as file:
         template = Template(file.read())
@@ -69,7 +76,10 @@ async def filter_venues(
     colors: str = "",
     smells: str = "",
     food_own: str = "",
-    defined_duration: str = ""
+    defined_duration: str = "",
+    quiet: str = "",
+    crowdedness: str = "",
+    food_variety: str = ""
 ):
     """
     Handles detailed filtering of venues based on user-selected criteria.
@@ -105,20 +115,31 @@ async def filter_venues(
     if defined_duration:
         query += " AND defined_duration LIKE ?"
         parameters.append(f"%{defined_duration}%")
+    if quiet:
+        query += " AND quiet LIKE ?"
+        parameters.append(f"%{quiet}%")
+    if crowdedness:
+        query += " AND crowdedness LIKE ?"
+        parameters.append(f"%{crowdedness}%")
+    if food_variety:
+        query += " AND food_variety LIKE ?"
+        parameters.append(f"%{food_variety}%")
 
-    with sqlite3.connect(app_path / 'venue.db', check_same_thread=False) as conn:
+    if not any([name, address, playground, fenced, quiet_zones, colors, smells, food_own, defined_duration, quiet, crowdedness, food_variety]):
+        # If no filter options are provided, select all entries
+        query = "SELECT * FROM venues"
+
+    with sqlite3.connect(db_path, check_same_thread=False) as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute(query, parameters)
         venues = cursor.fetchall()
 
     # Load venue.html template and render it with the filtered search results
-    template_path = app_path / "venue.html"
+    template_path = app_path / "searchresults.html"
     with open(template_path, "r") as file:
         template = Template(file.read())
 
-    rendered_html = template.render(venues=venues, query=request.query_params)
+    rendered_html = template.render(venues=venues)
     return HTMLResponse(content=rendered_html)
 
-# Serve the entire app directory as static files
-app.mount("/", StaticFiles(directory=app_path, html=True), name="static")

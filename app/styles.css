@@ -300,3 +300,50 @@ input {
 #locarion {
      height: 100px; width: 200px; overflow: hidden; height: 440px;
 }
+
+/* Style for the checkbox container */
+.checkbox-container {
+    display: inline-block;
+    position: relative;
+    padding-left: 25px;
+    margin-right: 15px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  /* Hide the default checkbox */
+  .checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  /* Create a custom checkbox */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+  }
+  
+  /* Show a checkmark when the checkbox is checked */
+  .checkbox-container input:checked ~ .checkmark:after {
+    content: "";
+    position: absolute;
+    display: block;
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  /* Change the background color when the checkbox is checked */
+  .checkbox-container input:checked ~ .checkmark {
+    background-color: #2196F3;
+  }
+  

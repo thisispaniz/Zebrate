@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zebrate - Autism Friendly Social Entertainment</title>
+    <title>Search Results</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/z_logo(orange).svg">
     <link rel="stylesheet" href="/static/styles.css">
@@ -12,7 +12,7 @@
     <div class="content">
         <div class="navbar">
             <div class="navbarlogo">
-                <img src="/static/images/zebrate_logo(orange).svg" alt="Zebrate">
+                <img src="/images/zebrate_logo(orange).svg" alt="Zebrate">
             </div>
             <div class="navbarbtn">
                 <a href="discover.html">Discover</a>
@@ -22,13 +22,13 @@
             </div>
         </div>
     </div>
-    
-    <div class="contentsearchbox searchboxbig">
-        <form action="/search-venues/" method="get">
-            <input type="text" id="inputbox" name="query" placeholder="Search locations..." autocomplete="off" style="width: 470px;">
-            <button type="submit" style="font-size: 16px;">Search</button>
-        </form>
-    </div>
+
+    <h1>Search Results</h1>
+    <ul>
+        {% for venue in venues %}
+            <li>{{ venue.name }} </li>
+        {% endfor %}
+    </ul>
 
     <div class="content homecontent">
         <div class="everythingshere">
@@ -38,6 +38,5 @@
             <button class="button" type="submit">Learn More</button>
         </div>
     </div>
-    
 </body>
 </html>
