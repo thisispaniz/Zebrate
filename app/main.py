@@ -70,4 +70,4 @@ async def view_results():
     return JSONResponse(content=results)
 
 # Mount the folder to make files accessible
-app.mount("/static", StaticFiles(directory="."), name="static")
+app.mount("/static", StaticFiles(directory="./"), name="static")
