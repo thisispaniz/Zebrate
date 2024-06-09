@@ -10,11 +10,30 @@ app = FastAPI()
 # Define the path to the app directory
 app_path = Path(__file__).parent
 
+# Serve the entire app directory as static files
+app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
+
 # Database connection to venues.db
 db_path = app_path / 'venues.db'
 
-# Serve the entire app directory as static files
-app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
+try:
+    # Connect to the database
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    # Example query: Retrieve all records from the venues table
+    cursor.execute("SELECT * FROM venues")
+    venues = cursor.fetchall()
+
+    # Print out the retrieved venues for debugging
+    print("Retrieved venues:", venues)
+
+    # Close the database connection
+    conn.close()
+
+except sqlite3.Error as e:
+    # Handle any database errors
+    print("Database error:", e)
 
 @app.get("/", response_class=HTMLResponse)
 def get_index():
@@ -79,10 +98,11 @@ async def filter_venues(
     defined_duration: str = "",
     quiet: str = "",
     crowdedness: str = "",
-    food_variety: str = ""
+    food_variey: str = ""
 ):
     """
     Handles detailed filtering of venues based on user-selected criteria.
+    If no filter options are provided, select all entries.
     """
     # Build the SQL query dynamically based on provided filtering parameters
     query = "SELECT * FROM venues WHERE 1=1"
@@ -121,13 +141,14 @@ async def filter_venues(
     if crowdedness:
         query += " AND crowdedness LIKE ?"
         parameters.append(f"%{crowdedness}%")
-    if food_variety:
-        query += " AND food_variety LIKE ?"
-        parameters.append(f"%{food_variety}%")
+    if food_variey:
+        query += " AND food_variey LIKE ?"
+        parameters.append(f"%{food_variey}%")
 
-    if not any([name, address, playground, fenced, quiet_zones, colors, smells, food_own, defined_duration, quiet, crowdedness, food_variety]):
+    if not any([name, address, playground, fenced, quiet_zones, colors, smells, food_own, defined_duration, quiet, crowdedness, food_variey]):
         # If no filter options are provided, select all entries
         query = "SELECT * FROM venues"
+        parameters = []
 
     with sqlite3.connect(db_path, check_same_thread=False) as conn:
         conn.row_factory = sqlite3.Row
@@ -135,7 +156,7 @@ async def filter_venues(
         cursor.execute(query, parameters)
         venues = cursor.fetchall()
 
-    # Load venue.html template and render it with the filtered search results
+    # Load searchresults.html template and render it with the filtered search results
     template_path = app_path / "searchresults.html"
     with open(template_path, "r") as file:
         template = Template(file.read())
@@ -143,3 +164,5 @@ async def filter_venues(
     rendered_html = template.render(venues=venues)
     return HTMLResponse(content=rendered_html)
 
+# Serve the entire app directory as static files
+app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
