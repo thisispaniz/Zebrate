@@ -150,6 +150,7 @@ async def get_venue(venue_id: int):
     """
     Retrieve and display details for a specific venue based on its ID.
     """
+    print("here")
     try:
         # Connect to the database
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
@@ -166,7 +167,11 @@ async def get_venue(venue_id: int):
 
         # Convert the sqlite3.Row object to a dictionary for easier handling in the template
         venue_dict = dict(venue)
-
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Error: {e}")
+        return HTMLResponse(content=f"An unexpected error occurred {e}", status_code=491)
+    try:
         # Debug log for venue details
         print(f"Venue details: {venue_dict}")
 
@@ -182,9 +187,7 @@ async def get_venue(venue_id: int):
     except Exception as e:
         # Log the error for debugging
         print(f"Error: {e}")
-        return HTMLResponse(content="An unexpected error occurred", status_code=500)
-
-
+        return HTMLResponse(content=f"{venue_dict}, {template_path}An unexpected error occurred {e}", status_code=490)
    # rendered_html = template.render(venue=venue)
    # return HTMLResponse(content=rendered_html)
 
