@@ -16,25 +16,6 @@ app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
 # Database connection to venues.db
 db_path = app_path / 'venues.db'
 
-try:
-    # Connect to the database
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
-    # Example query: Retrieve all records from the venues table
-    cursor.execute("SELECT * FROM venues")
-    venues = cursor.fetchall()
-
-    # Print out the retrieved venues for debugging
-    print("Retrieved venues:", venues)
-
-    # Close the database connection
-    conn.close()
-
-except sqlite3.Error as e:
-    # Handle any database errors
-    print("Database error:", e)
-
 @app.get("/", response_class=HTMLResponse)
 def get_index():
     """
@@ -163,6 +144,51 @@ async def filter_venues(
 
     rendered_html = template.render(venues=venues)
     return HTMLResponse(content=rendered_html)
+
+@app.get("/venue/{venue_id}", response_class=HTMLResponse)
+async def get_venue(venue_id: int):
+    """
+    Retrieve and display details for a specific venue based on its ID.
+    """
+    try:
+        # Connect to the database
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row  # Access columns by name
+            cursor = conn.cursor()
+            print(f"Fetching venue with ID: {venue_id}")  # Debug log
+            cursor.execute("SELECT * FROM venues WHERE id = ?", (venue_id,))
+            venue = cursor.fetchone()  # Fetch the venue details
+            print(f"Fetched venue: {venue}")  # Debug log
+
+        if venue is None:
+            print("Venue not found")  # Debug log
+            return HTMLResponse(content="Venue not found", status_code=404)
+
+        # Convert the sqlite3.Row object to a dictionary for easier handling in the template
+        venue_dict = dict(venue)
+
+        # Debug log for venue details
+        print(f"Venue details: {venue_dict}")
+
+        # Load the venue_page.html template and render it with the venue's details
+        template_path = app_path / "venue_page.html"
+        print(f"Template path: {template_path}")  # Debug log
+        with open(template_path, "r") as file:
+            template = Template(file.read())
+
+        rendered_html = template.render(venue=venue_dict)
+        return HTMLResponse(content=rendered_html)
+
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Error: {e}")
+        return HTMLResponse(content="An unexpected error occurred", status_code=500)
+
+
+   # rendered_html = template.render(venue=venue)
+   # return HTMLResponse(content=rendered_html)
+
+
 
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
