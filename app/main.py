@@ -1,9 +1,11 @@
 import sqlite3
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Template
 from pathlib import Path
+from fastapi import Form
+from passlib.hash import bcrypt
 
 app = FastAPI()
 
@@ -22,6 +24,13 @@ def get_index():
     Serves the index.html file at the root path.
     """
     return FileResponse(app_path / "index.html")
+
+@app.get("/signup", response_class=HTMLResponse)
+def get_signup():
+    """
+    Serves the signup.html file for user registration.
+    """
+    return FileResponse(app_path / "signup.html")
 
 @app.get("/search-venues/", response_class=HTMLResponse)
 async def search_venues(request: Request):
@@ -191,6 +200,81 @@ async def get_venue(venue_id: int):
    # rendered_html = template.render(venue=venue)
    # return HTMLResponse(content=rendered_html)
 
+
+@app.post("/register/")
+async def register_user(nickname: str = Form(...), password: str = Form(...)):
+    """
+    Handles user registration.
+    """
+    try:
+        # Connect to the database
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            cursor = conn.cursor()
+            
+            # Check if the nickname already exists
+            cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
+            existing_user = cursor.fetchone()
+
+            if existing_user:
+                return HTMLResponse(content="nickname already taken", status_code=400)
+            
+            # Hash the password for security
+            hashed_password = bcrypt.hash(password)
+            
+            # Insert the new user into the database
+            cursor.execute("INSERT INTO users (nickname, password) VALUES (?, ?)", (nickname, hashed_password))
+            conn.commit()
+            
+            # Redirect to the login page after successful registration
+            return RedirectResponse(url="/static/login.html", status_code=303)
+    
+    except Exception as e:
+        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+
+@app.get("/login", response_class=HTMLResponse)
+def get_login():
+    """
+    Serves the login.html file for user login.
+    """
+    return FileResponse(app_path / "login.html")
+
+@app.post("/login/")
+async def login_user(nickname: str = Form(...), password: str = Form(...)):
+    """
+    Handles user login.
+    """
+    try:
+        # Connect to the database
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            
+            # Check if the nickname exists
+            cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
+            user = cursor.fetchone()
+
+            if not user:
+                return HTMLResponse(content="Invalid nickname or password", status_code=400)
+            
+            # Verify the password
+            if not bcrypt.verify(password, user["password"]):
+                return HTMLResponse(content="Invalid nickname or password", status_code=400)
+            
+            # Redirect to /welcome if nickname and password are valid
+            return RedirectResponse(url="/welcome", status_code=303)
+
+    except Exception as e:
+        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+
+    
+
+
+@app.get("/welcome", response_class=HTMLResponse)
+def get_welcome():
+    """
+    Serves a welcome page after successful login.
+    """
+    return HTMLResponse(content="<h1>Welcome!</h1>", status_code=200)
 
 
 # Serve the entire app directory as static files

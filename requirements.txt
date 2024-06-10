@@ -2,3 +2,5 @@ fastapi==0.110.1
 uvicorn==0.15.0
 python-multipart==0.0.9
 jinja2
+passlib-1.7.4
+bcrypt-4.1.3
