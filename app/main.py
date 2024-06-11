@@ -165,7 +165,6 @@ async def get_venue(venue_id: int):
     """
     Retrieve and display details for a specific venue based on its ID.
     """
-    print("here")
     try:
         # Connect to the database
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
