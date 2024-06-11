@@ -41,7 +41,7 @@ Google forms survey link: https://docs.google.com/forms/d/1tZWLc1JvmDOlcpd0_EDqV
 
 <br> Please update our progressboard according to the work you do https://miro.com/app/board/uXjVKCTQ4XA=/
 
-
+<br>
 
 once we start putting places, we need to maintain the same database on every computer where the app is tested <br>
 should we even stick to sqlite?
