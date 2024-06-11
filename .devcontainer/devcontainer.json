@@ -9,7 +9,7 @@
         "terminal.integrated.shell.linux": "/bin/bash"
     },
     "features": {
-        "ghcr.io/warrenbuckley/codespace-features/sqlite3:latest": {}
+        "ghcr.io/warrenbuckley/codespace-features/sqlite:latest": {}
     },
     "extensions": [
         "ms-python.python",
