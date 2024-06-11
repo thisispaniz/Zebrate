@@ -230,7 +230,7 @@ async def register_user(nickname: str = Form(...), password: str = Form(...)):
 
             logger.info(f"User {nickname} registered successfully.")
             # Redirect to the login page after successful registration
-            return RedirectResponse(url="/static/login.html", status_code=303)
+            return RedirectResponse(url="/static/login.html", status_code=200)
 
     except Exception as e:
         logger.error(f"Registration error: {e}")
@@ -265,7 +265,7 @@ async def login_user(nickname: str = Form(...), password: str = Form(...)):
 
             logger.info(f"User {nickname} logged in successfully.")
             # Redirect to /welcome if nickname and password are valid
-            return RedirectResponse(url="/welcome", status_code=303)
+            return RedirectResponse(url="/welcome", status_code=200)
 
     except Exception as e:
         logger.error(f"Login error: {e}")
