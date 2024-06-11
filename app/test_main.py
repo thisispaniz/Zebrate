@@ -92,7 +92,7 @@ async def test_get_venue(setup_test_db):
 @pytest.mark.asyncio
 async def test_register_user(setup_test_db):
     response = client.post("/register/", data={"nickname": "testuser", "password": "testpass"})
-    assert response.status_code == 200  # Expect a redirect
+    assert response.status_code == 303  # Expect a redirect
     # Follow the redirect to verify the registration was successful
     follow_response = client.get(response.headers["location"])
     assert "login" in follow_response.url  # The final URL should contain "login"
@@ -104,7 +104,7 @@ async def test_login_user(setup_test_db):
 
     # Login with the registered user
     response = client.post("/login/", data={"nickname": "testuser", "password": "testpass"})
-    assert response.status_code == 200  # Expect a redirect
+    assert response.status_code == 303  # Expect a redirect
     # Follow the redirect to verify the login was successful
     
     follow_response = client.get(response.headers["location"])
