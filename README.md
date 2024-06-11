@@ -47,6 +47,7 @@ should we even stick to sqlite?
 
 ## backend work
 <br>
+<br>
 
 1. language-wise organisation (keep track of requirements.txt and all this version stuff)
 2. infrastructure (docker containers will do the trick, do not forget to remove pandas from the requirements)
