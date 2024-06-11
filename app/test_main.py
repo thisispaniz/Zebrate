@@ -1,5 +1,5 @@
 # test_main.py
-
+import sqlite3
 import pytest
 from fastapi.testclient import TestClient
 from main import app  # Import the FastAPI app from main.py
