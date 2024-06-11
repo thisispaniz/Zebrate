@@ -28,7 +28,7 @@ Zebrate is designed to help parents and caregivers of autistic children find ent
 - **SQLite:** Database
 - **GitHub:** Code management and version control
 
-
+<br>
 
 
 
