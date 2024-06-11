@@ -6,6 +6,8 @@ from jinja2 import Template
 from pathlib import Path
 from fastapi import Form
 from passlib.hash import bcrypt
+import logging
+from fastapi import HTTPException
 
 app = FastAPI()
 
@@ -14,6 +16,10 @@ app_path = Path(__file__).parent
 
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Database connection to venues.db
 db_path = app_path / 'venues.db'
@@ -203,32 +209,31 @@ async def get_venue(venue_id: int):
 
 @app.post("/register/")
 async def register_user(nickname: str = Form(...), password: str = Form(...)):
-    """
-    Handles user registration.
-    """
     try:
-        # Connect to the database
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
             cursor = conn.cursor()
-            
+
             # Check if the nickname already exists
             cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
             existing_user = cursor.fetchone()
 
             if existing_user:
+                logger.info(f"Nickname {nickname} already taken.")
                 return HTMLResponse(content="nickname already taken", status_code=400)
-            
+
             # Hash the password for security
             hashed_password = bcrypt.hash(password)
-            
+
             # Insert the new user into the database
             cursor.execute("INSERT INTO users (nickname, password) VALUES (?, ?)", (nickname, hashed_password))
             conn.commit()
-            
+
+            logger.info(f"User {nickname} registered successfully.")
             # Redirect to the login page after successful registration
             return RedirectResponse(url="/static/login.html", status_code=303)
-    
+
     except Exception as e:
+        logger.error(f"Registration error: {e}")
         return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
 
 @app.get("/login", response_class=HTMLResponse)
@@ -240,33 +245,31 @@ def get_login():
 
 @app.post("/login/")
 async def login_user(nickname: str = Form(...), password: str = Form(...)):
-    """
-    Handles user login.
-    """
     try:
-        # Connect to the database
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
-            
+
             # Check if the nickname exists
             cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
             user = cursor.fetchone()
 
             if not user:
+                logger.info(f"Invalid login attempt for nickname {nickname}.")
                 return HTMLResponse(content="Invalid nickname or password", status_code=400)
-            
+
             # Verify the password
             if not bcrypt.verify(password, user["password"]):
+                logger.info(f"Invalid password for nickname {nickname}.")
                 return HTMLResponse(content="Invalid nickname or password", status_code=400)
-            
+
+            logger.info(f"User {nickname} logged in successfully.")
             # Redirect to /welcome if nickname and password are valid
             return RedirectResponse(url="/welcome", status_code=303)
 
     except Exception as e:
+        logger.error(f"Login error: {e}")
         return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
-
-    
 
 
 @app.get("/welcome", response_class=HTMLResponse)
