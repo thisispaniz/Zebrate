@@ -14,3 +14,12 @@ Our mission is to revolutionize the entertainment landscape for autistic childre
 ## Why should we care?
 
 Caring about our project is essential because it directly impacts the lives of autistic children and their families, who often face significant challenges in finding suitable entertainment venues. These families are frequently underserved, resulting in limited opportunities for social engagement and enjoyment. By creating a platform that caters specifically to their sensory needs, we are fostering a more inclusive and compassionate society. Our project ensures that every child, regardless of their sensory sensitivities, can experience joy, social interaction, and a sense of belonging in their community. This isn't just about providing a service—it's about championing the rights of autistic children to have equal access to enriching experiences, promoting social inclusion, and supporting caregivers in their journey. By caring about this project, we are taking a stand for inclusivity, empathy, and the well-being of all children.
+
+## What do we offer?
+
+We offer a comprehensive, easy-to-use platform designed specifically for the unique needs of autistic children and their caregivers. Our service includes:
+
+- Tailored Sensory Filters: Easily find venues that match specific sensory needs, ensuring a comfortable and enjoyable experience for every child.
+- Real-Time Updates: Get instant information on venue conditions such as crowd levels and noise, allowing for better planning and avoiding potential stressors.
+- Community Reviews: Access and contribute to a supportive community of caregivers who share insights and reviews, helping each other make informed decisions.
+- Custom Venue Requests: Request new venues or suggest improvements to existing ones, driving a more inclusive environment through community advocacy.
