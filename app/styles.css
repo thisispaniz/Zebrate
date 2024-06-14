@@ -347,3 +347,10 @@ input {
     background-color: #2196F3;
   }
   
+  .ratingno {
+    color: #F77272;
+  }
+
+  .ratingyes {
+    color: #429B80;
+  }
