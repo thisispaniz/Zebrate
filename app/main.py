@@ -166,32 +166,20 @@ async def get_venue(venue_id: int):
     Retrieve and display details for a specific venue based on its ID.
     """
     try:
-        # Connect to the database
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
             conn.row_factory = sqlite3.Row  # Access columns by name
             cursor = conn.cursor()
-            print(f"Fetching venue with ID: {venue_id}")  # Debug log
             cursor.execute("SELECT * FROM venues WHERE id = ?", (venue_id,))
             venue = cursor.fetchone()  # Fetch the venue details
-            print(f"Fetched venue: {venue}")  # Debug log
 
         if venue is None:
-            print("Venue not found")  # Debug log
             return HTMLResponse(content="Venue not found", status_code=404)
 
         # Convert the sqlite3.Row object to a dictionary for easier handling in the template
         venue_dict = dict(venue)
-    except Exception as e:
-        # Log the error for debugging
-        print(f"Error: {e}")
-        return HTMLResponse(content=f"An unexpected error occurred {e}", status_code=491)
-    try:
-        # Debug log for venue details
-        print(f"Venue details: {venue_dict}")
 
-        # Load the venue_page.html template and render it with the venue's details
+        # Render the template with venue details
         template_path = app_path / "venue_page.html"
-        print(f"Template path: {template_path}")  # Debug log
         with open(template_path, "r") as file:
             template = Template(file.read())
 
@@ -199,11 +187,8 @@ async def get_venue(venue_id: int):
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
-        # Log the error for debugging
-        print(f"Error: {e}")
-        return HTMLResponse(content=f"{venue_dict}, {template_path}An unexpected error occurred {e}", status_code=490)
-   # rendered_html = template.render(venue=venue)
-   # return HTMLResponse(content=rendered_html)
+        return HTMLResponse(content=f"An unexpected error occurred {e}", status_code=500)
+
 
 
 @app.post("/register/")
@@ -280,4 +265,4 @@ def get_welcome():
 
 
 # Serve the entire app directory as static files
-app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
+# app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
