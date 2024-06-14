@@ -6,7 +6,8 @@
     <title>{{ venue.name }} - Zebrate</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/z_logo(orange).svg">
-    <link rel="stylesheet" href="/static/styles.css">
+    <!--<link rel="stylesheet" href="/static/styles.css">i'll comment this so i can work on it without the fastapi, i'll fix it later-->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="content">
@@ -39,8 +40,37 @@
     </div>
 
     <div style="margin-top: 40px; display: flex; align-items: center;" class="sameparent">
-        <div class="same ratings" style="margin-right: 90px; height: 440px; width: 380px;">
-            <p style="font-size: 30px; font-weight: 500;">About</p>
+        <div class="same ratings" style="margin-right: 90px; height: 470px; width: 380px;">
+            <p style="font-size: 30px; font-weight: 500; margin-top: 10px;">About</p>
+            <div class="sameparent" style="margin-top: -10px; display: flex; align-items: center; justify-content: space-between; width: 300px;">
+                <p class="same">Crowd</p>
+                <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
+                    <circle style="fill: #429B80" cx="8" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #429B80" cx="23" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #EDDEA4" cx="38" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #EDDEA4" cx="53" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #EDDEA4" cx="68" cy="10" r="5.5" class="circle" />
+                </svg>
+            </div>
+            <div class="sameparent" style="margin-top: -15px; display: flex; align-items: center; justify-content: space-between; width: 300px;">
+                <p class="same">Noise</p>
+                <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
+                    <circle style="fill: #E4C23B" cx="8" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #E4C23B" cx="23" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #E4C23B" cx="38" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #EDDEA4" cx="53" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #EDDEA4" cx="68" cy="10" r="5.5" class="circle" />
+                </svg>
+            </div>
+            <p class="ratingno">- Bringing your own food not possible</p>
+            <p class="ratingyes">+ Food options available</p>
+            <p class="ratingyes">+ No stay duration limit</p>
+            <p class="ratingyes">+ No extreme smells</p>
+            <p class="ratingyes">- Flashy colors</p>
+            <p class="ratingno">- No quiet zones</p>
+            <p class="ratingno">- No play area</p>
+
+
             <!-- Uncomment and use if you have a description field -->
             <!-- <p>{{ venue.description }}</p> -->
         </div>
