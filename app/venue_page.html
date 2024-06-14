@@ -6,8 +6,8 @@
     <title>{{ venue.name }} - Zebrate</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/z_logo(orange).svg">
-    <!--<link rel="stylesheet" href="/static/styles.css">i'll comment this so i can work on it without the fastapi, i'll fix it later-->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
+
 </head>
 <body>
     <div class="content">
@@ -82,14 +82,47 @@
         </div>
     </div>
 
-    <div class="sameparent" style="margin-top: 70px; margin-bottom: 30px;">
+    <div class="sameparent" style="display: flex; align-items: center; justify-content: space-between; margin-top: 70px; margin-bottom: 30px;">
         <!-- Uncomment and use if you have review count -->
-        <!-- <p class="same" style="font-size: 40px; font-weight: 500;">Reviews <span class="same" style="font-size: 20px;">({{ venue.reviews_count }})</span></p> -->
+        <p class="same" style="font-size: 40px; font-weight: 500;">Reviews <span class="same" style="font-size: 20px;">({{ venue.reviews_count }})</span></p>
+        <button class="same" style="color: #F7F9F3; font-size: 20px;"><img src="images/pencil.png" alt="">&ensp;Write a review </button>
     </div>
     
-    <div class="sameparent ratings" style="height: 330px;">
-        <!-- Display reviews or a message if there are no reviews -->
-        <!-- Uncomment and use if you handle reviews -->
+    <div class="sameparent ratings" style="display: flex; align-items: center; justify-content: space-between; height: 330px; font-size: 20px; margin-bottom: 50px;">
+        <div class="same" style="width: 650px; margin-top: -30px;">
+            <p style="width: 650px; color: #25433A; font-weight: 600;">User123</p><br>
+            <p style="color: rgba(37, 67, 58, 0.7); margin-top: -15px;">Title of review</p>
+            <div style="width: 600px; word-wrap: break-word;"><p style="font-size: 15px;">content of reviewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww</p></div>
+        </div>
+        <div class="same" style="border-left: #25433A; font-size: 12.4px; margin-left: 60px;">
+            <div class="sameparent" style="display: flex; align-items: center; justify-content: space-between; width: 300px;">
+                <p class="same">Crowd</p>
+                <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
+                    <circle style="fill: #429B80" cx="8" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #429B80" cx="23" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #EDDEA4" cx="38" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #EDDEA4" cx="53" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #EDDEA4" cx="68" cy="10" r="5.5" class="circle" />
+                </svg>
+            </div>
+            <div class="sameparent" style="margin-top: -15px; display: flex; align-items: center; justify-content: space-between; width: 300px;">
+                <p class="same">Noise</p>
+                <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
+                    <circle style="fill: #E4C23B" cx="8" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #E4C23B" cx="23" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #E4C23B" cx="38" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #EDDEA4" cx="53" cy="10" r="5.5" class="circle" />
+                    <circle style="fill: #EDDEA4" cx="68" cy="10" r="5.5" class="circle" />
+                </svg>
+            </div>
+            <p class="ratingno">- Bringing your own food not possible</p>
+            <p class="ratingyes">+ Food options available</p>
+            <p class="ratingyes">+ No stay duration limit</p>
+            <p class="ratingyes">+ No extreme smells</p>
+            <p class="ratingyes">- Flashy colors</p>
+            <p class="ratingno">- No quiet zones</p>
+            <p class="ratingno">- No play area</p>
+        </div>
         <!--
         {% if venue.reviews_count > 0 %}
             <p>Reviews will be listed here</p>
