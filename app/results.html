@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/z_logo(orange).png">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="content">
+        <div class="navbar">
+            <div class="navbarlogo">
+                <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
+            </div>
+            <div class="navbarbtn">
+                <a href="discover.html">Discover</a>
+                <a href="review.html">Review</a>
+                <a href="signup.html">Sign up</a>
+                <a class="button" href="login.html">Log in</a>
+            </div>
+        </div>
+    </div>
+
+    <h1>Search Results</h1>
+    <div class="results">
+        {% if venues %}
+            <ul>
+                {% for venue in venues %}
+                    <li>
+                        <h2><a href="/venue/{{ venue.id }}">{{ venue.name }}</a></h2>
+                        <p>Address: {{ venue.address }}</p>
+                        <!-- Add more fields as needed -->
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No venues found matching your query.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

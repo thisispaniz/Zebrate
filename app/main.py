@@ -40,13 +40,9 @@ def get_signup():
 
 @app.get("/search-venues/", response_class=HTMLResponse)
 async def search_venues(request: Request):
-    """
-    Handles the initial search and shows venues based on the general search term.
-    If no query is provided, display all venues.
-    """
     query = request.query_params.get('query', '')
 
-    # Determine the SQL query to use based on the presence of the search query
+    # Construct the SQL query
     if query:
         sql_query = """
             SELECT * FROM venues WHERE
@@ -65,15 +61,15 @@ async def search_venues(request: Request):
         sql_query = "SELECT * FROM venues"
         parameters = []  # No parameters needed for a full table query
 
-    # Connect to the database and execute the query
+    # Execute the query
     with sqlite3.connect(db_path, check_same_thread=False) as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute(sql_query, parameters)
         venues = cursor.fetchall()
 
-    # Load filter.html template and render it with the search results
-    template_path = app_path / "filter.html"
+    # Render the results using Jinja2 template
+    template_path = app_path / "results.html"
     with open(template_path, "r") as file:
         template = Template(file.read())
 
