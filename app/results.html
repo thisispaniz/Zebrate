@@ -24,22 +24,6 @@
     </div>
 
     <h1>Search Results</h1>
-
-    <div class="filters">
-        <p>Selected Filters:</p>
-        {% for filter, value in filters.items() %}
-            {% if value %}
-                <div class="filter">
-                    <strong>{{ filter | replace("_", " ") | title }}:</strong> 
-                    {% if value is iterable and not value|string %}
-                        {{ value | join(", ") }}
-                    {% else %}
-                        {{ value }}
-                    {% endif %}
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
     <div class="results">
         {% if venues %}
         <ul>
