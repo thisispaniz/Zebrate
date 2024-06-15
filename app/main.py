@@ -59,7 +59,11 @@ async def search_venues(request: Request):
 
         """
         parameters = [f"%{query}%"] * 10  # Apply the search term to all fields
-
+        
+    else:
+        sql_query = "SELECT * FROM venues"
+        parameters = []  # No parameters needed for a full table query
+        
 # Capture filter parameters from the request
     filters = {
         "name": name,
@@ -77,9 +81,6 @@ async def search_venues(request: Request):
         "photo_url": photo_url
     }
     
-    else:
-        sql_query = "SELECT * FROM venues"
-        parameters = []  # No parameters needed for a full table query
 
     # Execute the query
     with sqlite3.connect(db_path, check_same_thread=False) as conn:
