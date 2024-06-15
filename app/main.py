@@ -59,6 +59,24 @@ async def search_venues(request: Request):
 
         """
         parameters = [f"%{query}%"] * 10  # Apply the search term to all fields
+
+# Capture filter parameters from the request
+    filters = {
+        "name": name,
+        "address": address,
+        "playground": playground,
+        "fenced": fenced,
+        "quiet_zones": quiet_zones,
+        "colors": request.query_params.getlist('colors'),
+        "smells": request.query_params.getlist('smells'),
+        "food_own": food_own,
+        "defined_duration": defined_duration,
+        "quiet": request.query_params.getlist('quiet'),
+        "crowdedness": request.query_params.getlist('crowdedness'),
+        "food_variey": request.query_params.getlist('food_variey'),
+        "photo_url": photo_url
+    }
+    
     else:
         sql_query = "SELECT * FROM venues"
         parameters = []  # No parameters needed for a full table query
