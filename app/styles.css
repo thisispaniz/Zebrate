@@ -366,3 +366,18 @@ input {
   .ratingyes {
     color: #429B80;
   }
+
+  .venue-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    .venue-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        .venue-details {
+            flex-grow: 1;
+        }

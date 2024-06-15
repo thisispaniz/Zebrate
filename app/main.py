@@ -54,9 +54,11 @@ async def search_venues(request: Request):
             colors LIKE ? OR
             smells LIKE ? OR
             food_own LIKE ? OR
-            defined_duration LIKE ?
+            defined_duration LIKE ? OR
+            photo_url LIKE ?
+
         """
-        parameters = [f"%{query}%"] * 9  # Apply the search term to all fields
+        parameters = [f"%{query}%"] * 10  # Apply the search term to all fields
     else:
         sql_query = "SELECT * FROM venues"
         parameters = []  # No parameters needed for a full table query
@@ -90,12 +92,30 @@ async def filter_venues(
     defined_duration: str = "",
     quiet: str = "",
     crowdedness: str = "",
-    food_variey: str = ""
+    food_variey: str = "",
+    photo_url: str = ""
 ):
     """
     Handles detailed filtering of venues based on user-selected criteria.
     If no filter options are provided, select all entries.
     """
+    # Capture filter parameters from the request
+    filters = {
+        "name": name,
+        "address": address,
+        "playground": playground,
+        "fenced": fenced,
+        "quiet_zones": quiet_zones,
+        "colors": request.query_params.getlist('colors'),
+        "smells": request.query_params.getlist('smells'),
+        "food_own": food_own,
+        "defined_duration": defined_duration,
+        "quiet": request.query_params.getlist('quiet'),
+        "crowdedness": request.query_params.getlist('crowdedness'),
+        "food_variey": request.query_params.getlist('food_variey'),
+        "photo_url": photo_url
+    }
+
     # Build the SQL query dynamically based on provided filtering parameters
     query = "SELECT * FROM venues WHERE 1=1"
     parameters = []
@@ -115,29 +135,32 @@ async def filter_venues(
     if quiet_zones:
         query += " AND quiet_zones LIKE ?"
         parameters.append(f"%{quiet_zones}%")
-    if colors:
-        query += " AND colors LIKE ?"
-        parameters.append(f"%{colors}%")
-    if smells:
-        query += " AND smells LIKE ?"
-        parameters.append(f"%{smells}%")
+    if filters["colors"]:
+        query += " AND colors IN (" + ",".join("?" * len(filters["colors"])) + ")"
+        parameters.extend(filters["colors"])
+    if filters["smells"]:
+        query += " AND smells IN (" + ",".join("?" * len(filters["smells"])) + ")"
+        parameters.extend(filters["smells"])
     if food_own:
         query += " AND food_own LIKE ?"
         parameters.append(f"%{food_own}%")
     if defined_duration:
         query += " AND defined_duration LIKE ?"
         parameters.append(f"%{defined_duration}%")
-    if quiet:
-        query += " AND quiet LIKE ?"
-        parameters.append(f"%{quiet}%")
-    if crowdedness:
-        query += " AND crowdedness LIKE ?"
-        parameters.append(f"%{crowdedness}%")
-    if food_variey:
-        query += " AND food_variey LIKE ?"
-        parameters.append(f"%{food_variey}%")
+    if filters["quiet"]:
+        query += " AND quiet IN (" + ",".join("?" * len(filters["quiet"])) + ")"
+        parameters.extend(filters["quiet"])
+    if filters["crowdedness"]:
+        query += " AND crowdedness IN (" + ",".join("?" * len(filters["crowdedness"])) + ")"
+        parameters.extend(filters["crowdedness"])
+    if filters["food_variey"]:
+        query += " AND food_variey IN (" + ",".join("?" * len(filters["food_variey"])) + ")"
+        parameters.extend(filters["food_variey"])
+    if photo_url:
+        query += " AND photo_url LIKE ?"
+        parameters.append(f"%{photo_url}%")
 
-    if not any([name, address, playground, fenced, quiet_zones, colors, smells, food_own, defined_duration, quiet, crowdedness, food_variey]):
+    if not any([name, address, playground, fenced, quiet_zones, filters["colors"], filters["smells"], food_own, defined_duration, filters["quiet"], filters["crowdedness"], filters["food_variey"], photo_url]):
         # If no filter options are provided, select all entries
         query = "SELECT * FROM venues"
         parameters = []
@@ -149,12 +172,13 @@ async def filter_venues(
         venues = cursor.fetchall()
 
     # Load searchresults.html template and render it with the filtered search results
-    template_path = app_path / "searchresults.html"
+    template_path = app_path / "results.html"
     with open(template_path, "r") as file:
         template = Template(file.read())
 
-    rendered_html = template.render(venues=venues)
+    rendered_html = template.render(venues=venues, filters=filters)
     return HTMLResponse(content=rendered_html)
+
 
 @app.get("/venue/{venue_id}", response_class=HTMLResponse)
 async def get_venue(venue_id: int):
