@@ -40,3 +40,8 @@ Analytics: Use data analytics to track user behavior, measure campaign effective
 
 ## Market size & Target Audience
 
+
+### Primary Audience:
+Parents and Caregivers of Autistic Children:
+Demographics: Parents, guardians, and family members responsible for the care and well-being of autistic children. These individuals are highly invested in finding resources and solutions that cater to the unique needs of their children. They are proactive in seeking out information and support that can enhance their children’s quality of life.
+Behavioral Traits: Regularly seek advice and recommendations from online forums, support groups, and social media. They are likely to use digital tools and platforms that offer solutions to their specific challenges.
