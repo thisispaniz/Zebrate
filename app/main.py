@@ -274,11 +274,42 @@ async def login_user(nickname: str = Form(...), password: str = Form(...)):
 
 
 @app.get("/welcome", response_class=HTMLResponse)
-def get_welcome():
+async def get_welcome():
     """
     Serves a welcome page after successful login.
+    Includes a form to add reviews and lists submitted reviews.
     """
-    return HTMLResponse(content="<h1>Welcome!</h1>", status_code=200)
+    try:
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row  # Access columns by name
+            cursor = conn.cursor()
+
+            # Fetch all reviews to display on the welcome page
+            cursor.execute("""
+                SELECT reviews.review_text, reviews.timestamp, users.nickname, venues.name AS venue_name
+                FROM reviews
+                JOIN users ON reviews.user_id = users.id
+                JOIN venues ON reviews.venue_id = venues.id
+                ORDER BY reviews.timestamp DESC
+            """)
+            reviews = cursor.fetchall()
+
+            # Fetch all venues to populate the dropdown
+            cursor.execute("SELECT id, name FROM venues")
+            venues = cursor.fetchall()
+
+        # Load welcome.html template and render it with the reviews and venues data
+        template_path = app_path / "welcome.html"
+        with open(template_path, "r") as file:
+            template = Template(file.read())
+
+        rendered_html = template.render(reviews=reviews, venues=venues)
+        return HTMLResponse(content=rendered_html)
+
+    except Exception as e:
+        logger.error(f"Error loading welcome page: {e}")
+        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+
 
 
 # Serve the entire app directory as static files
