@@ -63,3 +63,14 @@ We can collaborate with them to get the word out about our platform.
 Pediatricians and Family Doctors: These doctors regularly interact with families of autistic children. They can recommend our platform as a valuable resource during consultations.
 Specialists (e.g., Child Psychologists, Developmental Pediatricians): These experts work closely with autistic children and families, offering specialized advice and resources.
 Our platform can be a valuable addition to their resource pool.
+
+
+
+## Market Size and Share in Germany
+
+The prevalence of autism in Germany is estimated at approximately 0.5% of the population, which translates to about 1 in 200 people​ (IntechOpen - Open Science Open Minds)​. Given Germany's population of around 83 million, this suggests there are approximately 415,000 individuals with autism in the country.
+
+The primary target audience includes parents and caregivers of autistic children. Assuming a significant portion of the 415,000 individuals with autism are children, and considering the average family size, the number of households affected by autism could be around 100,000 to 150,000.
+
+Potential User Base:
+Including extended families, schools, therapy centers, and autism advocacy organizations that support autistic children, the potential user base for your platform expands significantly. This broader market includes educators, healthcare providers, and community organizations dedicated to supporting autism.
