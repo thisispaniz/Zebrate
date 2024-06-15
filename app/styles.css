@@ -162,7 +162,7 @@ input {
     padding: 10px;
     font-size: 15px;
     font-family: "Outfit";
-    border: 2px solid rgba(66, 155, 128, 0.5);
+    border: 2px solid rgba(66, 155, 128, 0.1);
     border-radius: 20px;
     width: 100%;
     box-sizing: border-box;
@@ -170,9 +170,9 @@ input {
 }
 
 .auth-container.signup-container button {
-    background-color: #0082D1;
+    background-color: #25433A;;
     color: #EBF8FF;
-    padding: 10px 20px;
+    padding: 20px 40px;
     border-radius: 20px;
     border: none;
     font-size: 18px;
@@ -183,11 +183,12 @@ input {
 }
 
 .auth-container.signup-container button:hover {
-    background-color: #006bb3;
+    background-color: #429B80;
 }
 
 .auth-links.signup-links {
-    margin-top: 20px;
+    margin-top: 40px;
+    margin-bottom: 30px;
 }
 
 .auth-links.signup-links a {
@@ -203,10 +204,10 @@ input {
 
 /* Login Page Styles */
 .auth-container.login-container {
-    background-color: #DAEFF3;
+    background-color: rgba(237, 222, 164, 0.5);
     border: 2px solid rgba(66, 155, 128, 0.1);
     border-radius: 40px;
-    box-shadow: 0px 0px 20px 0px rgba(0, 26, 66, 0.1);
+    box-shadow: 0px 0px 10px 0px rgba(0, 26, 66, 0.1);
     width: 400px;
     margin: 50px auto;
     padding: 30px;
@@ -214,7 +215,7 @@ input {
 }
 
 .auth-container.login-container h1 {
-    color: rgba(0, 130, 209, 1);
+    color: #25433A;
     font-weight: 5000;
     font-size: 40px;
     margin-bottom: 20px;
@@ -238,7 +239,7 @@ input {
     padding: 10px;
     font-size: 15px;
     font-family: "Outfit";
-    border: 2px solid rgba(66, 155, 128, 0.5);
+    border: 2px solid rgba(66, 155, 128, 0.3);
     border-radius: 20px;
     width: 100%;
     box-sizing: border-box;
@@ -246,24 +247,25 @@ input {
 }
 
 .auth-container.login-container button {
-    background-color: #0082D1;
+    background-color: #25433A;;
     color: #EBF8FF;
-    padding: 10px 20px;
-    border-radius: 20px;
     border: none;
-    font-size: 18px;
     font-weight: 590;
     font-family: "Outfit";
     cursor: pointer;
     margin-top: 10px;
+    padding: 15px 40px;
+    border-radius: 100px;
+    font-size: 20px;
 }
 
 .auth-container.login-container button:hover {
-    background-color: #006bb3;
+    background-color: #429B80;
 }
 
 .auth-links.login-links {
-    margin-top: 20px;
+    margin-top: 40px;
+    margin-bottom: 30px;
 }
 
 .auth-links.login-links a {
