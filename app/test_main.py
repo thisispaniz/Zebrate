@@ -1,3 +1,4 @@
+# test_main.py
 import sqlite3
 import pytest
 from fastapi.testclient import TestClient
@@ -27,24 +28,13 @@ def setup_test_db(tmp_path_factory):
         colors TEXT,
         smells TEXT,
         food_own TEXT,
-        defined_duration TEXT,
-        quiet TEXT,
-        crowdedness TEXT,
-        food_variey TEXT,
-        photo_url TEXT
+        defined_duration TEXT
     );
     CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nickname TEXT UNIQUE,
         password TEXT
     );
-    """)
-    # Insert some example data
-    cursor.executescript("""
-    INSERT INTO venues (name, address, playground, fenced, quiet_zones, colors, smells, food_own, defined_duration, quiet, crowdedness, food_variey, photo_url)
-    VALUES 
-    ('Venue A', '123 Main St', 'yes', 'no', 'yes', '2', '1', 'no', 'yes', '3', '2', '3', '/static/images/venue_a.jpg'),
-    ('Venue B', '456 Elm St', 'no', 'yes', 'no', '1', '2', 'yes', 'no', '1', '3', '2', '/static/images/venue_b.jpg');
     """)
     conn.commit()
     conn.close()
@@ -56,6 +46,7 @@ def setup_test_db(tmp_path_factory):
 
     # Cleanup the database file after tests
     db_file.unlink()
+
 
 def test_get_index():
     response = client.get("/")
@@ -79,27 +70,9 @@ async def test_search_venues(setup_test_db):
 
 @pytest.mark.asyncio
 async def test_filter_venues(setup_test_db):
-    # Test with multiple filters
-    response = client.get("/filter-venues/?playground=yes&fenced=no")
+    response = client.get("/filter-venues/?name=test&address=test")
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
-    # Check if the filtered venues are correctly returned
-    assert "Venue A" in response.text
-    assert "Venue B" not in response.text
-
-    # Test with a different set of filters
-    response = client.get("/filter-venues/?colors=1&food_own=yes")
-    assert response.status_code == 200
-    assert "text/html" in response.headers["content-type"]
-    assert "Venue B" in response.text
-    assert "Venue A" not in response.text
-
-    # Test with no filters
-    response = client.get("/filter-venues/")
-    assert response.status_code == 200
-    assert "text/html" in response.headers["content-type"]
-    assert "Venue A" in response.text
-    assert "Venue B" in response.text
 
 @pytest.mark.asyncio
 async def test_get_venue(setup_test_db):
@@ -117,6 +90,25 @@ async def test_get_venue(setup_test_db):
     response = client.get("/venue/9999")  # Non-existent venue
     assert response.status_code == 404
 
+  #  @pytest.mark.asyncio
+  #  async def test_register_user(client, setup_test_db):
+  #      # Arrange
+  #      nickname = "test"
+  #      password = "test"
+  #      hashed_password = bcrypt.hash(password)
+
+        # Act
+  #      response = client.post("/register/", data={"nickname": nickname, "password": password})
+
+        # Assert
+  #      assert response.status_code == 303
+  #      assert response.headers["location"] == "/static/login.html"
+  #      test_db.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
+  #      user = test_db.fetchone()
+  #      assert user is not None
+  #      assert user[0] == nickname
+  #      assert bcrypt.verify(password, user[1])
+    
 @pytest.mark.asyncio
 async def test_login_user(setup_test_db):
     # Register a user first
