@@ -4,18 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/z_logo(orange).png">
     <title>Login</title>
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <div class="auth-container login-container">
+        <img style="width: 50%; margin-top: 20px;" src="/static/images/zebrate_logo(orange).png" alt="">
         <h1>Login</h1>
         <form action="/login/" method="post">
             <label for="nickname">Username:</label>
             <input type="text" id="nickname" name="nickname" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <button type="submit">Login</button>
+            <button type="submit">Log in</button>
         </form>
         <div class="auth-links login-links">
             <a href="/static/signup.html">Sign Up</a> | 
