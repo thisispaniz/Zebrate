@@ -62,9 +62,12 @@ async def search_venues(request: Request):
             photo_url LIKE ?
         """
         parameters = [f"%{query}%"] * 10  # Apply the search term to all fields
+        
     else:
         sql_query = "SELECT * FROM venues"
         parameters = []  # No parameters needed for a full table query
+        
+    
 
     # Connect to the database and execute the query
     with sqlite3.connect(db_path, check_same_thread=False) as conn:
@@ -104,8 +107,6 @@ async def filter_venues(
     """
     # Capture filter parameters from the request
     filters = {
-        "name": name,
-        "address": address,
         "playground": playground,
         "fenced": fenced,
         "quiet_zones": quiet_zones,
@@ -122,13 +123,6 @@ async def filter_venues(
     # Build the SQL query dynamically based on provided filtering parameters
     query = "SELECT * FROM venues WHERE 1=1"
     parameters = []
-
-    if name:
-        query += " AND name LIKE ?"
-        parameters.append(f"%{name}%")
-    if address:
-        query += " AND address LIKE ?"
-        parameters.append(f"%{address}%")
     if playground:
         query += " AND playground LIKE ?"
         parameters.append(f"%{playground}%")
