@@ -15,10 +15,10 @@
                 <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
             </div>
             <div class="navbarbtn">
-                <a href="discover.html">Discover</a>
-                <a href="review.html">Review</a>
-                <a href="signup.html">Sign up</a>
-                <a class="button" href="login.html">Log in</a>
+                <a href="/static/filter.html">Discover</a>
+                <a href="/static/review.html">Review</a>
+                <a href="/static/signup.html">Sign up</a>
+                <a class="button" href="/static/login.html">Log in</a>
             </div>
         </div>
     </div>
@@ -26,15 +26,20 @@
     <h1>Search Results</h1>
     <div class="results">
         {% if venues %}
-            <ul>
-                {% for venue in venues %}
-                    <li>
+        <ul>
+            {% for venue in venues %}
+                <li class="venue-item">
+                    <!-- Display the venue image -->
+                    <img src="{{ venue.photo_url }}" alt="{{ venue.name }}" class="venue-image">
+                    <div class="venue-details">
+                        <!-- Create a link to the venue's detail page using the venue ID -->
                         <h2><a href="/venue/{{ venue.id }}">{{ venue.name }}</a></h2>
                         <p>Address: {{ venue.address }}</p>
                         <!-- Add more fields as needed -->
-                    </li>
-                {% endfor %}
-            </ul>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
         {% else %}
             <p>No venues found matching your query.</p>
         {% endif %}
