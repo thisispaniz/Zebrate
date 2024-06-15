@@ -47,7 +47,14 @@
                             <p class="same">Crowd</p>
                             <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
                                 {% for i in range(5) %}
-                                    <circle style="fill: {{ '#429B80' if i < venue.crowdedness else '#EDDEA4' }}" cx="{{ 8 + i * 15 }}" cy="10" r="5.5" class="circle" />
+                                    <circle style="fill: 
+                                        {% if i < venue.crowdedness %}
+                                            {% if venue.crowdedness <= 2 %}#429B80
+                                            {% elif venue.crowdedness == 3 %}#E4C23B
+                                            {% else %}#F77272
+                                            {% endif %}
+                                        {% else %}#EDDEA4{% endif %}" 
+                                    cx="{{ 8 + i * 15 }}" cy="10" r="5.5" class="circle" />
                                 {% endfor %}
                             </svg>
                         </div>
@@ -56,7 +63,14 @@
                             <p class="same">Noise</p>
                             <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
                                 {% for i in range(5) %}
-                                    <circle style="fill: {{ '#E4C23B' if i < venue.quiet else '#EDDEA4' }}" cx="{{ 8 + i * 15 }}" cy="10" r="5.5" class="circle" />
+                                    <circle style="fill: 
+                                        {% if i < venue.quiet %}
+                                            {% if venue.quiet <= 2 %}#429B80
+                                            {% elif venue.quiet == 3 %}#E4C23B
+                                            {% else %}#F77272
+                                            {% endif %}
+                                        {% else %}#EDDEA4{% endif %}" 
+                                    cx="{{ 8 + i * 15 }}" cy="10" r="5.5" class="circle" />
                                 {% endfor %}
                             </svg>
                         </div>
