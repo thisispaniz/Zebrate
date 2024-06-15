@@ -36,3 +36,7 @@ New Features: Develop and roll out new features based on market demand and techn
 Data-Driven Decisions:
 
 Analytics: Use data analytics to track user behavior, measure campaign effectiveness, and identify growth opportunities.
+
+
+## Market size & Target Audience
+
