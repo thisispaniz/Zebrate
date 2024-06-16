@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results</title>
+    <title>Zebrate - Discover</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/z_logo(orange).png">
     <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/styles-discover.css">
 </head>
 <body>
     <div class="content">
@@ -22,27 +23,150 @@
             </div>
         </div>
     </div>
-
-    <h1>Search Results</h1>
-    <div class="results">
-        {% if venues %}
-        <ul>
-            {% for venue in venues %}
-                <li class="venue-item">
-                    <!-- Display the venue image -->
-                    <img src="{{ venue.photo_url }}" alt="{{ venue.name }}" class="venue-image">
-                    <div class="venue-details">
-                        <!-- Create a link to the venue's detail page using the venue ID -->
-                        <h2><a href="/venue/{{ venue.id }}">{{ venue.name }}</a></h2>
-                        <p>Address: {{ venue.address }}</p>
-                        <!-- Add more fields as needed -->
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-            <p>No venues found matching your query.</p>
-        {% endif %}
+    
+    <div class="contentsearchbox searchboxbig" style="margin-top: 10px;">
+        <form action="/search-venues/" method="get">
+            <input type="text" id="inputbox" name="query" placeholder="Search locations..." autocomplete="off" style="width: 470px;">
+            <button type="submit" style="font-size: 16px;">Search</button>
+        </form>
     </div>
+
+    <div class="discovercontent">
+        <h1 class="res-heading">Showing results for "[search term]"</h1>  <!-- substitute search term with actual term searched -->
+        <div class="discoverven maingrid">
+            <div style="width: 320px;">
+                <div class="border" style="padding: 10px 30px 50px 30px; border-radius: 20px;">
+                    <h1 class="res-heading">Filters</h1>
+                    <h2 class="head2">Select any requirements for your best experience</h2>
+                    <div style="margin-top: 30px;">
+                        <h3 class="filterlabel">Venue must be:</h3>
+                        <div class="filtergroup">
+                            <div class="filterbtn unselected">Uncrowded</div>
+                            <div class="filterbtn unselected">Generally quiet</div>
+                        </div>
+    
+                        <h3 class="filterlabel">Venue must have:</h3>
+                        <div class="filtergroup">
+                            <div class="filterbtn selected">Quiet areas</div>
+                            <div class="filterbtn unselected">Play area</div>
+                            <div class="filterbtn unselected">Fenced play area</div>
+                            <div class="filterbtn unselected">No flashy colors</div>
+                            <div class="filterbtn unselected">Food options</div>
+                            <div class="filterbtn unselected">No extreme smells</div>
+                        </div>
+                        <h3 class="filterlabel">Venue must allow:</h3>
+                        <div class="filtergroup">
+                            <div class="filterbtn unselected">Bringing your own food</div>
+                            <div class="filterbtn unselected">Extended stay duration</div>
+                        </div>
+                    </div>
+                </div>
+                
+
+            </div>
+            <div class="venuelist" style="margin-top: -17px;">
+                <!--{% if venues %}-->
+                <ul>
+                    <!--{% for venue in venues %}-->
+                    <li class="listedvenue border" style="list-style:none; margin-bottom: 20px;">
+                        <div style="margin-top: -20px;">
+                            <h2 class="listtitle" style="margin-left: -12px;">
+                                <a href="/venue/{{ venue.id }}">{{ venue.name }}</a>
+                            </h2>
+                            <div class="maingrid">
+                                <div>
+                                    <div class="sparent2" style="margin-top: -15px;">
+                                        <img class="same" style="height: 17px; width: 17px; margin-right: 5px;" src="/static/images/icons8-marker-100.png" alt="">
+                                        <p class="same">{{ venue.address }}</p>
+                                    </div>
+                                    <!-- Display the venue image -->
+                                    <img src="{{ venue.photo_url }}" alt="{{ venue.name }}" class="listimg same" style="margin-top: 20px;">
+                                </div>
+                                <div class="listrate">
+                                    <div class="sameparent" style="margin-top: -10px; display: flex; align-items: center; justify-content: space-between; width: 300px;">
+                                        <p class="same">Crowd</p>
+                                        <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
+                                            {% for i in range(5) %}
+                                            <circle style="fill: 
+                                                {% if i < venue.crowdedness %}
+                                                    {% if venue.crowdedness <= 2 %}#429B80
+                                                    {% elif venue.crowdedness == 3 %}#E4C23B
+                                                    {% else %}#F77272
+                                                    {% endif %}
+                                                {% else %}#EDDEA4{% endif %}" 
+                                            cx="{{ 8 + i * 15 }}" cy="10" r="5.5" class="circle" />
+                                            {% endfor %}
+                                        </svg>
+                                    </div>
+                                    <!-- Noise Rating -->
+                                    <div class="sameparent" style="margin-top: -15px; display: flex; align-items: center; justify-content: space-between; width: 300px;">
+                                        <p class="same">Noise</p>
+                                        <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
+                                            {% for i in range(5) %}
+                                            <circle style="fill: 
+                                                {% if i < venue.quiet %}
+                                                    {% if venue.quiet <= 2 %}#429B80
+                                                    {% elif venue.quiet == 3 %}#E4C23B
+                                                    {% else %}#F77272
+                                                    {% endif %}
+                                                {% else %}#EDDEA4{% endif %}" 
+                                            cx="{{ 8 + i * 15 }}" cy="10" r="5.5" class="circle" />
+                                            {% endfor %}
+                                        </svg>
+                                    </div>
+                                    <!-- Yes/No Criteria -->
+                                    {% if venue.food_own == 'YES' %}
+                                    <p class="ratingyes">+ Bringing your own food allowed</p>
+                                    {% else %}
+                                    <p class="ratingno">- Bringing your own food not allowed</p>
+                                    {% endif %}
+            
+                                    {% if venue.food_variey == 'YES' %}
+                                    <p class="ratingyes">+ Broader variety of food</p>
+                                    {% endif %}
+            
+                                    {% if venue.defined_duration == 'NO' %}
+                                    <p class="ratingyes">+ No defined time frame</p>
+                                    {% endif %}
+            
+                                    {% if venue.quiet_zones == 'YES' %}
+                                    <p class="ratingyes"> + Quiet zones available</p>
+                                    {% endif %}
+            
+                                    {% if venue.playground == 'YES' %}
+                                    <p class="ratingyes">+ (fenced) Playground available</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!--{% endfor %}-->
+                </ul>
+                <!--{% else %}
+                <p>No venues found matching your query.</p>
+                {% endif %}-->
+            </div>
+            
+        </div>
+    
+    
+    </div>
+
+    <div class="footer">
+        <div class="mainfooter">
+            <img class="footerpic" src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
+            <div style="margin-top: 40px; margin-bottom: 0;">
+                <a href="discover.html">Discover</a>
+                <a href="review.html">Review</a>
+                <a href="contact.html">Contact Us</a>
+                <a href="about.html">About Us</a>
+                <a href="dashboard.html">Acount</a>
+            </div>
+        </div>
+        <div>
+            <p class="rights">©Zebrate 2024 - All rights reserved</p>
+        </div>
+    </div>
+
 </body>
 </html>
