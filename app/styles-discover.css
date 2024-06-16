@@ -1,55 +1,48 @@
-.res-heading{
+.res-heading {
     font-size: 30px;
     font-weight: 500;
     color: #25433A;
 }
-.discovercontent{
+.discovercontent {
     width: 1200px;
     margin: auto;
     margin-top: -100px;
 }
-
-.border{
+.border {
     border-style: solid;
     border-color: #25433A;
     border-width: 2px;
 }
-
-.maingrid{
+.maingrid {
     display: flex;
     justify-content: space-between;
-
 }
-.filterbox{
+.filterbox {
     width: 300px;
     padding-top: 10px;
     padding-left: 30px;
     padding-right: 30px;
     border-radius: 20px;
     padding-bottom: 50px;
-
 }
-
-.venuelist{
-    width: 800px;
+.venuelist {
+    display: flex;
+    flex-direction: column;
 }
-
-.head2{
+.head2 {
     font-size: 20px;
     font-weight: 500;
     color: #25433A;
 }
-
-.filterlabel{
+.filterlabel {
     font-size: 15px;
     font-weight: 450;
     color: #25433A;
 }
-.discoverven{
+.discoverven {
     margin-top: 50px;
 }
-
-.filterbtn{
+.filterbtn {
     font-size: 15px;
     font-weight: 450;
     padding-left: 10px;
@@ -59,31 +52,30 @@
     border-radius: 5px;
     display: inline-block;
     align-self: flex-start;
-    
 }
-.unselected{
+.unselected {
     border-style: solid;
     border-color: #429B80;
     border-width: 1px;
     color: #429B80;
 }
-.selected{
+.selected {
     color: #F7F9F3;
-    background-color:#429B80 ;
+    background-color: #429B80;
 }
-.filtergroup{
-    display:flex;
-    flex-direction:column;
+.filtergroup {
+    display: flex;
+    flex-direction: column;
     gap: 5px;
 }
-
-.listtitle{
+.listtitle {
     font-size: 25px;
     font-weight: 650;
     color: #25433A;
     line-height: 0px;
 }
-.listedvenue{
+.listedvenue {
+    width: 800px;
     border-radius: 20px;
     padding-top: 45px;
     padding-bottom: 30px;
@@ -91,29 +83,25 @@
     padding-right: 25px;
     margin-left: -42px;
 }
-.listimg{
+.listimg {
     width: 300px;
     height: 170px;
     object-fit: cover;
     margin-right: 15px;
     border-radius: 20px;
 }
-
 ul {
     list-style-type: none;
 }
-
-.sparent2{
-    margin: auto; 
+.sparent2 {
+    margin: auto;
     overflow: auto;
     box-sizing: border-box;
 }
-
-.listrate{
+.listrate {
     width: 250px;
     margin-right: 30px;
 }
-
-.listrate p{
+.listrate p {
     font-size: 12px;
 }
