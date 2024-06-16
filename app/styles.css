@@ -370,22 +370,22 @@ input {
     border: solid white;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
-  }
-  
+}
+
   /* Change the background color when the checkbox is checked */
-  .checkbox-container input:checked ~ .checkmark {
+.checkbox-container input:checked ~ .checkmark {
     background-color: #2196F3;
-  }
-  
-  .ratingno {
+}
+
+.ratingno {
     color: #F77272;
-  }
+}
 
-  .ratingyes {
+.ratingyes {
     color: #429B80;
-  }
+}
 
-  .venue-item {
+.venue-item {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
@@ -582,3 +582,58 @@ input {
             width: 1200px;
             margin: auto;
         }
+
+        /* settings page */
+        
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .title-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            position: relative;
+        }
+        
+        
+        .back-link {
+            text-decoration: none;
+            color: #25433A;
+            position: absolute;
+            left: 20px;
+        }
+        
+        .title {
+            font-size: 40px;
+            font-weight: 500;
+            color: #25433A;
+            margin: 0 auto;
+        }
+        
+        .account-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 40px;
+            border: 1px solid #25433A;
+            border-radius: 20px;
+        }
+        
+        .account-details .detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .account-details .label {
+            color: rgba(37, 67, 58, 1);
+        }
+        
+        .account-details .value {
+            color: rgba(37, 67, 58, 0.5);
+        }
+        
