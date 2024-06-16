@@ -61,7 +61,7 @@
                 </div>
 
             </div>
-            <div class="venuelist border">
+            <div class="venuelist">
                 <!--{% if venues %}-->
                 <ul>
                     <!--{% for venue in venues %}-->
@@ -70,7 +70,7 @@
                             <div style="margin-top: -20px;">
                                 <h2 class="listtitle" style="margin-left: -12px;"><a href="/venue/{{ venue.id }}">{{ venue.name }}</a></h2>
                                 <div class="maingrid">
-                                    <div class="border">
+                                    <div>
                                         <div class="sparent2" style="margin-top: -15px;">
                                             <img class="same" style="height: 17px; width: 17px; margin-right: 5px;" src="/static/images/icons8-marker-100.png" alt="">
                                             <p class="same">{{ venue.address }}</p>
@@ -78,7 +78,7 @@
                                         <!-- Display the venue image -->
                                         <img src="{{ venue.photo_url }}" alt="{{ venue.name }}"  class="listimg same" style="margin-top: 20px;">
                                     </div>
-                                    <div class="listrate border">
+                                    <div class="listrate">
                                         <div class="sameparent" style="margin-top: -10px; display: flex; align-items: center; justify-content: space-between; width: 300px;">
                                             <p class="same">Crowd</p>
                                             <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
