@@ -32,7 +32,7 @@
     </div>
 
     <div class="discovercontent">
-        <h1 class="res-heading">Showing results for "[search term]"</h1>  <!-- substitute search term with actual term searched -->
+        <h1 class="res-heading">Showing results for "{{ query }}"</h1> <!-- Dynamic search term display -->
         <div class="discoverven maingrid">
             <div style="width: 320px;">
                 <div class="border" style="padding: 10px 30px 50px 30px; border-radius: 20px;">
@@ -65,9 +65,9 @@
 
             </div>
             <div class="venuelist" style="margin-top: -17px;">
-                <!--{% if venues %}-->
+                {% if venues %}
                 <ul>
-                    <!--{% for venue in venues %}-->
+                    {% for venue in venues %}
                     <li class="listedvenue border" style="list-style:none; margin-bottom: 20px;">
                         <div style="margin-top: -20px;">
                             <h2 class="listtitle" style="margin-left: -12px;">
@@ -79,7 +79,6 @@
                                         <img class="same" style="height: 17px; width: 17px; margin-right: 5px;" src="/static/images/icons8-marker-100.png" alt="">
                                         <p class="same">{{ venue.address }}</p>
                                     </div>
-                                    <!-- Display the venue image -->
                                     <img src="{{ venue.photo_url }}" alt="{{ venue.name }}" class="listimg same" style="margin-top: 20px;">
                                 </div>
                                 <div class="listrate">
@@ -140,27 +139,25 @@
                             </div>
                         </div>
                     </li>
-                    <!--{% endfor %}-->
+                    {% endfor %}
                 </ul>
-                <!--{% else %}
+                {% else %}
                 <p>No venues found matching your query.</p>
-                {% endif %}-->
+                {% endif %}
             </div>
             
         </div>
-    
-    
     </div>
 
     <div class="footer">
         <div class="mainfooter">
             <img class="footerpic" src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
             <div style="margin-top: 40px; margin-bottom: 0;">
-                <a href="discover.html">Discover</a>
-                <a href="review.html">Review</a>
-                <a href="contact.html">Contact Us</a>
-                <a href="about.html">About Us</a>
-                <a href="dashboard.html">Acount</a>
+                <a href="/static/discover.html">Discover</a>
+                <a href="/static/review.html">Review</a>
+                <a href="/static/contactus.html">Contact Us</a>
+                <a href="/static/aboutus.html">About Us</a>
+                <a href="/static/dashboard.html">Account</a>
             </div>
         </div>
         <div>
