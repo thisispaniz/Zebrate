@@ -3,6 +3,7 @@ body {
     background-color: #F7F9F3;
     font-family: 'Outfit', sans-serif;
     margin-top: 50px;
+    color: #25433A;
 }
 
 a {
@@ -99,14 +100,17 @@ input {
     border: 2px solid rgba(66, 155, 128, 0.1);
     border-radius: 40px;
     box-shadow: 0px 0px 20px 0px rgba(0, 26, 66, 0.1);
-    background-image: url('images/homepage\ big\ z.png');
-    background-repeat: no-repeat;
-    background-position: right;
-    background-size: contain;
     display: flex;
     align-items: center;
     padding-left: 50px;
     margin-bottom: 100px;
+}
+
+.contentbackground {
+    background-image: url('/static/images/homepage_big_z.png');
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: contain;
 }
 
 .primarytitle {
@@ -527,4 +531,14 @@ input {
             margin-left: -20px;
             font-size: 0.6vw;
             color: #429B80;
+        }
+
+        .contactabout {
+            margin-top: 100px; 
+            padding-bottom: 40px; 
+            padding-right: 100px; 
+            padding-left: 100px; 
+            width: 1000px; 
+            font-size: 25px; 
+            text-align: left;
         }
