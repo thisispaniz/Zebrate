@@ -553,3 +553,32 @@ input {
             font-size: 25px; 
             text-align: left;
         }
+
+        .dashboardbutton button {
+            background-color: #F1EBCB;
+            color: #25433A;
+            font-size: 20px;
+            border-radius: 20px;
+            width: 1200px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+
+        .dashboardbutton button:hover {
+            background-color: #F7A072;
+            color: #EBF8FF;
+            font-size: 20px;
+            border-radius: 20px;
+            width: 1200px;
+            height: 100px;
+        }
+
+        .dashboardbutton button:disabled {
+            background-color: rgba(241, 235, 203, 0.3);
+            cursor: not-allowed;
+            color: rgba(37, 67, 58, 0.3);
+        }
+        .centering {
+            width: 1200px;
+            margin: auto;
+        }
