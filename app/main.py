@@ -40,10 +40,6 @@ def get_signup():
 
 @app.get("/search-venues/", response_class=HTMLResponse)
 async def search_venues(request: Request):
-    """
-    Handles the initial search and shows venues based on the general search term.
-    If no query is provided, display all venues.
-    """
     query = request.query_params.get('query', '')
 
     # Determine the SQL query to use based on the presence of the search query
@@ -66,8 +62,6 @@ async def search_venues(request: Request):
     else:
         sql_query = "SELECT * FROM venues"
         parameters = []  # No parameters needed for a full table query
-        
-    
 
     # Connect to the database and execute the query
     with sqlite3.connect(db_path, check_same_thread=False) as conn:
@@ -76,13 +70,14 @@ async def search_venues(request: Request):
         cursor.execute(sql_query, parameters)
         venues = cursor.fetchall()
 
-    # Load filter.html template and render it with the search results
+    # Load the template and render it with the search results and the query term
     template_path = app_path / "results.html"
     with open(template_path, "r") as file:
         template = Template(file.read())
 
     rendered_html = template.render(venues=venues, query=query)
     return HTMLResponse(content=rendered_html)
+
 
 @app.get("/filter-venues/", response_class=HTMLResponse)
 async def filter_venues(
@@ -263,10 +258,13 @@ async def login_user(nickname: str = Form(...), password: str = Form(...)):
             if not bcrypt.verify(password, user["password"]):
                 logger.info(f"Invalid password for nickname {nickname}.")
                 return HTMLResponse(content="Invalid nickname or password", status_code=400)
+            
 
             logger.info(f"User {nickname} logged in successfully.")
-            # Redirect to /welcome if nickname and password are valid
-            return RedirectResponse(url="/welcome", status_code=303)
+            # Redirect to the dashboard with the user's nickname
+            return RedirectResponse(url=f"/welcome?nickname={nickname}", status_code=303)
+
+            
 
     except Exception as e:
         logger.error(f"Login error: {e}")
@@ -274,11 +272,46 @@ async def login_user(nickname: str = Form(...), password: str = Form(...)):
 
 
 @app.get("/welcome", response_class=HTMLResponse)
-def get_welcome():
+async def get_welcome(request: Request):
     """
-    Serves a welcome page after successful login.
+    Serves the welcome page after successful login.
+    Includes a form to add reviews and lists submitted reviews.
     """
-    return HTMLResponse(content="<h1>Welcome!</h1>", status_code=200)
+    try:
+        nickname = request.query_params.get('nickname')
+        if not nickname:
+            return HTMLResponse(content="Nickname not found in the request", status_code=400)
+
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Fetch all reviews to display on the welcome page
+            cursor.execute("""
+                SELECT reviews.review_text, reviews.timestamp, users.nickname, venues.name AS venue_name
+                FROM reviews
+                JOIN users ON reviews.user_id = users.id
+                JOIN venues ON reviews.venue_id = venues.id
+                ORDER BY reviews.timestamp DESC
+            """)
+            reviews = cursor.fetchall()
+
+            # Fetch all venues to populate the dropdown
+            cursor.execute("SELECT id, name FROM venues")
+            venues = cursor.fetchall()
+
+        # Load dashboard.html template and render it with the reviews and venues data
+        template_path = app_path / "dashboard.html"
+        with open(template_path, "r") as file:
+            template = Template(file.read())
+
+        rendered_html = template.render(reviews=reviews, venues=venues, nickname=nickname)
+        return HTMLResponse(content=rendered_html)
+
+    except Exception as e:
+        logger.error(f"Error loading welcome page: {e}")
+        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+
 
 
 # Serve the entire app directory as static files
