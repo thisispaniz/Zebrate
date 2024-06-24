@@ -97,3 +97,13 @@ function myFunction() {
     tr = table.getElementsByTagName("tr");
   
 }
+
+function toggleSelection(element) {
+    if (element.classList.contains('unselected')) {
+        element.classList.remove('unselected');
+        element.classList.add('selected');
+    } else {
+        element.classList.remove('selected');
+        element.classList.add('unselected')
+    }
+}
