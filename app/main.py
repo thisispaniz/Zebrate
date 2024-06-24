@@ -31,6 +31,31 @@ def get_index():
     """
     return FileResponse(app_path / "index.html")
 
+@app.get("/discover", response_class=HTMLResponse)
+async def get_discover():
+    """
+    Fetches and displays all venues from the database.
+    """
+    try:
+        # Connect to the database and retrieve all venues
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row  # Access columns by name
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM venues")
+            venues = cursor.fetchall()  # Fetch all venues
+
+        # Load the discover.html template and render it with the list of venues
+        template_path = app_path / "discover.html"
+        with open(template_path, "r") as file:
+            template = Template(file.read())
+
+        rendered_html = template.render(venues=venues, query="")
+        return HTMLResponse(content=rendered_html)
+
+    except Exception as e:
+        logger.error(f"Error loading discover page: {e}")
+        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+
 @app.get("/signup", response_class=HTMLResponse)
 def get_signup():
     """

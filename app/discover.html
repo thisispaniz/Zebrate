@@ -16,8 +16,8 @@
                 <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
             </div>
             <div class="navbarbtn">
-                <a href="/static/discover.html">Discover</a>
-                <a href="/static/review.html">Review</a>
+                <a href="/discover">Discover</a>
+                <!--<a href="/static/review.html">Review</a>-->
                 <a href="/static/signup.html">Sign up</a>
                 <a class="button" href="/login">Log in</a>
             </div>
@@ -82,6 +82,7 @@
                                     <img src="{{ venue.photo_url }}" alt="{{ venue.name }}" class="listimg same" style="margin-top: 20px;">
                                 </div>
                                 <div class="listrate">
+                                    <!-- Crowd Rating -->
                                     <div class="sameparent" style="margin-top: -10px; display: flex; align-items: center; justify-content: space-between; width: 300px;">
                                         <p class="same">Crowd</p>
                                         <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
@@ -119,19 +120,19 @@
                                     {% else %}
                                     <p class="ratingno">- Bringing your own food not allowed</p>
                                     {% endif %}
-            
-                                    {% if venue.food_variey == 'YES' %}
+
+                                    {% if venue.food_variety == 'YES' %}
                                     <p class="ratingyes">+ Broader variety of food</p>
                                     {% endif %}
-            
+
                                     {% if venue.defined_duration == 'NO' %}
                                     <p class="ratingyes">+ No defined time frame</p>
                                     {% endif %}
-            
+
                                     {% if venue.quiet_zones == 'YES' %}
                                     <p class="ratingyes"> + Quiet zones available</p>
                                     {% endif %}
-            
+
                                     {% if venue.playground == 'YES' %}
                                     <p class="ratingyes">+ (fenced) Playground available</p>
                                     {% endif %}
@@ -153,8 +154,8 @@
         <div class="mainfooter">
             <img class="footerpic" src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
             <div style="margin-top: 40px; margin-bottom: 0;">
-                <a href="/static/discover.html">Discover</a>
-                <a href="/static/review.html">Review</a>
+                <a href="/discover">Discover</a>
+                <!--<a href="/static/review.html">Review</a>-->
                 <a href="/static/contactus.html">Contact Us</a>
                 <a href="/static/aboutus.html">About Us</a>
                 <a href="/login">Account</a>
