@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zebrate - Autism Friendly Social Entertainment</title>
+    <title>Zebrate - My Account</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/z_logo(orange).png">
     <link rel="stylesheet" href="/static/styles.css">
@@ -14,32 +14,27 @@
             <div class="navbarlogo">
                 <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
             </div>
+            <div class="contentsearchbox searchboxsmall">
+                <input type="text" id="inputbox" placeholder="Search locations..." autocomplete="off" style="width: 180px; height: 60%;">
+                <button style="font-size: 13px; height: 43px;">Search</button>
+            </div>
             <div class="navbarbtn">
-                <a href="/static/discover.html">Discover</a>
+                <a href="/static/filter.html">Discover</a>
                 <a href="/static/review.html">Review</a>
                 <a href="/static/signup.html">Sign up</a>
-                <a class="button" href="/login">Log in</a>
+                <a class="button" href="/static/login.html">Log in</a>
             </div>
         </div>
     </div>
-    
-    <div class="contentsearchbox searchboxbig">
-        <form action="/search-venues/" method="get">
-            <input type="text" id="inputbox" name="query" placeholder="Search locations..." autocomplete="off" style="width: 470px;">
-            <button type="submit" style="font-size: 16px;">Search</button>
-        </form>
+    <div class="centering">
+        <p style="font-size: 40px; font-weight: 500; text-align: center; justify-content: center;">Welcome back {{nickname}}!</p>
+        <a class="dashboardbutton" href="settings.html"><button>Manage account settings</button></a>
+        <a class="dashboardbutton" href="myreviews.html"><button>My reviews</button></a>
+        <a class="dashboardbutton" href="myreviews.html"><button disabled>Favorite venues</button></a>
+        <a class="dashboardbutton" href="myreviews.html"><button disabled>My presets</button></a>
     </div>
 
-    <div class="content homecontent contentbackground">
-        <div class="everythingshere">
-            <h1 class="primarytitle">Autism friendly<br>social entertainment</h1>
-            <p class="hometext">A guide for caregivers in finding social entertainment environments<br>best suited for their autistic child</p>
-            <br><br>
-            <button class="button" type="submit">Learn More</button>
-        </div>
-    </div>
-
-    <div class="footer">
+    <div class="footer" style="margin-top: 60px;">
         <div class="mainfooter">
             <img class="footerpic" src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
             <div style="margin-top: 40px; margin-bottom: 0;">
@@ -47,7 +42,6 @@
                 <a href="/static/review.html">Review</a>
                 <a href="/static/contactus.html">Contact Us</a>
                 <a href="/static/aboutus.html">About Us</a>
-                <a href="/login">Account</a>
             </div>
         </div>
         <div>
