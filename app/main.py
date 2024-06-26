@@ -107,95 +107,62 @@ async def search_venues(request: Request):
 @app.get("/filter-venues/", response_class=HTMLResponse)
 async def filter_venues(
     request: Request,
-    name: str = "",
-    address: str = "",
-    playground: str = "",
-    fenced: str = "",
-    quiet_zones: str = "",
-    colors: str = "",
-    smells: str = "",
-    food_own: str = "",
-    defined_duration: str = "",
-    quiet: str = "",
-    crowdedness: str = "",
-    food_variey: str = "",
-    photo_url: str = ""
+    playground: str = None,
+    fenced: str = None,
+    quiet_zones: str = None,
+    colors: str = None,
+    smells: str = None,
+    food_own: str = None,
+    defined_duration: str = None,
+    quiet: str = None,
+    crowdedness: str = None,
+    food_variety: str = None
 ):
     """
     Handles detailed filtering of venues based on user-selected criteria.
     If no filter options are provided, select all entries.
     """
-    # Capture filter parameters from the request
     filters = {
         "playground": playground,
         "fenced": fenced,
         "quiet_zones": quiet_zones,
-        "colors": request.query_params.getlist('colors'),
-        "smells": request.query_params.getlist('smells'),
+        "colors": colors,
+        "smells": smells,
         "food_own": food_own,
         "defined_duration": defined_duration,
-        "quiet": request.query_params.getlist('quiet'),
-        "crowdedness": request.query_params.getlist('crowdedness'),
-        "food_variey": request.query_params.getlist('food_variey'),
-        "photo_url": photo_url
+        "quiet": quiet,
+        "crowdedness": crowdedness,
+        "food_variety": food_variety
     }
 
-    # Build the SQL query dynamically based on provided filtering parameters
+    # Start with the base query
     query = "SELECT * FROM venues WHERE 1=1"
     parameters = []
-    if playground:
-        query += " AND playground LIKE ?"
-        parameters.append(f"%{playground}%")
-    if fenced:
-        query += " AND fenced LIKE ?"
-        parameters.append(f"%{fenced}%")
-    if quiet_zones:
-        query += " AND quiet_zones LIKE ?"
-        parameters.append(f"%{quiet_zones}%")
-    if filters["colors"]:
-        query += " AND colors IN (" + ",".join("?" * len(filters["colors"])) + ")"
-        parameters.extend(filters["colors"])
-    if filters["smells"]:
-        query += " AND smells IN (" + ",".join("?" * len(filters["smells"])) + ")"
-        parameters.extend(filters["smells"])
-    if food_own:
-        query += " AND food_own LIKE ?"
-        parameters.append(f"%{food_own}%")
-    if defined_duration:
-        query += " AND defined_duration LIKE ?"
-        parameters.append(f"%{defined_duration}%")
-    if filters["quiet"]:
-        query += " AND quiet IN (" + ",".join("?" * len(filters["quiet"])) + ")"
-        parameters.extend(filters["quiet"])
-    if filters["crowdedness"]:
-        query += " AND crowdedness IN (" + ",".join("?" * len(filters["crowdedness"])) + ")"
-        parameters.extend(filters["crowdedness"])
-    if filters["food_variey"]:
-        query += " AND food_variey IN (" + ",".join("?" * len(filters["food_variey"])) + ")"
-        parameters.extend(filters["food_variey"])
-    if photo_url:
-        query += " AND photo_url LIKE ?"
-        parameters.append(f"%{photo_url}%")
 
-    if not any([name, address, playground, fenced, quiet_zones, filters["colors"], filters["smells"], food_own, defined_duration, filters["quiet"], filters["crowdedness"], filters["food_variey"], photo_url]):
-        # If no filter options are provided, select all entries
-        query = "SELECT * FROM venues"
-        parameters = []
+    # Append conditions based on provided filter values
+    for key, value in filters.items():
+        if value:
+            query += f" AND {key} LIKE ?"
+            parameters.append(f"%{value}%")
 
-    with sqlite3.connect(db_path, check_same_thread=False) as conn:
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        cursor.execute(query, parameters)
-        venues = cursor.fetchall()
+    try:
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute(query, parameters)
+            venues = cursor.fetchall()
 
-    # Load searchresults.html template and render it with the filtered search results
-    template_path = app_path / "results.html"
-    with open(template_path, "r") as file:
-        template = Template(file.read())
+        # Load the results.html template and render it with the filtered results
+        template_path = app_path / "results.html"
+        with open(template_path, "r") as file:
+            template = Template(file.read())
 
-    rendered_html = template.render(venues=venues, filters=filters)
-    return HTMLResponse(content=rendered_html)
+        rendered_html = template.render(venues=venues, filters=filters)
+        return HTMLResponse(content=rendered_html)
 
+    except Exception as e:
+        logger.error(f"Error filtering venues: {e}")
+        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
 
 @app.get("/venue/{venue_id}", response_class=HTMLResponse)
 async def get_venue(venue_id: int):
