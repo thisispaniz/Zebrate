@@ -110,11 +110,21 @@
     </div>
 
     <div class="sameparent" style="display: flex; align-items: center; justify-content: space-between; margin-top: 70px; margin-bottom: 30px;">
-        <!-- Uncomment and use if you have review count -->
         <p class="same" style="font-size: 40px; font-weight: 500;">Reviews <span class="same" style="font-size: 20px;">({{ venue.reviews_count }})</span></p>
-        <button class="same" style="color: #F7F9F3; font-size: 20px;"><img src="/static/images/pencil.png" alt="">&ensp;Write a review </button>
+        <button id="myBtn" class="same" style="color: #F7F9F3; font-size: 20px;"><img src="/static/images/pencil.png" alt="">&ensp;Write a review </button>
     </div>
-    
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="sameparent">
+                <div class="same">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="sameparent ratings" style="display: flex; align-items: center; justify-content: space-between; height: 330px; font-size: 20px; margin-bottom: 50px;">
         <div class="same" style="width: 650px; margin-top: -30px;">
             <p style="width: 650px; color: #25433A; font-weight: 600;">User123</p><br>
@@ -174,5 +184,35 @@
             <p class="rights">©Zebrate 2024 - All rights reserved</p>
         </div>
     </div>
+        <script>
+        // Ensure the script runs after the DOM is fully loaded
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get the modal
+            var modal = document.getElementById("myModal");
+
+            // Get the button that opens the modal
+            var btn = document.getElementById("myBtn");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks on the button, open the modal
+            btn.onclick = function() {
+                modal.style.display = "block";
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        });
+    </script>
 </body>
 </html>
