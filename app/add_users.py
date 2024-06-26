@@ -17,11 +17,22 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT
 ) """
 
+create_reviews = """ CREATE TABLE IF NOT EXISTS reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    venue_id INTEGER NOT NULL,
+    review_text TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (venue_id) REFERENCES venues (id)
+) """
+
 # Execute the SQL command
 cursor.execute(create_users_table_sql)
+cursor.execute(create_reviews)
 
 # Commit the changes and close the connection
 conn.commit()
 conn.close()
 
-print("Created the users' table successfully.")
+print("Created the users' table and the reviews' table successfully.")

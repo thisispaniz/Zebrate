@@ -58,10 +58,22 @@
     border-color: #429B80;
     border-width: 1px;
     color: #429B80;
+    cursor: pointer;
+}
+.unselected:hover {
+    background-color: rgb(66, 155, 128, 0.2);
+    border-color: #429B80;
+    color: #429B80;
 }
 .selected {
     color: #F7F9F3;
     background-color: #429B80;
+    cursor: pointer;
+}
+.selected:hover {
+    background-color: #F7A072;
+    border-color: #F7F9F3;
+    color: #F7F9F3;
 }
 .filtergroup {
     display: flex;

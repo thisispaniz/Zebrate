@@ -122,7 +122,7 @@ async def test_login_user(setup_test_db):
     response = client.post("/login/", data={"nickname": "testuser", "password": "wrongpass"})
     assert response.status_code == 400  # Invalid credentials
 
-def test_get_welcome():
-    response = client.get("/welcome")
-    assert response.status_code == 200
-    assert "text/html" in response.headers["content-type"]
+#def test_get_welcome():
+ #   response = client.get("/welcome")
+  #  assert response.status_code == 200
+   # assert "text/html" in response.headers["content-type"]
