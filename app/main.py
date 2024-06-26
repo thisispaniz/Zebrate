@@ -152,8 +152,8 @@ async def filter_venues(
             cursor.execute(query, parameters)
             venues = cursor.fetchall()
 
-        # Load the results.html template and render it with the filtered results
-        template_path = app_path / "results.html"
+        # Load the discover.html template and render it with the filtered results
+        template_path = app_path / "discover.html"
         with open(template_path, "r") as file:
             template = Template(file.read())
 
