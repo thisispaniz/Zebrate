@@ -98,14 +98,64 @@ function myFunction() {
   
 }
 
-function toggleSelection(element) {
+// Define selected filters
+let selectedFilters = {};
+
+// Function to toggle filter selection and update the list of selected filters
+function toggleFilter(element, filterName) {
     if (element.classList.contains('unselected')) {
         element.classList.remove('unselected');
         element.classList.add('selected');
+        selectedFilters[filterName] = true; // Add filter to the selected list
     } else {
         element.classList.remove('selected');
-        element.classList.add('unselected')
+        element.classList.add('unselected');
+        delete selectedFilters[filterName]; // Remove filter from the selected list
     }
+
+    filterVenues(); // Apply the filter on the venue list
+}
+
+// Function to filter venues based on selected filters
+function filterVenues() {
+    const venues = document.querySelectorAll('.listedvenue');
+
+    venues.forEach(venue => {
+        let show = true;
+
+        for (let filter in selectedFilters) {
+            if (selectedFilters[filter]) {
+                // If any selected filter doesn't match, hide the venue
+                if (venue.dataset[filter] !== 'yes') {
+                    show = false;
+                    break;
+                }
+            }
+        }
+
+        if (show) {
+            venue.style.display = 'block';
+        } else {
+            venue.style.display = 'none';
+        }
+    });
+}
+
+// Search functionality to filter based on text input
+document.getElementById('searchButton').addEventListener('click', () => {
+    const query = document.getElementById('inputbox').value.toLowerCase();
+    const venues = document.querySelectorAll('.listedvenue');
+
+    venues.forEach(venue => {
+        const name = venue.querySelector('.listtitle').innerText.toLowerCase();
+        if (name.includes(query)) {
+            venue.style.display = 'block';
+        } else {
+            venue.style.display = 'none';
+        }
+    });
+});
+
 }
 
 // Ensure the script runs after the DOM is fully loaded
@@ -136,3 +186,4 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 });
+
