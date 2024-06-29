@@ -8,6 +8,7 @@ from fastapi import Form
 from passlib.hash import bcrypt
 import logging
 from fastapi import HTTPException
+from typing import Optional
 
 app = FastAPI()
 
@@ -32,29 +33,60 @@ def get_index():
     return FileResponse(app_path / "index.html")
 
 @app.get("/discover", response_class=HTMLResponse)
-async def get_discover():
+async def get_discover(query: Optional[str] = None, filters: Optional[str] = None):
     """
-    Fetches and displays all venues from the database.
+    Fetches and displays venues based on search query and filters.
     """
     try:
-        # Connect to the database and retrieve all venues
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
-            conn.row_factory = sqlite3.Row  # Access columns by name
+            conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM venues")
-            venues = cursor.fetchall()  # Fetch all venues
+
+            # Base SQL query
+            sql_query = "SELECT * FROM venues WHERE 1=1"
+            parameters = []
+
+            # Apply search query if provided
+            if query:
+                sql_query += """
+                    AND (
+                        name LIKE ? OR
+                        address LIKE ? OR
+                        playground LIKE ? OR
+                        fenced LIKE ? OR
+                        quiet_zones LIKE ? OR
+                        colors LIKE ? OR
+                        smells LIKE ? OR
+                        food_own LIKE ? OR
+                        defined_duration LIKE ? OR
+                        photo_url LIKE ?
+                    )
+                """
+                parameters.extend([f"%{query}%"] * 10)
+
+            # Apply filters if provided
+            if filters:
+                filters_dict = json.loads(filters)
+                for key, value in filters_dict.items():
+                    if value == 'YES':
+                        sql_query += f" AND {key} = ?"
+                        parameters.append('YES')
+
+            cursor.execute(sql_query, parameters)
+            venues = cursor.fetchall()
 
         # Load the discover.html template and render it with the list of venues
         template_path = app_path / "discover.html"
         with open(template_path, "r") as file:
             template = Template(file.read())
 
-        rendered_html = template.render(venues=venues, query="")
+        rendered_html = template.render(venues=venues, query=query or "")
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
         logger.error(f"Error loading discover page: {e}")
         return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+
 
 @app.get("/signup", response_class=HTMLResponse)
 def get_signup():
