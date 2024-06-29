@@ -212,14 +212,14 @@
             <div class="reviewcontent" style="width: auto; display: flex; justify-content: space-between;">
                 <div class="reviewbox">
                     <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">Write a review:</span>
-                    <form style="display: flex; flex-direction: column; margin-top: 10px; background-color: #F7F9F3; border-radius: 10px; padding: 5px;">
+                    <form action="/add-review/" method="post" style="display: flex; flex-direction: column; margin-top: 10px; background-color: #F7F9F3; border-radius: 10px; padding: 5px;">
                         <input class="reviewtitle" type="text" placeholder="Title of your review">
                         <textarea class="reviewtext" placeholder="Write your review here..."></textarea>
                         <button style="color: #F7F9F3; font-size: 15px; width: 220px; margin-top: 20px;">Submit review </button>
-                    </form>
-                </div>
-                <div class="reviewfilters" >
-                    <div>
+                        </div>
+                        <div class="reviewfilters" >
+
+                        <div>
                         <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">How crowded was the venue?</span>
                         <div class="rating-container">
                             <div class="rating" style="margin-top: 15px;">
@@ -399,6 +399,8 @@
                                 <label for="option8-no">No</label>
                             </li>
                         </ul>
+                        <button type="submit" style="color: #F7F9F3; font-size: 15px; width: 220px; margin-top: 20px;">Submit review </button>
+                    </form>
                     </div>
 
                 </div>
