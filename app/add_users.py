@@ -9,6 +9,27 @@ db_path = app_path / 'venues.db'
 conn = sqlite3.connect(db_path, check_same_thread=False)
 cursor = conn.cursor()
 
+# Function to check if a column exists
+def column_exists(table_name, column_name):
+    cursor.execute(f"PRAGMA table_info({table_name})")
+    columns = [info[1] for info in cursor.fetchall()]
+    return column_name in columns
+
+# List of columns to add with their respective types
+columns_to_add = [
+    ("review_title", "TEXT"),
+    ("colors", "INTEGER"),
+    ("smells", "INTEGER"),
+    ("quiet", "INTEGER"),
+    ("crowdedness", "INTEGER"),
+    ("food_variey", "INTEGER"),
+    ("playground", "TEXT"),
+    ("fenced", "TEXT"),
+    ("quiet_zones", "TEXT"),
+    ("food_own", "TEXT"),
+    ("defined_duration", "TEXT")
+]
+
 # SQL command to create the 'users' table if it doesn't exist
 create_users_table_sql = """
 CREATE TABLE IF NOT EXISTS users (
@@ -17,7 +38,9 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT
 ) """
 
-create_reviews = """ CREATE TABLE IF NOT EXISTS reviews (
+# SQL command to create the 'reviews' table if it doesn't exist
+create_reviews_sql = """
+CREATE TABLE IF NOT EXISTS reviews (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     venue_id INTEGER NOT NULL,
@@ -27,12 +50,18 @@ create_reviews = """ CREATE TABLE IF NOT EXISTS reviews (
     FOREIGN KEY (venue_id) REFERENCES venues (id)
 ) """
 
-# Execute the SQL command
+# Execute the SQL commands to ensure tables exist
 cursor.execute(create_users_table_sql)
-cursor.execute(create_reviews)
+cursor.execute(create_reviews_sql)
+
+# Add the new columns if they do not already exist
+for column_name, column_type in columns_to_add:
+    if not column_exists("reviews", column_name):
+        alter_table_sql = f"ALTER TABLE reviews ADD COLUMN {column_name} {column_type}"
+        cursor.execute(alter_table_sql)
 
 # Commit the changes and close the connection
 conn.commit()
 conn.close()
 
-print("Created the users' table and the reviews' table successfully.")
+print("Altered the 'reviews' table successfully.")

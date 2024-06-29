@@ -35,6 +35,53 @@ def get_index():
     """
     return FileResponse(app_path / "index.html")
 
+@app.post("/add-review/")
+async def add_review(
+    user_id: int = Form(...),
+    venue_id: int = Form(...),
+    review_title: str = Form(...),
+    review_text: str = Form(...),
+    colors: int = Form(...),
+    smells: int = Form(...),
+    quiet: int = Form(...),
+    crowdedness: int = Form(...),
+    food_variey: int = Form(...),
+    playground: str = Form(...),
+    fenced: str = Form(...),
+    quiet_zones: str = Form(...),
+    food_own: str = Form(...),
+    defined_duration: str = Form(...)
+):
+    # Connect to the database
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    try:
+        # Insert the review into the database
+        cursor.execute("""
+            INSERT INTO reviews (
+                user_id, venue_id, review_title, review_text, colors, smells, quiet, crowdedness, 
+                food_variey, playground, fenced, quiet_zones, food_own, defined_duration
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            user_id, venue_id, review_title, review_text, colors, smells, quiet, crowdedness, 
+            food_variey, playground, fenced, quiet_zones, food_own, defined_duration
+        ))
+
+        # Commit the transaction
+        conn.commit()
+
+        # Return a success message
+        return {"message": "Review added successfully!"}
+
+    except sqlite3.Error as e:
+        conn.rollback()  # Rollback the transaction on error
+        raise HTTPException(status_code=500, detail=f"Database error: {e}")
+
+    finally:
+        # Close the connection
+        conn.close()
+
 @app.get("/discover", response_class=HTMLResponse)
 async def get_discover(request: Request, query: str = None, filters: str = None):
     """
