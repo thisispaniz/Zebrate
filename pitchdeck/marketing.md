@@ -92,15 +92,18 @@ Parents and Caregivers of Autistic Children:
 
 Proactive Seekers: Parents, guardians, and family members responsible for the care of autistic children, who actively seek out information and support to enhance their children’s quality of life.
 Digital Savvy: Likely to use digital tools and platforms that offer solutions to their specific challenges.
+
 Secondary Audience
 1. Educational and Therapeutic Institutions:
 
 Schools and Special Education Programs: Interested in resources that enhance learning and recreation for autistic children.
 Therapy Centers and Clinics: Seeking comprehensive support options for families, including suitable entertainment venues.
+
 2. Autism Advocacy and Support Organizations:
 
 Non-Profits and NGOs: Working to support autistic individuals and families, with extensive networks that can promote our platform.
 Community Groups: Local or online groups connecting families with shared experiences.
+
 3. Healthcare Providers:
 
 Pediatricians and Family Doctors: Regularly interacting with families of autistic children and can recommend our platform as a valuable resource.
