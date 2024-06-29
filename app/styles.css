@@ -652,10 +652,13 @@ input {
     }
 
     .modal-content {
-        background-color: #f3a67c;
-        margin: 15% auto; /* 15% from the top and centered */
-        padding: 20px;
-        height: 350px;
+        background-color: #F8AB83;
+        margin: 10% auto; /* 10% from the top and centered */
+        padding-top: 5px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 20px;
+        height: auto;
         border-radius: 20px;
         width: 80%; 
     }
@@ -663,13 +666,145 @@ input {
     .close {
         color: #F7F9F3;
         float: right;
-        font-size: 28px;
+        font-size: 35px;
         font-weight: bold;
     }
     
     .close:hover,
     .close:focus {
-        color: #FFFFFF;
+        color: #e3e6dd;
         text-decoration: none;
         cursor: pointer;
     } 
+
+    .testb{
+        border-style: solid;
+        border-color: #25433A;
+        border-width: 2px;
+    }
+
+    .reviewbox{
+        padding-top: -10px;
+        padding-bottom: -10px;
+        padding-right:15px;
+        padding-left: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border-right: 2px solid rgba(66, 155, 128, 0.2);
+        width: 65%;
+    }
+
+    .reviewtitle{
+        margin-left: 0px;
+        height: 50px;
+        width: auto;
+        border-radius: 5px;
+        border: 2px solid rgba(66, 155, 128, 0.2);
+        font-size: 20px;
+        font-weight: 500;
+        color: #25433A;
+        padding: 5px;
+    }
+    .reviewtext{
+        border-radius: 5px;
+        width: auto;
+        border: 2px solid rgba(66, 155, 128, 0.2);
+        background-color: #F7F9F3;
+        font-family: 'Outfit', sans-serif;
+        color: #25433A;
+        resize: none;
+        padding: 5px;
+        height: 300px;
+        
+    }
+
+    .reviewtitle:focus{
+        border: 2px solid #F7A072;
+        outline: none;
+    }
+    .reviewtext:focus{
+        border: 2px solid #F7A072;
+        outline: none;
+    }
+    .reviewfilters{
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        width: 35%;
+        padding-top: 25px;
+        padding-left: 15px;
+        padding-right: 10px;
+        padding-bottom: 20px;
+    }
+
+    .reviewcontent{
+        border-radius: 10px;
+        background-color: #F7F9F3;
+    }
+
+    .checklist {
+        list-style-type: none;
+        padding: 0;
+    }
+    
+    .checklist li {
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+    
+    .checklist input[type="checkbox"] {
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+    
+    .checklist label {
+        vertical-align: middle;
+    }
+
+
+    .rating-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+    }
+    
+    .rating {
+        display: flex;
+        justify-content: center;
+        
+    }
+    
+    .rating input[type="radio"] {
+        display: none;
+    }
+    
+    .rating label {
+        cursor: pointer;
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        margin: 0 5px;
+        background-color: #EDDEA4;
+        border: 0.5px solid rgba(37, 67, 58, 0.2);
+        border-radius: 50%;
+    }
+    
+    .rating label:hover{
+        background-color: rgba(37, 67, 58, 0.2);
+    }
+
+    
+    .rating-labels {
+        display: flex;
+        justify-content: space-between;
+        width: 300px;
+        margin-top: 10px;
+    }
+    
+    .rating-labels span {
+        text-align: center;
+        flex-grow: 1;
+        font-size: 12px;
+    }
+    
