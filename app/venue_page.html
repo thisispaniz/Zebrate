@@ -7,6 +7,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/z_logo(orange).png">
     <link rel="stylesheet" href="/static/styles.css">
+    <script>
+        function handleCheckboxChange(option, choice) {
+            var yesCheckbox = document.getElementById(option + '-yes');
+            var noCheckbox = document.getElementById(option + '-no');
+
+            if (choice === 'yes' && yesCheckbox.checked) {
+                noCheckbox.checked = false;
+            } else if (choice === 'no' && noCheckbox.checked) {
+                yesCheckbox.checked = false;
+            }
+        }
+
+        function changeRatingc(rating) {
+    for (let i = 1; i <= 5; i++) {
+        const starc = document.getElementById(`starc${i}`);
+        if (i <= rating) {
+            starc.previousElementSibling.style.backgroundColor = getColorByRating(rating);
+        } else {
+            starc.previousElementSibling.style.backgroundColor = '#EDDEA4';
+        }
+    }
+}
+
+function changeRatingn(rating) {
+    for (let i = 1; i <= 5; i++) {
+        const starn = document.getElementById(`starn${i}`);
+        if (i <= rating) {
+            starn.previousElementSibling.style.backgroundColor = getColorByRating(rating);
+        } else {
+            starn.previousElementSibling.style.backgroundColor = '#EDDEA4';
+        }
+    }
+}
+
+function getColorByRating(rating) {
+    switch (rating) {
+        case 1:
+            return '#429B80';
+        case 2:
+            return '#429B80';
+        case 3:
+            return '#E4C23B';
+        case 4:
+            return '#F77272';
+        case 5:
+            return '#F77272';
+        default:
+            return '#EDDEA4';
+    }
+}
+
+    </script>
+
 
 </head>
 <body>
@@ -118,9 +171,134 @@
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <div class="sameparent">
-                <div class="same">
-                    
+            <p style="font-size: 30px; font-weight: 600; color: #05241B; line-height: 10px;">{{ venue.name }}</p>
+            <div class="reviewcontent" style="width: auto; display: flex; justify-content: space-between;">
+                <div class="reviewbox">
+                    <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">Write a review:</span>
+                    <form style="display: flex; flex-direction: column; margin-top: 10px; background-color: #F7F9F3; border-radius: 10px; padding: 5px;">
+                        <input class="reviewtitle" type="text" placeholder="Title of your review">
+                        <textarea class="reviewtext" placeholder="Write your review here..."></textarea>
+                        <button style="color: #F7F9F3; font-size: 15px; width: 220px; margin-top: 20px;">Submit review </button>
+                    </form>
+                </div>
+                <div class="reviewfilters" >
+                    <div>
+                        <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">How crowded was the venue?</span>
+                        <div class="rating-container">
+                            <div class="rating" style="margin-top: 15px;">
+                                <label for="starc1"></label>
+                                <input type="radio" id="starc1" name="rating" value="1" onclick="changeRatingc(1)">
+                                
+                                <label for="starc2"></label>
+                                <input type="radio" id="starc2" name="rating" value="2" onclick="changeRatingc(2)">
+                                
+                                <label for="starc3"></label>
+                                <input type="radio" id="starc3" name="rating" value="3" onclick="changeRatingc(3)">
+                                
+                                <label for="starc4"></label>
+                                <input type="radio" id="starc4" name="rating" value="4" onclick="changeRatingc(4)">
+                                
+                                <label for="starc5"></label>
+                                <input type="radio" id="starc5" name="rating" value="5" onclick="changeRatingc(5)">
+                            </div>
+                            <div class="rating-labels" style="margin-bottom: 15px;">
+                                <span style="color: #429B80;">Very uncrowded</span>
+                                <span> </span>
+                                <span> </span>
+                                <span> </span>
+                                <span style="color: #F77272;">Very crowded</span>
+                            </div>
+                            
+                        </div>
+                        
+                        <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">How noisy was the venue?</span>
+                        <div class="rating-container">
+                            <div class="rating" style="margin-top: 15px;">
+                                <label for="starn1"></label>
+                                <input type="radio" id="starn1" name="rating" value="1" onclick="changeRatingn(1)">
+                                
+                                <label for="starn2"></label>
+                                <input type="radio" id="starn2" name="rating" value="2" onclick="changeRatingn(2)">
+                                
+                                <label for="starn3"></label>
+                                <input type="radio" id="starn3" name="rating" value="3" onclick="changeRatingn(3)">
+                                
+                                <label for="starn4"></label>
+                                <input type="radio" id="starn4" name="rating" value="4" onclick="changeRatingn(4)">
+                                
+                                <label for="starn5"></label>
+                                <input type="radio" id="starn5" name="rating" value="5" onclick="changeRatingn(5)">
+                            </div>
+                            <div class="rating-labels" style="margin-bottom: 15px;">
+                                <span style="color: #429B80;">Very quiet</span>
+                                <span> </span>
+                                <span> </span>
+                                <span> </span>
+                                <span style="color: #F77272;">Very noisy</span>
+                            </div>
+                            
+                        </div>
+                        <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">Select all options that apply:</span>
+                        <ul class="checklist">
+                            <li>
+                                <label>Quiet areas available:</label>
+                                <input type="checkbox" id="option1-yes" name="option1" value="yes" onchange="handleCheckboxChange('option1', 'yes')">
+                                <label for="option1-yes">Yes</label>
+                                <input type="checkbox" id="option1-no" name="option1" value="no" onchange="handleCheckboxChange('option1', 'no')">
+                                <label for="option1-no">No</label>
+                            </li>
+                            <li>
+                                <label>Play area available:</label>
+                                <input type="checkbox" id="option2-yes" name="option2" value="yes" onchange="handleCheckboxChange('option2', 'yes')">
+                                <label for="option2-yes">Yes</label>
+                                <input type="checkbox" id="option2-no" name="option2" value="no" onchange="handleCheckboxChange('option2', 'no')">
+                                <label for="option2-no">No</label>
+                            </li>
+                            <li>
+                                <label>Play area fenced/secure:</label>
+                                <input type="checkbox" id="option3-yes" name="option3" value="yes" onchange="handleCheckboxChange('option3', 'yes')">
+                                <label for="option3-yes">Yes</label>
+                                <input type="checkbox" id="option3-no" name="option3" value="no" onchange="handleCheckboxChange('option3', 'no')">
+                                <label for="option3-no">No</label>
+                            </li>
+                            <li>
+                                <label>No flashy colors:</label>
+                                <input type="checkbox" id="option4-yes" name="option4" value="yes" onchange="handleCheckboxChange('option4', 'yes')">
+                                <label for="option4-yes">Yes</label>
+                                <input type="checkbox" id="option4-no" name="option4" value="no" onchange="handleCheckboxChange('option4', 'no')">
+                                <label for="option4-no">No</label>
+                            </li>
+                            <li>
+                                <label>Food options available:</label>
+                                <input type="checkbox" id="option5-yes" name="option5" value="yes" onchange="handleCheckboxChange('option5', 'yes')">
+                                <label for="option5-yes">Yes</label>
+                                <input type="checkbox" id="option5-no" name="option5" value="no" onchange="handleCheckboxChange('option5', 'no')">
+                                <label for="option5-no">No</label>
+                            </li>
+                            <li>
+                                <label>No extreme smells:</label>
+                                <input type="checkbox" id="option6-yes" name="option6" value="yes" onchange="handleCheckboxChange('option6', 'yes')">
+                                <label for="option6-yes">Yes</label>
+                                <input type="checkbox" id="option6-no" name="option6" value="no" onchange="handleCheckboxChange('option6', 'no')">
+                                <label for="option6-no">No</label>
+                            </li>
+                            <li>
+                                <label>Bringing your own food possible:</label>
+                                <input type="checkbox" id="option7-yes" name="option7" value="yes" onchange="handleCheckboxChange('option7', 'yes')">
+                                <label for="option7-yes">Yes</label>
+                                <input type="checkbox" id="option7-no" name="option7" value="no" onchange="handleCheckboxChange('option7', 'no')">
+                                <label for="option7-no">No</label>
+                            </li>
+                            <li>
+                                <label>Extended stay duration possible:</label>
+                                <input type="checkbox" id="option8-yes" name="option8" value="yes" onchange="handleCheckboxChange('option8', 'yes')">
+                                <label for="option8-yes">Yes</label>
+                                <input type="checkbox" id="option8-no" name="option8" value="no" onchange="handleCheckboxChange('option8', 'no')">
+                                <label for="option8-no">No</label>
+                            </li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </div>

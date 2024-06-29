@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,6 +27,8 @@
     <div class="contentsearchbox searchboxbig" style="margin-top: 10px;">
         <form action="/search-venues/" method="get">
             <input type="text" id="inputbox" name="query" placeholder="Search locations..." autocomplete="off" style="width: 470px;">
+            <!-- Hidden input to hold selected filters -->
+            <input type="hidden" id="filters" name="filters" value="">
             <button type="submit" style="font-size: 16px;">Search</button>
         </form>
     </div>
@@ -41,29 +43,28 @@
                     <div style="margin-top: 30px;">
                         <h3 class="filterlabel">Venue must be:</h3>
                         <div class="filtergroup">
-                            <div class="filterbtn unselected">Uncrowded</div>
-                            <div class="filterbtn unselected">Generally quiet</div>
+                            <div class="filterbtn unselected" onclick="toggleFilter(this, 'uncrowded')">Uncrowded</div>
+                            <div class="filterbtn unselected" onclick="toggleFilter(this, 'quiet')">Generally quiet</div>
                         </div>
-    
+
                         <h3 class="filterlabel">Venue must have:</h3>
                         <div class="filtergroup">
-                            <div class="filterbtn unselected" onclick="toggleSelection(this)">Quiet areas</div>
-                            <div class="filterbtn unselected" onclick="toggleSelection(this)">Play area</div>
-                            <div class="filterbtn unselected" onclick="toggleSelection(this)">Fenced play area</div>
-                            <div class="filterbtn unselected" onclick="toggleSelection(this)">No flashy colors</div>
-                            <div class="filterbtn unselected" onclick="toggleSelection(this)">Food options</div>
-                            <div class="filterbtn unselected" onclick="toggleSelection(this)">No extreme smells</div>
+                            <div class="filterbtn unselected" onclick="toggleFilter(this, 'quiet_areas')">Quiet areas</div>
+                            <div class="filterbtn unselected" onclick="toggleFilter(this, 'play_area')">Play area</div>
+                            <div class="filterbtn unselected" onclick="toggleFilter(this, 'fenced_play_area')">Fenced play area</div>
+                            <div class="filterbtn unselected" onclick="toggleFilter(this, 'no_flashy_colors')">No flashy colors</div>
+                            <div class="filterbtn unselected" onclick="toggleFilter(this, 'food_options')">Food options</div>
+                            <div class="filterbtn unselected" onclick="toggleFilter(this, 'no_extreme_smells')">No extreme smells</div>
                         </div>
                         <h3 class="filterlabel">Venue must allow:</h3>
                         <div class="filtergroup">
-                            <div class="filterbtn unselected" onclick="toggleSelection(this)">Bringing your own food</div>
-                            <div class="filterbtn unselected" onclick="toggleSelection(this)">Extended stay duration</div>
+                            <div class="filterbtn unselected" onclick="toggleFilter(this, 'bring_own_food')">Bringing your own food</div>
+                            <div class="filterbtn unselected" onclick="toggleFilter(this, 'extended_stay')">Extended stay duration</div>
                         </div>
                     </div>
                 </div>
-                
-
             </div>
+
             <div class="venuelist" style="margin-top: -17px;">
                 {% if venues %}
                 <ul>
@@ -146,7 +147,6 @@
                 <p>No venues found matching your query.</p>
                 {% endif %}
             </div>
-            
         </div>
     </div>
 
