@@ -93,7 +93,7 @@
                 filtersApplied = true;
             }
             if (selectedFilters['defined_duration']) {
-                resultsText += ` with extended stay duration,`;
+                resultsText += ` with defined stay duration,`;
                 filtersApplied = true;
             }
 
@@ -149,11 +149,11 @@
                     <h2 class="head2">Select any requirements for your best experience</h2>
                     <button type="button" onclick="resetFilters()" style="margin-left: 10px; font-size: 16px;">Reset Filters</button>
                     <div style="margin-top: 30px;">
-                        <h3 class="filterlabel">Venue must be:</h3>
+                        <!--h3 class="filterlabel">Venue must be:</h3>
                         <div class="filtergroup">
                             <div class="filterbtn unselected" data-filter="crowdedness" onclick="toggleFilter(this, 'crowdedness')">Uncrowded</div>
                             <div class="filterbtn unselected" data-filter="quiet" onclick="toggleFilter(this, 'quiet')">Generally quiet</div>
-                        </div>
+                        </div> -->
 
                         <h3 class="filterlabel">Venue must have:</h3>
                         <div class="filtergroup">
@@ -167,7 +167,7 @@
                         <h3 class="filterlabel">Venue must allow:</h3>
                         <div class="filtergroup">
                             <div class="filterbtn unselected" data-filter="food_own" onclick="toggleFilter(this, 'food_own')">Bringing your own food</div>
-                            <div class="filterbtn unselected" data-filter="defined_duration" onclick="toggleFilter(this, 'defined_duration')">Extended stay duration</div>
+                            <div class="filterbtn unselected" data-filter="defined_duration" onclick="toggleFilter(this, 'defined_duration')">Defined stay duration</div>
                         </div>
                     </div>
                 </div>

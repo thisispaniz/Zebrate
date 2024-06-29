@@ -91,7 +91,7 @@ async def get_discover(request: Request, query: str = None, filters: str = None)
                 elif key in ['playground', 'fenced', 'quiet_zones', 'food_own', 'defined_duration']:
                     # Filter for YES values only
                     if value == 'YES':
-                        sql_query += f"WHERE {key} = ?"
+                        sql_query += f" WHERE {key} = ?"
                         parameters.append('YES')
 
         # Apply ordering if any order_by clauses were added
@@ -107,10 +107,7 @@ async def get_discover(request: Request, query: str = None, filters: str = None)
         with open("discover.html", "r") as file:
             template = Template(file.read())
 
-        # Ensure venues are ordered as per the SQL query
-        ordered_venues = sorted(venues, key=lambda x: x['your_order_column'] if 'your_order_column' in x else 0)
-
-        rendered_html = template.render(venues=ordered_venues, query=query or "")
+        rendered_html = template.render(venues=venues, query=query or "")
         return HTMLResponse(content=rendered_html)
 
 
@@ -168,7 +165,7 @@ async def search_venues(request: Request):
         venues = cursor.fetchall()
 
     # Load the template and render it with the search results and the query term
-    template_path = app_path / "results.html"
+    template_path = app_path / "discover.html"
     with open(template_path, "r") as file:
         template = Template(file.read())
 
@@ -208,7 +205,7 @@ async def filter_venues(
     }
 
     # Start with the base query
-    query = "SELECT * FROM venues WHERE 1=1"
+    query = "SELECT * FROM venues"
     parameters = []
 
     # Append conditions based on provided filter values

@@ -8,6 +8,115 @@
     <link rel="icon" href="/static/images/z_logo(orange).png">
     <link rel="stylesheet" href="/static/styles.css">
     <link rel="stylesheet" href="/static/styles-discover.css">
+
+    <script>
+        // Function to toggle filter button state
+        function toggleFilter(button, filterName) {
+            if (button.classList.contains('unselected')) {
+                button.classList.remove('unselected');
+                button.classList.add('selected');
+            } else {
+                button.classList.remove('selected');
+                button.classList.add('unselected');
+            }
+            updateFilters();
+            submitFilters(); // Automatically submit the form
+        }
+    
+        // Function to collect and update the selected filters
+        function updateFilters() {
+            let selectedFilters = {};
+            document.querySelectorAll('.filterbtn.selected').forEach(button => {
+                selectedFilters[button.getAttribute('data-filter')] = 'YES';
+            });
+            document.getElementById('filters').value = JSON.stringify(selectedFilters);
+        }
+    
+        // Collect filters and submit the form
+        function submitFilters() {
+            updateFilters();
+            document.getElementById('filterForm').submit(); // Submit the form automatically
+        }
+    
+        // Function to reset all filters
+        function resetFilters() {
+            // Remove 'selected' class and add 'unselected' to all filter buttons
+            document.querySelectorAll('.filterbtn').forEach(button => {
+                button.classList.remove('selected');
+                button.classList.add('unselected');
+            });
+            // Clear the hidden filters input
+            document.getElementById('filters').value = '';
+            // Submit the form to reset filters
+            document.getElementById('filterForm').submit();
+        }
+
+        // Function to update the "Showing results for" text based on selected filters
+        function updateResultsText(selectedFilters) {
+            let resultsText = 'Showing results';
+            let filtersApplied = false;
+
+            // Check each filter type and append to results text if selected
+            if (selectedFilters['crowdedness']) {
+                resultsText += ` for uncrowded venues,`;
+                filtersApplied = true;
+            }
+            if (selectedFilters['quiet']) {
+                resultsText += ` for quiet venues,`;
+                filtersApplied = true;
+            }
+            if (selectedFilters['quiet_zones']) {
+                resultsText += ` with quiet zones,`;
+                filtersApplied = true;
+            }
+            if (selectedFilters['playground']) {
+                resultsText += ` with play area,`;
+                filtersApplied = true;
+            }
+            if (selectedFilters['fenced']) {
+                resultsText += ` with fenced play area,`;
+                filtersApplied = true;
+            }
+            if (selectedFilters['colors']) {
+                resultsText += ` with no flashy colors,`;
+                filtersApplied = true;
+            }
+            if (selectedFilters['food_variey']) {
+                resultsText += ` with food options,`;
+                filtersApplied = true;
+            }
+            if (selectedFilters['smells']) {
+                resultsText += ` with no extreme smells,`;
+                filtersApplied = true;
+            }
+            if (selectedFilters['food_own']) {
+                resultsText += ` where bringing your own food is allowed,`;
+                filtersApplied = true;
+            }
+            if (selectedFilters['defined_duration']) {
+                resultsText += ` with extended stay duration,`;
+                filtersApplied = true;
+            }
+
+            // Remove trailing comma and display results text
+            resultsText = resultsText.slice(0, -1) + ` for "${document.getElementById('inputbox').value}"`;
+            document.getElementById('resultsText').innerText = resultsText;
+
+            // Hide results text if no filters applied
+            document.getElementById('resultsText').style.display = filtersApplied ? 'block' : 'none';
+        }
+
+        // Function to update the query placeholder with the selected filter text
+        function updateQueryPlaceholder(filterText) {
+            document.getElementById('queryPlaceholder').innerText = filterText;
+        }
+    </script>
+    
+    <style>
+        /* Add data-filter attributes to filter buttons */
+        .filterbtn[data-filter] { cursor: pointer; }
+    </style>
+
 </head>
 <body>
     <div class="content">
@@ -25,48 +134,51 @@
     </div>
     
     <div class="contentsearchbox searchboxbig" style="margin-top: 10px;">
-        <form action="/search-venues/" method="get">
+        
             <input type="text" id="inputbox" name="query" placeholder="Search locations..." autocomplete="off" style="width: 470px;">
+            <!-- Hidden input to hold selected filters -->
+            <input type="hidden" id="filters" name="filters" value="">
             <button type="submit" style="font-size: 16px;">Search</button>
-        </form>
+        
     </div>
 
     <div class="discovercontent">
-        <h1 class="res-heading">Showing results for "{{ query }}"</h1> <!-- Dynamic search term display -->
+        <h1 id="resultsText" class="res-heading" style="display: none;">Showing results for "<span id="queryPlaceholder"></span>"</h1> <!-- Dynamic search term display -->
         <div class="discoverven maingrid">
             <div style="width: 320px;">
                 <div class="border" style="padding: 10px 30px 50px 30px; border-radius: 20px;">
                     <h1 class="res-heading">Filters</h1>
                     <h2 class="head2">Select any requirements for your best experience</h2>
+                    <form id="filterForm" action="/discover" method="get" onsubmit="submitFilters()"></form>
+                    <button type="button" onclick="resetFilters()" style="margin-left: 10px; font-size: 16px;">Reset Filters</button>
                     <div style="margin-top: 30px;">
-                        <h3 class="filterlabel">Venue must be:</h3>
+                       <!-- <h3 class="filterlabel">Venue must be:</h3>
                         <div class="filtergroup">
-                            <div class="filterbtn unselected">Uncrowded</div>
-                            <div class="filterbtn unselected">Generally quiet</div>
-                        </div>
-    
+                            <div class="filterbtn unselected" data-filter="crowdedness" onclick="toggleFilter(this, 'crowdedness')">Uncrowded</div>
+                            <div class="filterbtn unselected" data-filter="quiet" onclick="toggleFilter(this, 'quiet')">Generally quiet</div>
+                        </div> -->
+
                         <h3 class="filterlabel">Venue must have:</h3>
                         <div class="filtergroup">
-                            <div class="filterbtn selected">Quiet areas</div>
-                            <div class="filterbtn unselected">Play area</div>
-                            <div class="filterbtn unselected">Fenced play area</div>
-                            <div class="filterbtn unselected">No flashy colors</div>
-                            <div class="filterbtn unselected">Food options</div>
-                            <div class="filterbtn unselected">No extreme smells</div>
+                            <div class="filterbtn unselected" data-filter="quiet_zones" onclick="toggleFilter(this, 'quiet_zones')">Quiet areas</div>
+                            <div class="filterbtn unselected" data-filter="playground" onclick="toggleFilter(this, 'playground')">Play area</div>
+                            <div class="filterbtn unselected" data-filter="fenced" onclick="toggleFilter(this, 'fenced')">Fenced play area</div>
+                            <div class="filterbtn unselected" data-filter="colors" onclick="toggleFilter(this, 'colors')">No flashy colors</div>
+                            <div class="filterbtn unselected" data-filter="food_variey" onclick="toggleFilter(this, 'food_variey')">Food options</div>
+                            <div class="filterbtn unselected" data-filter="smells" onclick="toggleFilter(this, 'smells')">No extreme smells</div>
                         </div>
                         <h3 class="filterlabel">Venue must allow:</h3>
                         <div class="filtergroup">
-                            <div class="filterbtn unselected">Bringing your own food</div>
-                            <div class="filterbtn unselected">Extended stay duration</div>
+                            <div class="filterbtn unselected" data-filter="food_own" onclick="toggleFilter(this, 'food_own')">Bringing your own food</div>
+                            <div class="filterbtn unselected" data-filter="defined_duration" onclick="toggleFilter(this, 'defined_duration')">Defined stay duration</div>
                         </div>
+                    </form>
                     </div>
                 </div>
-                
-
             </div>
             <div class="venuelist" style="margin-top: -17px;">
                 {% if venues %}
-                <ul>
+                <ol>
                     {% for venue in venues %}
                     <li class="listedvenue border" style="list-style:none; margin-bottom: 20px;">
                         <div style="margin-top: -20px;">
@@ -82,6 +194,7 @@
                                     <img src="{{ venue.photo_url }}" alt="{{ venue.name }}" class="listimg same" style="margin-top: 20px;">
                                 </div>
                                 <div class="listrate">
+                                    <!-- Crowd Rating -->
                                     <div class="sameparent" style="margin-top: -10px; display: flex; align-items: center; justify-content: space-between; width: 300px;">
                                         <p class="same">Crowd</p>
                                         <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
@@ -114,56 +227,73 @@
                                         </svg>
                                     </div>
                                     <!-- Yes/No Criteria -->
+                                    {% if venue.food_variey >= 3 %}
+                                    <p class="ratingyes">+ Broader variety of food</p>
+                                    {% else %}
+                                    <p class="ratingno">- Limited food variety</p>
+                                    {% endif %}
+                                
                                     {% if venue.food_own == 'YES' %}
                                     <p class="ratingyes">+ Bringing your own food allowed</p>
                                     {% else %}
                                     <p class="ratingno">- Bringing your own food not allowed</p>
                                     {% endif %}
-            
-                                    {% if venue.food_variey == 'YES' %}
-                                    <p class="ratingyes">+ Broader variety of food</p>
-                                    {% endif %}
-            
+                                
                                     {% if venue.defined_duration == 'NO' %}
                                     <p class="ratingyes">+ No defined time frame</p>
                                     {% endif %}
-            
+                                
                                     {% if venue.quiet_zones == 'YES' %}
                                     <p class="ratingyes"> + Quiet zones available</p>
+                                    {% else %}
+                                    <p class="ratingno">- No quiet zones available</p>
                                     {% endif %}
-            
+                                
                                     {% if venue.playground == 'YES' %}
-                                    <p class="ratingyes">+ (fenced) Playground available</p>
+                                    <p class="ratingyes"> + Play area available</p>
+                                    {% endif %}
+                                
+                                    {% if venue.fenced == 'YES' %}
+                                    <p class="ratingyes"> + Fenced play area</p>
+                                    {% endif %}
+                                
+                                    {% if venue.colors <= 2 %}
+                                    <p class="ratingyes"> + No flashy colors</p>
+                                    {% else %}
+                                    <p class="ratingno">- Flashy colors might be apparent</p>
+                                    {% endif %}
+                                
+                                    {% if venue.smells <= 2 %}
+                                    <p class="ratingyes"> + No extreme smells</p>
+                                    {% else %}
+                                    <p class="ratingno">- Extreme smells might be apparent</p>
                                     {% endif %}
                                 </div>
                             </div>
                         </div>
                     </li>
                     {% endfor %}
-                </ul>
+                </ol>
                 {% else %}
-                <p>No venues found matching your query.</p>
+                <p>No venues found matching your criteria.</p>
                 {% endif %}
             </div>
-            
         </div>
     </div>
 
     <div class="footer">
-        <div class="mainfooter">
-            <img class="footerpic" src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
-            <div style="margin-top: 40px; margin-bottom: 0;">
-                <a href="/discover">Discover</a>
-                <!--<a href="/static/review.html">Review</a>-->
-                <a href="/static/contactus.html">Contact Us</a>
-                <a href="/static/aboutus.html">About Us</a>
-                <a href="/login">Account</a>
+        <div class="footercontent">
+            <div class="footerheading">Zebrate</div>
+            <div class="footerlogo">
+                <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
             </div>
         </div>
-        <div>
-            <p class="rights">©Zebrate 2024 - All rights reserved</p>
+        <div class="footerlinks">
+            <a href="/">Home</a>
+            <a href="/discover">Discover</a>
+            <a href="/static/review.html">Review</a>
+            <a href="/static/signup.html">Sign Up</a>
         </div>
     </div>
-
 </body>
 </html>
