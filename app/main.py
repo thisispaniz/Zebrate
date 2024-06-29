@@ -9,11 +9,14 @@ from passlib.hash import bcrypt
 import logging
 from fastapi import HTTPException
 from typing import Optional
+import json 
 
 app = FastAPI()
 
 # Define the path to the app directory
 app_path = Path(__file__).parent
+
+
 
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
@@ -33,59 +36,96 @@ def get_index():
     return FileResponse(app_path / "index.html")
 
 @app.get("/discover", response_class=HTMLResponse)
-async def get_discover(query: Optional[str] = None, filters: Optional[str] = None):
+async def get_discover(request: Request, query: str = None, filters: str = None):
     """
     Fetches and displays venues based on search query and filters.
     """
     try:
-        with sqlite3.connect(db_path, check_same_thread=False) as conn:
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
 
-            # Base SQL query
-            sql_query = "SELECT * FROM venues WHERE 1=1"
-            parameters = []
+        # Base SQL query to fetch all venues
+        sql_query = "SELECT * FROM venues"
+        parameters = []
 
-            # Apply search query if provided
-            if query:
-                sql_query += """
-                    AND (
-                        name LIKE ? OR
-                        address LIKE ? OR
-                        playground LIKE ? OR
-                        fenced LIKE ? OR
-                        quiet_zones LIKE ? OR
-                        colors LIKE ? OR
-                        smells LIKE ? OR
-                        food_own LIKE ? OR
-                        defined_duration LIKE ? OR
-                        photo_url LIKE ?
-                    )
-                """
-                parameters.extend([f"%{query}%"] * 10)
+        # Apply search query if provided
+        if query:
+            sql_query += """
+                WHERE (
+                    name LIKE ? OR
+                    address LIKE ? OR
+                    playground LIKE ? OR
+                    fenced LIKE ? OR
+                    quiet_zones LIKE ? OR
+                    colors LIKE ? OR
+                    smells LIKE ? OR
+                    food_own LIKE ? OR
+                    defined_duration LIKE ? OR
+                    photo_url LIKE ? OR 
+                    food_variey LIKE ?
+                )
+            """
+            parameters.extend([f"%{query}%"] * 11)
 
-            # Apply filters if provided
-            if filters:
-                filters_dict = json.loads(filters)
-                for key, value in filters_dict.items():
+        # Initialize ordering clause
+        order_by_clauses = []
+
+        # Apply filters if provided
+        if filters:
+            filters_dict = json.loads(filters)
+            for key, value in filters_dict.items():
+                if key in ['colors', 'smells', 'quiet', 'crowdedness']:
+                    # Ensure the value is numeric before adding to ordering
+                    try:
+                        value = int(value)
+                        if 1 <= value <= 4:
+                            order_by_clauses.append(f" {key} ASC")
+                    except ValueError:
+                        pass  # Handle the case where value is not an integer
+
+                elif key == 'food_variey':
+                    # Special case for food_variety to order descending
+                    order_by_clauses.append(f" {key} DESC")
+
+                elif key in ['playground', 'fenced', 'quiet_zones', 'food_own', 'defined_duration']:
+                    # Filter for YES values only
                     if value == 'YES':
-                        sql_query += f" AND {key} = ?"
+                        sql_query += f"WHERE {key} = ?"
                         parameters.append('YES')
 
-            cursor.execute(sql_query, parameters)
-            venues = cursor.fetchall()
+        # Apply ordering if any order_by clauses were added
+        if order_by_clauses:
+            sql_query += f" ORDER BY {', '.join(order_by_clauses)}"
 
-        # Load the discover.html template and render it with the list of venues
-        template_path = app_path / "discover.html"
-        with open(template_path, "r") as file:
+        cursor.execute(sql_query, parameters)
+        venues = cursor.fetchall()
+
+        conn.close()
+
+        # Load the discover.html template and render it with the venues
+        with open("discover.html", "r") as file:
             template = Template(file.read())
 
-        rendered_html = template.render(venues=venues, query=query or "")
+        # Ensure venues are ordered as per the SQL query
+        ordered_venues = sorted(venues, key=lambda x: x['your_order_column'] if 'your_order_column' in x else 0)
+
+        rendered_html = template.render(venues=ordered_venues, query=query or "")
         return HTMLResponse(content=rendered_html)
 
+
+
+    except sqlite3.Error as e:
+        error_message = f"SQLite error: {e}"
+        raise HTTPException(status_code=500, detail=error_message)
+
+    except json.JSONDecodeError as e:
+        error_message = f"JSON decoding error: {e}"
+        raise HTTPException(status_code=400, detail=error_message)
+
     except Exception as e:
-        logger.error(f"Error loading discover page: {e}")
-        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+        error_message = f"An error occurred: {e}"
+        raise HTTPException(status_code=500, detail=error_message)
 
 
 @app.get("/signup", response_class=HTMLResponse)
@@ -148,7 +188,7 @@ async def filter_venues(
     defined_duration: str = None,
     quiet: str = None,
     crowdedness: str = None,
-    food_variety: str = None
+    food_variey: str = None
 ):
     """
     Handles detailed filtering of venues based on user-selected criteria.
@@ -164,7 +204,7 @@ async def filter_venues(
         "defined_duration": defined_duration,
         "quiet": quiet,
         "crowdedness": crowdedness,
-        "food_variety": food_variety
+        "food_variey": food_variey
     }
 
     # Start with the base query
