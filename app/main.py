@@ -37,7 +37,6 @@ def get_index():
 
 @app.post("/add-review/")
 async def add_review(
-    user_id: int = Form(...),
     venue_id: int = Form(...),
     review_title: str = Form(...),
     review_text: str = Form(...),
@@ -60,11 +59,11 @@ async def add_review(
         # Insert the review into the database
         cursor.execute("""
             INSERT INTO reviews (
-                user_id, venue_id, review_title, review_text, colors, smells, quiet, crowdedness, 
+                venue_id, review_title, review_text, colors, smells, quiet, crowdedness, 
                 food_variey, playground, fenced, quiet_zones, food_own, defined_duration
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            user_id, venue_id, review_title, review_text, colors, smells, quiet, crowdedness, 
+            venue_id, review_title, review_text, colors, smells, quiet, crowdedness, 
             food_variey, playground, fenced, quiet_zones, food_own, defined_duration
         ))
 
