@@ -30,13 +30,12 @@ jobs:
           username: ${{ secrets.AzureAppService_ContainerUsername_3930fd54683d4c98b17be14f55ff2fa6 }}
           password: ${{ secrets.AzureAppService_ContainerPassword_7d6b8c511e2d449899b7b801c6cd248a }}
 
-      - name: Build Docker image
-        run: |
-          docker build -t thisispaniz/zebrate:latest .
-          docker images  # Optionally, list Docker images for verification
-
-      - name: Push Docker image
-        run: docker push thisispaniz/zebrate:latest
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_3930fd54683d4c98b17be14f55ff2fa6 }}/thisispaniz/zebrate:${{ github.sha }}
+          file: ./Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
