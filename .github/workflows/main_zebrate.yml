@@ -4,7 +4,8 @@
 name: Build and deploy container app to Azure Web App - zebrate
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
       - main
   workflow_dispatch:
