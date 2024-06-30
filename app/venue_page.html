@@ -211,11 +211,10 @@
             <p style="font-size: 30px; font-weight: 600; color: #05241B; line-height: 10px;">{{ venue.name }}</p>
             <div class="reviewcontent" style="width: auto; display: flex; justify-content: space-between;">
                 <div class="reviewbox">
-                    <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">Write a review:</span>
                     <form action="/add-review/" method="post" style="display: flex; flex-direction: column; margin-top: 10px; background-color: #F7F9F3; border-radius: 10px; padding: 5px;">
-                        <input class="reviewtitle" type="text" placeholder="Title of your review">
-                        <textarea class="reviewtext" placeholder="Write your review here..."></textarea>
-                        <button style="color: #F7F9F3; font-size: 15px; width: 220px; margin-top: 20px;">Submit review </button>
+                    <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">Write a review:</span>
+                        <input class="reviewtitle" type="text" placeholder="Title of your review" name="review_title">
+                        <textarea class="reviewtext" name="review_text" placeholder="Write your review here..."></textarea>
                         </div>
                         <div class="reviewfilters" >
 
@@ -304,34 +303,6 @@
                             
                         </div>
 
-                        <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">Is there a broader food variety?</span>
-                        <div class="rating-container">
-                            <div class="rating" style="margin-top: 15px;">
-                                <label for="starbf1"></label>
-                                <input type="radio" id="starbf1" name="food_variey" value="1" onclick="changeRating(1)">
-                                
-                                <label for="starbf2"></label>
-                                <input type="radio" id="starbf2" name="food_variey value="2" onclick="changeRating(2)">
-                                
-                                <label for="starbf3"></label>
-                                <input type="radio" id="starbf3" name="food_variey" value="3" onclick="changeRating(3)">
-                                
-                                <label for="starbf4"></label>
-                                <input type="radio" id="starbf4" name="food_variey" value="4" onclick="changeRating(4)">
-                                
-                                <label for="starbf5"></label>
-                                <input type="radio" id="starbf5" name="food_variey" value="5" onclick="changeRating(5)">
-                            </div>
-                            <div class="rating-labels" style="margin-bottom: 15px;">
-                                <span style="color: #F77272;">Limited food variety available</span>
-                                <span> </span>
-                                <span> </span>
-                                <span> </span>
-                                <span style="color: #429B80;">Broader food variety available</span>
-                            </div>
-                            
-                        </div>
-
                         <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">Can one expect heavy smells?</span>
                         <div class="rating-container">
                             <div class="rating" style="margin-top: 15px;">
@@ -356,6 +327,34 @@
                                 <span> </span>
                                 <span> </span>
                                 <span style="color: #F77272;">Heavier smells expectable</span>
+                            </div>
+                            
+                        </div>
+
+                        <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">Is there a broader food variety?</span>
+                        <div class="rating-container">
+                            <div class="rating" style="margin-top: 15px;">
+                                <label for="starbf1"></label>
+                                <input type="radio" id="starbf1" name="food_variey" value="1" onclick="changeRating(1)">
+                                
+                                <label for="starbf2"></label>
+                                <input type="radio" id="starbf2" name="food_variey value="2" onclick="changeRating(2)">
+                                
+                                <label for="starbf3"></label>
+                                <input type="radio" id="starbf3" name="food_variey" value="3" onclick="changeRating(3)">
+                                
+                                <label for="starbf4"></label>
+                                <input type="radio" id="starbf4" name="food_variey" value="4" onclick="changeRating(4)">
+                                
+                                <label for="starbf5"></label>
+                                <input type="radio" id="starbf5" name="food_variey" value="5" onclick="changeRating(5)">
+                            </div>
+                            <div class="rating-labels" style="margin-bottom: 15px;">
+                                <span style="color: #F77272;">Limited food variety available</span>
+                                <span> </span>
+                                <span> </span>
+                                <span> </span>
+                                <span style="color: #429B80;">Broader food variety available</span>
                             </div>
                             
                         </div>
