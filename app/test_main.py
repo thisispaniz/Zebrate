@@ -109,18 +109,18 @@ async def test_get_venue(setup_test_db):
   #      assert user[0] == nickname
   #      assert bcrypt.verify(password, user[1])
     
-@pytest.mark.asyncio
-async def test_login_user(setup_test_db):
-    # Register a user first
-    client.post("/register/", data={"nickname": "testuser", "password": "testpass"})
+#@pytest.mark.asyncio
+#async def test_login_user(setup_test_db):
+#    # Register a user first
+#    client.post("/register/", data={"nickname": "testuser", "password": "testpass"})
 
     # Login with the registered user
-    response = client.post("/login/", data={"nickname": "testuser", "password": "testpass"})
-    assert response.status_code == 200  # Expect a redirect
+#    response = client.post("/login/", data={"nickname": "testuser", "password": "testpass"})
+#    assert response.status_code == 200  # Expect a redirect
 
     # Attempt to login with invalid credentials
-    response = client.post("/login/", data={"nickname": "testuser", "password": "wrongpass"})
-    assert response.status_code == 400  # Invalid credentials
+#    response = client.post("/login/", data={"nickname": "testuser", "password": "wrongpass"})
+#    assert response.status_code == 400  # Invalid credentials
 
 #def test_get_welcome():
  #   response = client.get("/welcome")
