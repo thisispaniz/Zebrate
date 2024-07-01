@@ -79,8 +79,8 @@ async def add_review(
         # Commit the transaction
         conn.commit()
 
-        # Return a success message
-        return {"message": "Review added successfully!", "venue_id": venue_id}
+        # Redirect to the venue page with the added review
+        return RedirectResponse(url=f"/venue/{venue_id}", status_code=303)
 
     except sqlite3.Error as e:
         conn.rollback()  # Rollback the transaction on error
