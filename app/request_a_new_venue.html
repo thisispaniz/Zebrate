@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zebrate - Request a new venue</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/z_logo(orange).png">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function handleCheckboxChange(option, choice) {
+            var yesCheckbox = document.getElementById(option + '-yes');
+            var noCheckbox = document.getElementById(option + '-no');
+
+            if (choice === 'yes' && yesCheckbox.checked) {
+                noCheckbox.checked = false;
+            } else if (choice === 'no' && noCheckbox.checked) {
+                yesCheckbox.checked = false;
+            }
+        }
+
+        function changeRatingc(rating) {
+    for (let i = 1; i <= 5; i++) {
+        const starc = document.getElementById(`starc${i}`);
+        if (i <= rating) {
+            starc.previousElementSibling.style.backgroundColor = getColorByRating(rating);
+        } else {
+            starc.previousElementSibling.style.backgroundColor = '#EDDEA4';
+        }
+    }
+}
+
+function changeRatingn(rating) {
+    for (let i = 1; i <= 5; i++) {
+        const starn = document.getElementById(`starn${i}`);
+        if (i <= rating) {
+            starn.previousElementSibling.style.backgroundColor = getColorByRating(rating);
+        } else {
+            starn.previousElementSibling.style.backgroundColor = '#EDDEA4';
+        }
+    }
+}
+
+function changeRatingf(rating) {
+    for (let i = 1; i <= 5; i++) {
+        const starf = document.getElementById(`starf${i}`);
+        if (i <= rating) {
+            starf.previousElementSibling.style.backgroundColor = getColorByRating(rating);
+        } else {
+            starf.previousElementSibling.style.backgroundColor = '#EDDEA4';
+        }
+    }
+}
+
+function changeRatings(rating) {
+    for (let i = 1; i <= 5; i++) {
+        const stars = document.getElementById(`stars${i}`);
+        if (i <= rating) {
+            stars.previousElementSibling.style.backgroundColor = getColorByRating(rating);
+        } else {
+            stars.previousElementSibling.style.backgroundColor = '#EDDEA4';
+        }
+    }
+}
+
+function changeRatingbf(rating) {
+    for (let i = 1; i <= 5; i++) {
+        const starbf = document.getElementById(`starbf${i}`);
+        if (i <= rating) {
+            starbf.previousElementSibling.style.backgroundColor = getColorByRatingrev(rating);
+        } else {
+            starbf.previousElementSibling.style.backgroundColor = '#EDDEA4';
+        }
+    }
+}
+function getColorByRatingrev(rating) {
+    switch (rating) {
+        case 1:
+            return '#F77272';
+        case 2:
+            return '#F77272';
+        case 3:
+            return '#E4C23B';
+        case 4:
+            return '#429B80';
+        case 5:
+            return '#429B80';
+        default:
+            return '#EDDEA4';
+    }
+}
+
+function getColorByRating(rating) {
+    switch (rating) {
+        case 1:
+            return '#429B80';
+        case 2:
+            return '#429B80';
+        case 3:
+            return '#E4C23B';
+        case 4:
+            return '#F77272';
+        case 5:
+            return '#F77272';
+        default:
+            return '#EDDEA4';
+    }
+}
+
+    </script>
+</head>
+<body>
+        <div class="content">
+            <div class="navbar">
+                <div class="navbarlogo">
+                    <img src="/images/zebrate_logo(orange).png" alt="Zebrate">
+                </div>
+                <div class="contentsearchbox searchboxsmall">
+                    <input type="text" id="inputbox" placeholder="Search locations..." autocomplete="off" style="width: 180px; height: 60%;">
+                    <button style="font-size: 13px; height: 43px;">Search</button>
+                </div>
+                <div class="navbarbtn">
+                    <a href="/discover">Discover</a>
+                    <a href="/static/signup.html">Sign up</a>
+                    <a class="button" href="/login">Log in</a>
+                </div>
+            </div>
+        </div>
+    <div style="margin-top: 50px;">
+        <div>
+            <div class="title-container" style="margin-bottom: 70px;">
+                <p class="title">Request a new venue</p>
+            </div>
+        </div>
+        <form class="venue-form">
+            <div class="form-group">
+                <label for="venue-name">Venue name:</label>
+                <input class="inputnew" type="text" id="venue-name" name="venue-name">
+            </div>
+            <div class="form-group">
+                <label for="venue-link">Link to venue on Google maps:</label>
+                <input class="inputnew" type="text" id="venue-link" name="venue-link">
+            </div>
+        </form>
+    </div>
+    <div class="rateit">
+        <div class="modal-content" style="margin-top: 20px; background-color: #fff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <div class="reviewcontent" style="width: auto; display: flex; justify-content: space-between; background-color: #fff;">
+                <div class="reviewbox">
+                    <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">Write a review:</span>
+                    <form action="/add-review/" method="post" style="display: flex; flex-direction: column; margin-top: 10px; border-radius: 10px; padding: 5px;">
+                        <input class="reviewtitle" type="text" placeholder="Title of your review" style=" background-color: #f9f9f9 !important;">
+                        <textarea class="reviewtext" placeholder="Write your review here..." style="height: 350px; background-color: #f9f9f9;"></textarea>
+                        <button style="color: #F7F9F3; font-size: 15px; width: 220px; margin-top: 20px;">Submit review </button>
+                        </div>
+                        <div class="reviewfilters" >
+
+                        <div>
+                        <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">How crowded was the venue?</span>
+                        <div class="rating-container">
+                            <div class="rating" style="margin-top: 15px;">
+                                <label for="starc1"></label>
+                                <input type="radio" id="starc1" name="crowdedness" value="1" onclick="changeRating(1)">
+                                
+                                <label for="starc2"></label>
+                                <input type="radio" id="starc2" name="crowdedness" value="2" onclick="changeRating(2)">
+                                
+                                <label for="starc3"></label>
+                                <input type="radio" id="starc3" name="crowdedness" value="3" onclick="changeRating(3)">
+                                
+                                <label for="starc4"></label>
+                                <input type="radio" id="starc4" name="crowdedness" value="4" onclick="changeRating(4)">
+                                
+                                <label for="starc5"></label>
+                                <input type="radio" id="starc5" name="crowdedness" value="5" onclick="changeRating(5)">
+                            </div>
+                            <div class="rating-labels" style="margin-bottom: 15px;">
+                                <span style="color: #429B80;">Not crowded at all</span>
+                                <span> </span>
+                                <span> </span>
+                                <span> </span>
+                                <span style="color: #F77272;">Very crowded</span>
+                            </div>
+                            
+                        </div>
+                        
+                        <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">How noisy was the venue?</span>
+                        <div class="rating-container">
+                            <div class="rating" style="margin-top: 15px;">
+                                <label for="starn1"></label>
+                                <input type="radio" id="starn1" name="quiet" value="1" onclick="changeRating(1)">
+                                
+                                <label for="starn2"></label>
+                                <input type="radio" id="starn2" name="quiet" value="2" onclick="changeRating(2)">
+                                
+                                <label for="starn3"></label>
+                                <input type="radio" id="starn3" name="quiet" value="3" onclick="changeRating(3)">
+                                
+                                <label for="starn4"></label>
+                                <input type="radio" id="starn4" name="quiet" value="4" onclick="changeRating(4)">
+                                
+                                <label for="starn5"></label>
+                                <input type="radio" id="starn5" name="quiet" value="5" onclick="changeRating(5)">
+                            </div>
+                            <div class="rating-labels" style="margin-bottom: 15px;">
+                                <span style="color: #429B80;">Very quiet</span>
+                                <span> </span>
+                                <span> </span>
+                                <span> </span>
+                                <span style="color: #F77272;">Very noisy</span>
+                            </div>
+                            
+                        </div>
+                        <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">Select all options that apply:</span>
+                        <ul class="checklist" style="font-size: 14px;">
+                            <li>
+                                <label>Bright/Flashy colors:</label>
+                                <input type="checkbox" id="option1-yes" name="quiet_zones" value="5" onchange="handleCheckboxChange('option1', 'yes')">
+                                <label for="option1-yes">Yes</label>
+                                <input type="checkbox" id="option1-no" name="quiet_zones" value="1" onchange="handleCheckboxChange('option1', 'no')">
+                                <label for="option1-no">No</label>
+                            </li>
+                            <li>
+                                <label>Heavy smells:</label>
+                                <input type="checkbox" id="option1-yes" name="quiet_zones" value="5" onchange="handleCheckboxChange('option1', 'yes')">
+                                <label for="option1-yes">Yes</label>
+                                <input type="checkbox" id="option1-no" name="quiet_zones" value="1" onchange="handleCheckboxChange('option1', 'no')">
+                                <label for="option1-no">No</label>
+                            </li>
+                            <li>
+                                <label>Food options available:</label>
+                                <input type="checkbox" id="option1-yes" name="quiet_zones" value="5" onchange="handleCheckboxChange('option1', 'yes')">
+                                <label for="option1-yes">Yes</label>
+                                <input type="checkbox" id="option1-no" name="quiet_zones" value="1" onchange="handleCheckboxChange('option1', 'no')">
+                                <label for="option1-no">No</label>
+                            </li>
+                            <li>
+                                <label>Quiet areas available:</label>
+                                <input type="checkbox" id="option1-yes" name="quiet_zones" value="yes" onchange="handleCheckboxChange('option1', 'yes')">
+                                <label for="option1-yes">Yes</label>
+                                <input type="checkbox" id="option1-no" name="quiet_zones" value="no" onchange="handleCheckboxChange('option1', 'no')">
+                                <label for="option1-no">No</label>
+                            </li>
+                            <li>
+                                <label>Playground available:</label>
+                                <input type="checkbox" id="option2-yes" name="playground" value="yes" onchange="handleCheckboxChange('option2', 'yes')">
+                                <label for="option2-yes">Yes</label>
+                                <input type="checkbox" id="option2-no" name="playground" value="no" onchange="handleCheckboxChange('option2', 'no')">
+                                <label for="option2-no">No</label>
+                            </li>
+                            <li>
+                                <label>Play area fenced/secure:</label>
+                                <input type="checkbox" id="option3-yes" name="fenced" value="yes" onchange="handleCheckboxChange('option3', 'yes')">
+                                <label for="option3-yes">Yes</label>
+                                <input type="checkbox" id="option3-no" name="fenced" value="no" onchange="handleCheckboxChange('option3', 'no')">
+                                <label for="option3-no">No</label>
+                            </li>
+                            
+                            <li>
+                                <label>Bringing your own food possible:</label>
+                                <input type="checkbox" id="option7-yes" name="food_own" value="yes" onchange="handleCheckboxChange('option7', 'yes')">
+                                <label for="option7-yes">Yes</label>
+                                <input type="checkbox" id="option7-no" name="food_own" value="no" onchange="handleCheckboxChange('option7', 'no')">
+                                <label for="option7-no">No</label>
+                            </li>
+                            <li>
+                                <label>Is there a defined duration of stay:</label>
+                                <input type="checkbox" id="option8-yes" name="defined_duration" value="yes" onchange="handleCheckboxChange('option8', 'yes')">
+                                <label for="option8-yes">Yes</label>
+                                <input type="checkbox" id="option8-no" name="defined_duration" value="no" onchange="handleCheckboxChange('option8', 'no')">
+                                <label for="option8-no">No</label>
+                            </li>
+                        </ul>
+                    </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="mainfooter">
+            <img class="footerpic" src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
+            <div style="margin-top: 40px; margin-bottom: 0;">
+                <a href="/discover">Discover</a>
+                <!--<a href="/static/review.html">Review</a>-->
+                <a href="/static/contactus.html">Contact Us</a>
+                <a href="/static/aboutus.html">About Us</a>
+                <a href="/login">Account</a>
+            </div>
+        </div>
+        <div>
+            <p class="rights">©Zebrate 2024 - All rights reserved</p>
+        </div>
+    </div>
+    
+</body>
+</html>
