@@ -6,7 +6,7 @@
     <title>Zebrate - Request a new venue</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/z_logo(orange).png">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
     <script>
         function handleCheckboxChange(option, choice) {
             var yesCheckbox = document.getElementById(option + '-yes');
@@ -132,18 +132,22 @@ function getColorByRating(rating) {
                 <p class="title">Request a new venue</p>
             </div>
         </div>
-        <form class="venue-form">
-            <div class="form-group">
-                <label for="venue-name">Venue name:</label>
-                <input class="inputnew" type="text" id="venue-name" name="venue-name">
-            </div>
-            <div class="form-group">
-                <label for="venue-link">Link to venue on Google maps:</label>
-                <input class="inputnew" type="text" id="venue-link" name="venue-link">
-            </div>
-        </form>
+
+        
     </div>
     <div class="rateit">
+        <div class="venue-form">
+            <form style="padding: 30px 15px 30px 15px;">
+                <div class="form-group">
+                    <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">Venue name:</span>
+                    <input class="inputnew" type="text" id="venue-name" name="venue-name" >
+                </div>
+                <div class="form-group" style="margin-top: 25px;">
+                    <span style="font-size: 15px; font-weight: 500; color: #05241B; line-height: 0px;">Link to venue on Google maps:</span>
+                    <input class="inputnew" type="text" id="venue-link" name="venue-link">
+                </div>
+            </form>
+        </div>
         <div class="modal-content" style="margin-top: 20px; background-color: #fff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
             <div class="reviewcontent" style="width: auto; display: flex; justify-content: space-between; background-color: #fff;">
                 <div class="reviewbox">
@@ -151,7 +155,7 @@ function getColorByRating(rating) {
                     <form action="/add-review/" method="post" style="display: flex; flex-direction: column; margin-top: 10px; border-radius: 10px; padding: 5px;">
                         <input class="reviewtitle" type="text" placeholder="Title of your review" style=" background-color: #f9f9f9 !important;">
                         <textarea class="reviewtext" placeholder="Write your review here..." style="height: 350px; background-color: #f9f9f9;"></textarea>
-                        <button style="color: #F7F9F3; font-size: 15px; width: 220px; margin-top: 20px;">Submit review </button>
+                        <button style="color: #F7F9F3; font-size: 15px; width: 220px; margin-top: 20px;">Submit request </button>
                         </div>
                         <div class="reviewfilters" >
 
