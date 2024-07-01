@@ -759,8 +759,13 @@ input {
     
     .checklist label {
         vertical-align: middle;
+        display: inline-block;
+        margin-right: 10px;
     }
 
+    .checklist input[type="checkbox"] {
+        display: inline-block;
+    }
 
     .rating-container {
         display: flex;
@@ -807,4 +812,53 @@ input {
         flex-grow: 1;
         font-size: 12px;
     }
+
+    .venue-form {
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: auto; /* 10% from the top and centered */
+        padding-top: 5px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 10px;
+        height: auto;
+        border-radius: 20px;
+        width: 80%; 
+    }
     
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        padding-right: 15px;
+        gap: 20px;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 8px;
+        
+        color: #333;
+    }
+    
+    .inputnew:focus {
+        border-color: #F7A072;
+        outline: none;
+    }
+    
+    .inputnew {
+        width: auto;
+        padding: 10px;
+        font-size: 16px;
+        background-color: #f9f9f9;
+        transition: border-color 0.3s ease;
+        height: 30px;
+        border-radius: 5px;
+        border: 2px solid rgba(66, 155, 128, 0.2);
+        color: #25433A;
+        padding: 5px;
+    }
+
+    .newreviewcontent {
+        width: 70%;
+        background-color: #f9f9f9;
+    }
