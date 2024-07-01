@@ -94,8 +94,7 @@ function myFunction() {
     input = document.getElementById("myInput");
     filter = input.value.toUpperCase();
     table = document.getElementById("myTable");
-    tr = table.getElementsByTagName("tr");
-  
+    tr = table.getElementsByTagName("tr"); 
 }
 
 
@@ -115,7 +114,7 @@ document.getElementById('searchButton').addEventListener('click', () => {
     });
 });
 
-}
+
 
 // Ensure the script runs after the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", function() {
@@ -145,4 +144,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 });
+
+
 
