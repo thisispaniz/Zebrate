@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard-styles.css">
+</head>
+<body>
+    <header>
+        <h1>Zebrate Admin Dashboard</h1>
+    </header>
+
+    <main>
+        <section id="requests">
+            <h2>New Requests</h2>
+            <div class="request-list">
+                <!-- Dynamic content for new requests will go here -->
+                <p>No new requests.</p>
+            </div>
+        </section>
+        <section id="user-accounts">
+            <h2>User Accounts</h2>
+            <div class="search-bar">
+                <input type="text" id="venue-search" placeholder="Search users...">
+                <button onclick="searchUsers()">Search</button>
+            </div>
+            <div class="user-list">
+                <!-- Dynamic content for venues will go here -->
+                <p>No users found.</p>
+            </div>
+        </section>
+        <section id="venues">
+            <h2>Venues</h2>
+            <div class="search-bar">
+                <input type="text" id="venue-search" placeholder="Search for venues...">
+                <button onclick="searchVenues()">Search</button>
+            </div>
+            <div class="venue-list">
+                <!-- Dynamic content for venues will go here -->
+                <p>No venues found.</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
