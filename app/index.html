@@ -16,9 +16,14 @@
             </div>
             <div class="navbarbtn">
                 <a href="/discover">Discover</a>
-                <!--<a href="/static/review.html">Review</a>-->
-                <a href="/static/signup.html">Sign up</a>
-                <a class="button" href="/login">Log in</a>
+
+                {% if user %}
+                    <a href="/logout">Log out</a>
+                    <a class="button" href="/welcome">My account</a>
+                {% else %}
+                    <a href="/static/signup.html">Sign up</a>
+                    <a class="button" href="/login">Log in</a>
+                {% endif %}
             </div>
         </div>
     </div>
