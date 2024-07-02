@@ -11,6 +11,7 @@ from fastapi import HTTPException
 from typing import Optional
 import json 
 import os
+import re
 
 app = FastAPI()
 
@@ -39,6 +40,13 @@ async def read_root(request: Request):
     user = request.cookies.get("user")
     content = render_template(app_path/ "index.html", user=user)
     return HTMLResponse(content=content)
+
+# Function to extract venue ID from the link (if needed elsewhere)
+def extract_venue_id(link: str) -> int:
+    match = re.search(r'/venue/(\d+)', link)
+    if match:
+        return int(match.group(1))
+    raise ValueError("Invalid venue link. Could not extract venue ID.")
 
 @app.post("/add-review/")
 async def add_review(
@@ -75,8 +83,8 @@ async def add_review(
         # Commit the transaction
         conn.commit()
 
-        # Return a success message
-        return {"message": "Review added successfully!"}
+        # Redirect to the venue page with the added review
+        return RedirectResponse(url=f"/venue/{venue_id}", status_code=303)
 
     except sqlite3.Error as e:
         conn.rollback()  # Rollback the transaction on error
@@ -307,8 +315,9 @@ async def get_venue(venue_id: int):
         with open(template_path, "r") as file:
             template = Template(file.read())
 
-        rendered_html = template.render(venue=venue_dict)
+        rendered_html = template.render(venue=venue_dict, venue_id=venue_id)
         return HTMLResponse(content=rendered_html)
+
 
     except Exception as e:
         return HTMLResponse(content=f"An unexpected error occurred {e}", status_code=500)
