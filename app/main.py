@@ -1,5 +1,5 @@
 import sqlite3
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form, Depends
 from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Template
@@ -10,12 +10,18 @@ import logging
 from fastapi import HTTPException
 from typing import Optional
 import json 
+import os
 
 app = FastAPI()
 
 # Define the path to the app directory
 app_path = Path(__file__).parent
 
+
+def render_template(template_name: str, **context):
+    with open(os.path.join('templates', template_name)) as file_:
+        template = Template(file_.read())
+    return template.render(**context)
 
 
 # Serve the entire app directory as static files
@@ -29,11 +35,10 @@ logger = logging.getLogger(__name__)
 db_path = app_path / 'venues.db'
 
 @app.get("/", response_class=HTMLResponse)
-def get_index():
-    """
-    Serves the index.html file at the root path.
-    """
-    return FileResponse(app_path / "index.html")
+async def read_root(request: Request):
+    user = request.cookies.get("user")
+    content = render_template(app_path/ "index.html", user=user)
+    return HTMLResponse(content=content)
 
 @app.post("/add-review/")
 async def add_review(
@@ -356,6 +361,10 @@ async def login_user(nickname: str = Form(...), password: str = Form(...)):
             # Check if the nickname exists
             cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
             user = cursor.fetchone()
+            if user and bcrypt.verify(password, user["password"]):
+                response = RedirectResponse(url=f"/welcome?nickname={nickname}", status_code=303)
+                response.set_cookie(key="user", value=nickname)
+                return response
 
             if not user:
                 logger.info(f"Invalid login attempt for nickname {nickname}.")
@@ -367,9 +376,7 @@ async def login_user(nickname: str = Form(...), password: str = Form(...)):
                 return HTMLResponse(content="Invalid nickname or password", status_code=400)
             
 
-            logger.info(f"User {nickname} logged in successfully.")
-            # Redirect to the dashboard with the user's nickname
-            return RedirectResponse(url=f"/welcome?nickname={nickname}", status_code=303)
+            
 
             
 
@@ -385,7 +392,7 @@ async def get_welcome(request: Request):
     Includes a form to add reviews and lists submitted reviews.
     """
     try:
-        nickname = request.query_params.get('nickname')
+        nickname = request.cookies.get("user")
         if not nickname:
             return HTMLResponse(content="Nickname not found in the request", status_code=400)
 
@@ -394,13 +401,13 @@ async def get_welcome(request: Request):
             cursor = conn.cursor()
 
             # Fetch all reviews to display on the welcome page
-            cursor.execute("""
+            '''cursor.execute("""
                 SELECT reviews.review_text, reviews.timestamp, users.nickname, venues.name AS venue_name
                 FROM reviews
                 JOIN users ON reviews.user_id = users.id
                 JOIN venues ON reviews.venue_id = venues.id
                 ORDER BY reviews.timestamp DESC
-            """)
+            """)'''
             reviews = cursor.fetchall()
 
             # Fetch all venues to populate the dropdown
@@ -419,7 +426,11 @@ async def get_welcome(request: Request):
         logger.error(f"Error loading welcome page: {e}")
         return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
 
-
+@app.get("/logout")
+async def logout():
+    response = RedirectResponse(url="/")
+    response.delete_cookie("user")
+    return response
 
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
