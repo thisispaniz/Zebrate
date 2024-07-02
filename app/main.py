@@ -1,5 +1,5 @@
 import sqlite3
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form, Depends
 from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Template
@@ -10,22 +10,22 @@ import logging
 from fastapi import HTTPException
 from typing import Optional
 import json 
-import re
-from starlette.middleware.sessions import SessionMiddleware
-from fastapi.templating import Jinja2Templates
+import os
 
 app = FastAPI()
 
 # Define the path to the app directory
 app_path = Path(__file__).parent
 
+
+def render_template(template_name: str, **context):
+    with open(os.path.join('templates', template_name)) as file_:
+        template = Template(file_.read())
+    return template.render(**context)
+
+
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
-
-# Secret key for session management
-app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
-
-templates = Jinja2Templates(directory="app_path")
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -35,18 +35,10 @@ logger = logging.getLogger(__name__)
 db_path = app_path / 'venues.db'
 
 @app.get("/", response_class=HTMLResponse)
-def get_index():
-    """
-    Serves the index.html file at the root path.
-    """
-    return FileResponse(app_path / "index.html")
-
-# Function to extract venue ID from the link
-def extract_venue_id(link: str) -> int:
-    match = re.search(r'/venue/(\d+)', link)
-    if match:
-        return int(match.group(1))
-    raise ValueError("Invalid venue link. Could not extract venue ID.")
+async def read_root(request: Request):
+    user = request.cookies.get("user")
+    content = render_template(app_path/ "index.html", user=user)
+    return HTMLResponse(content=content)
 
 @app.post("/add-review/")
 async def add_review(
@@ -83,8 +75,8 @@ async def add_review(
         # Commit the transaction
         conn.commit()
 
-        # Redirect to the venue page with the added review
-        return RedirectResponse(url=f"/venue/{venue_id}", status_code=303)
+        # Return a success message
+        return {"message": "Review added successfully!"}
 
     except sqlite3.Error as e:
         conn.rollback()  # Rollback the transaction on error
@@ -183,16 +175,13 @@ async def get_discover(request: Request, query: str = None, filters: str = None)
         error_message = f"An error occurred: {e}"
         raise HTTPException(status_code=500, detail=error_message)
 
-@app.get("/signup", response_class=HTMLResponse)
-async def signup_form(request: Request):
-    return templates.TemplateResponse("signup.html", {"request": request})
 
-#@app.get("/signup", response_class=HTMLResponse)
-#def get_signup():
-#    """
-#    Serves the signup.html file for user registration.
-#    """
-#    return FileResponse(app_path / "signup.html")
+@app.get("/signup", response_class=HTMLResponse)
+def get_signup():
+    """
+    Serves the signup.html file for user registration.
+    """
+    return FileResponse(app_path / "signup.html")
 
 @app.get("/search-venues/", response_class=HTMLResponse)
 async def search_venues(request: Request):
@@ -299,7 +288,6 @@ async def filter_venues(
 async def get_venue(venue_id: int):
     """
     Retrieve and display details for a specific venue based on its ID.
-    Also serves a form for adding reviews with the venue_id included.
     """
     try:
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
@@ -314,80 +302,87 @@ async def get_venue(venue_id: int):
         # Convert the sqlite3.Row object to a dictionary for easier handling in the template
         venue_dict = dict(venue)
 
-        # Render the template with venue details and a form for adding a review
+        # Render the template with venue details
         template_path = app_path / "venue_page.html"
         with open(template_path, "r") as file:
             template = Template(file.read())
 
-        rendered_html = template.render(venue=venue_dict, venue_id=venue_id)
+        rendered_html = template.render(venue=venue_dict)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
-        return HTMLResponse(content=f"An unexpected error occurred: {e}", status_code=500)
+        return HTMLResponse(content=f"An unexpected error occurred {e}", status_code=500)
 
-@app.post("/signup/", response_class=HTMLResponse)
-async def signup(request: Request, username: str = Form(...), password: str = Form(...)):
-    hashed_password = bcrypt.hash(password)
-    conn = sqlite3.connect('venues.db')
+
+
+@app.post("/register/")
+async def register_user(nickname: str = Form(...), password: str = Form(...)):
     try:
-        conn.execute("INSERT INTO users (username, hashed_password) VALUES (?, ?)", (username, hashed_password))
-        conn.commit()
-    except sqlite3.IntegrityError:
-        return templates.TemplateResponse("signup.html", {"request": request, "error": "Username already exists"})
-    finally:
-        conn.close()
-    return RedirectResponse(url="/login", status_code=303)
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            cursor = conn.cursor()
 
-#@app.post("/register/")
-#async def register_user(nickname: str = Form(...), password: str = Form(...)):
-#    try:
-#        with sqlite3.connect(db_path, check_same_thread=False) as conn:
-#            cursor = conn.cursor()
-#
-#            # Check if the nickname already exists
-#            cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
-#            existing_user = cursor.fetchone()
-#
-#            if existing_user:
-#                logger.info(f"Nickname {nickname} already taken.")
-#                return HTMLResponse(content="nickname already taken", status_code=400)
-#
-#            # Hash the password for security
-#            hashed_password = bcrypt.hash(password)
+            # Check if the nickname already exists
+            cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
+            existing_user = cursor.fetchone()
 
-#            # Insert the new user into the database
-#            cursor.execute("INSERT INTO users (nickname, password) VALUES (?, ?)", (nickname, hashed_password))
-#            conn.commit()
+            if existing_user:
+                logger.info(f"Nickname {nickname} already taken.")
+                return HTMLResponse(content="nickname already taken", status_code=400)
 
-#            logger.info(f"User {nickname} registered successfully.")
+            # Hash the password for security
+            hashed_password = bcrypt.hash(password)
+
+            # Insert the new user into the database
+            cursor.execute("INSERT INTO users (nickname, password) VALUES (?, ?)", (nickname, hashed_password))
+            conn.commit()
+
+            logger.info(f"User {nickname} registered successfully.")
             # Redirect to the login page after successful registration
-#            return RedirectResponse(url="/static/login.html", status_code=303)
+            return RedirectResponse(url="/static/login.html", status_code=303)
 
-#    except Exception as e:
-#        logger.error(f"Registration error: {e}")
-#        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
-
-#@app.get("/login", response_class=HTMLResponse)
-#def get_login():
-#    """
-#    Serves the login.html file for user login.
-#    """
-#    return FileResponse(app_path / "login.html")
+    except Exception as e:
+        logger.error(f"Registration error: {e}")
+        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
 
 @app.get("/login", response_class=HTMLResponse)
-async def login_form(request: Request):
-    return templates.TemplateResponse("/login", {"request": request})
+def get_login():
+    """
+    Serves the login.html file for user login.
+    """
+    return FileResponse(app_path / "login.html")
 
-@app.post("/login/", response_class=HTMLResponse)
-async def login(request: Request, username: str = Form(...), password: str = Form(...)):
-    conn = sqlite3.connect('venues.db')
-    cursor = conn.execute("SELECT password FROM users WHERE username = ?", (username,))
-    user = cursor.fetchone()
-    conn.close()
-    if user and bcrypt.verify(password, user[0]):
-        request.session["user"] = username
-        return RedirectResponse(url="/", status_code=303)
-    return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid username or password"})
+@app.post("/login/")
+async def login_user(nickname: str = Form(...), password: str = Form(...)):
+    try:
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Check if the nickname exists
+            cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
+            user = cursor.fetchone()
+            if user and bcrypt.verify(password, user["password"]):
+                response = RedirectResponse(url=f"/welcome?nickname={nickname}", status_code=303)
+                response.set_cookie(key="user", value=nickname)
+                return response
+
+            if not user:
+                logger.info(f"Invalid login attempt for nickname {nickname}.")
+                return HTMLResponse(content="Invalid nickname or password", status_code=400)
+
+            # Verify the password
+            if not bcrypt.verify(password, user["password"]):
+                logger.info(f"Invalid password for nickname {nickname}.")
+                return HTMLResponse(content="Invalid nickname or password", status_code=400)
+            
+
+            
+
+            
+
+    except Exception as e:
+        logger.error(f"Login error: {e}")
+        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
 
 
 @app.get("/welcome", response_class=HTMLResponse)
@@ -397,7 +392,7 @@ async def get_welcome(request: Request):
     Includes a form to add reviews and lists submitted reviews.
     """
     try:
-        nickname = request.query_params.get('nickname')
+        nickname = request.cookies.get("user")
         if not nickname:
             return HTMLResponse(content="Nickname not found in the request", status_code=400)
 
@@ -406,13 +401,13 @@ async def get_welcome(request: Request):
             cursor = conn.cursor()
 
             # Fetch all reviews to display on the welcome page
-            cursor.execute("""
+            '''cursor.execute("""
                 SELECT reviews.review_text, reviews.timestamp, users.nickname, venues.name AS venue_name
                 FROM reviews
                 JOIN users ON reviews.user_id = users.id
                 JOIN venues ON reviews.venue_id = venues.id
                 ORDER BY reviews.timestamp DESC
-            """)
+            """)'''
             reviews = cursor.fetchall()
 
             # Fetch all venues to populate the dropdown
@@ -431,7 +426,11 @@ async def get_welcome(request: Request):
         logger.error(f"Error loading welcome page: {e}")
         return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
 
-
+@app.get("/logout")
+async def logout():
+    response = RedirectResponse(url="/")
+    response.delete_cookie("user")
+    return response
 
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
