@@ -9,7 +9,7 @@ from passlib.hash import bcrypt
 import logging
 from fastapi import HTTPException
 from typing import Optional
-import json 
+import json
 import os
 
 app = FastAPI()
@@ -34,27 +34,29 @@ logger = logging.getLogger(__name__)
 # Database connection to venues.db
 db_path = app_path / 'venues.db'
 
+
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     user = request.cookies.get("user")
-    content = render_template(app_path/ "index.html", user=user)
+    content = render_template(app_path / "index.html", user=user)
     return HTMLResponse(content=content)
+
 
 @app.post("/add-review/")
 async def add_review(
-    venue_id: int = Form(...),
-    review_title: str = Form(...),
-    review_text: str = Form(...),
-    colors: int = Form(...),
-    smells: int = Form(...),
-    quiet: int = Form(...),
-    crowdedness: int = Form(...),
-    food_variey: int = Form(...),
-    playground: str = Form(...),
-    fenced: str = Form(...),
-    quiet_zones: str = Form(...),
-    food_own: str = Form(...),
-    defined_duration: str = Form(...)
+        venue_id: int = Form(...),
+        review_title: str = Form(...),
+        review_text: str = Form(...),
+        colors: int = Form(...),
+        smells: int = Form(...),
+        quiet: int = Form(...),
+        crowdedness: int = Form(...),
+        food_variey: int = Form(...),
+        playground: str = Form(...),
+        fenced: str = Form(...),
+        quiet_zones: str = Form(...),
+        food_own: str = Form(...),
+        defined_duration: str = Form(...)
 ):
     # Connect to the database
     conn = sqlite3.connect(db_path)
@@ -68,7 +70,7 @@ async def add_review(
                 food_variey, playground, fenced, quiet_zones, food_own, defined_duration
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            venue_id, review_title, review_text, colors, smells, quiet, crowdedness, 
+            venue_id, review_title, review_text, colors, smells, quiet, crowdedness,
             food_variey, playground, fenced, quiet_zones, food_own, defined_duration
         ))
 
@@ -85,6 +87,9 @@ async def add_review(
     finally:
         # Close the connection
         conn.close()
+        # Redirect to the venue page with the added review
+        return RedirectResponse(url=f"/venue/{venue_id}", status_code=303)
+
 
 @app.get("/discover", response_class=HTMLResponse)
 async def get_discover(request: Request, query: str = None, filters: str = None):
@@ -161,8 +166,6 @@ async def get_discover(request: Request, query: str = None, filters: str = None)
         rendered_html = template.render(venues=venues, query=query or "")
         return HTMLResponse(content=rendered_html)
 
-
-
     except sqlite3.Error as e:
         error_message = f"SQLite error: {e}"
         raise HTTPException(status_code=500, detail=error_message)
@@ -182,6 +185,7 @@ def get_signup():
     Serves the signup.html file for user registration.
     """
     return FileResponse(app_path / "signup.html")
+
 
 @app.get("/search-venues/", response_class=HTMLResponse)
 async def search_venues(request: Request):
@@ -203,7 +207,7 @@ async def search_venues(request: Request):
             photo_url LIKE ?
         """
         parameters = [f"%{query}%"] * 10  # Apply the search term to all fields
-        
+
     else:
         sql_query = "SELECT * FROM venues"
         parameters = []  # No parameters needed for a full table query
@@ -226,17 +230,17 @@ async def search_venues(request: Request):
 
 @app.get("/filter-venues/", response_class=HTMLResponse)
 async def filter_venues(
-    request: Request,
-    playground: str = None,
-    fenced: str = None,
-    quiet_zones: str = None,
-    colors: str = None,
-    smells: str = None,
-    food_own: str = None,
-    defined_duration: str = None,
-    quiet: str = None,
-    crowdedness: str = None,
-    food_variey: str = None
+        request: Request,
+        playground: str = None,
+        fenced: str = None,
+        quiet_zones: str = None,
+        colors: str = None,
+        smells: str = None,
+        food_own: str = None,
+        defined_duration: str = None,
+        quiet: str = None,
+        crowdedness: str = None,
+        food_variey: str = None
 ):
     """
     Handles detailed filtering of venues based on user-selected criteria.
@@ -284,6 +288,7 @@ async def filter_venues(
         logger.error(f"Error filtering venues: {e}")
         return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
 
+
 @app.get("/venue/{venue_id}", response_class=HTMLResponse)
 async def get_venue(venue_id: int):
     """
@@ -307,12 +312,19 @@ async def get_venue(venue_id: int):
         with open(template_path, "r") as file:
             template = Template(file.read())
 
-        rendered_html = template.render(venue=venue_dict)
+        rendered_html = template.render(venue=venue_dict, venue_id=venue_id)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
         return HTMLResponse(content=f"An unexpected error occurred {e}", status_code=500)
 
+
+# Function to extract venue ID from the link (if needed elsewhere)
+def extract_venue_id(link: str) -> int:
+    match = re.search(r'/venue/(\d+)', link)
+    if match:
+        return int(match.group(1))
+    raise ValueError("Invalid venue link. Could not extract venue ID.")
 
 
 @app.post("/register/")
@@ -344,12 +356,14 @@ async def register_user(nickname: str = Form(...), password: str = Form(...)):
         logger.error(f"Registration error: {e}")
         return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
 
+
 @app.get("/login", response_class=HTMLResponse)
 def get_login():
     """
     Serves the login.html file for user login.
     """
     return FileResponse(app_path / "login.html")
+
 
 @app.post("/login/")
 async def login_user(nickname: str = Form(...), password: str = Form(...)):
@@ -374,11 +388,6 @@ async def login_user(nickname: str = Form(...), password: str = Form(...)):
             if not bcrypt.verify(password, user["password"]):
                 logger.info(f"Invalid password for nickname {nickname}.")
                 return HTMLResponse(content="Invalid nickname or password", status_code=400)
-            
-
-            
-
-            
 
     except Exception as e:
         logger.error(f"Login error: {e}")
@@ -426,11 +435,13 @@ async def get_welcome(request: Request):
         logger.error(f"Error loading welcome page: {e}")
         return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
 
+
 @app.get("/logout")
 async def logout():
     response = RedirectResponse(url="/")
     response.delete_cookie("user")
     return response
+
 
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
