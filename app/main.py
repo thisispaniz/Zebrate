@@ -11,16 +11,21 @@ from fastapi import HTTPException
 from typing import Optional
 import json 
 import re
+from starlette.middleware.sessions import SessionMiddleware
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
 
 # Define the path to the app directory
 app_path = Path(__file__).parent
 
-
-
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
+
+# Secret key for session management
+app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
+
+templates = Jinja2Templates(directory="app_path")
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -37,7 +42,6 @@ def get_index():
     return FileResponse(app_path / "index.html")
 
 # Function to extract venue ID from the link
-# Function to extract venue ID from the link (if needed elsewhere)
 def extract_venue_id(link: str) -> int:
     match = re.search(r'/venue/(\d+)', link)
     if match:
@@ -179,13 +183,16 @@ async def get_discover(request: Request, query: str = None, filters: str = None)
         error_message = f"An error occurred: {e}"
         raise HTTPException(status_code=500, detail=error_message)
 
-
 @app.get("/signup", response_class=HTMLResponse)
-def get_signup():
-    """
-    Serves the signup.html file for user registration.
-    """
-    return FileResponse(app_path / "signup.html")
+async def signup_form(request: Request):
+    return templates.TemplateResponse("signup.html", {"request": request})
+
+#@app.get("/signup", response_class=HTMLResponse)
+#def get_signup():
+#    """
+#    Serves the signup.html file for user registration.
+#    """
+#    return FileResponse(app_path / "signup.html")
 
 @app.get("/search-venues/", response_class=HTMLResponse)
 async def search_venues(request: Request):
@@ -318,74 +325,69 @@ async def get_venue(venue_id: int):
     except Exception as e:
         return HTMLResponse(content=f"An unexpected error occurred: {e}", status_code=500)
 
-
-
-@app.post("/register/")
-async def register_user(nickname: str = Form(...), password: str = Form(...)):
+@app.post("/signup/", response_class=HTMLResponse)
+async def signup(request: Request, username: str = Form(...), password: str = Form(...)):
+    hashed_password = bcrypt.hash(password)
+    conn = sqlite3.connect('venues.db')
     try:
-        with sqlite3.connect(db_path, check_same_thread=False) as conn:
-            cursor = conn.cursor()
+        conn.execute("INSERT INTO users (username, hashed_password) VALUES (?, ?)", (username, hashed_password))
+        conn.commit()
+    except sqlite3.IntegrityError:
+        return templates.TemplateResponse("signup.html", {"request": request, "error": "Username already exists"})
+    finally:
+        conn.close()
+    return RedirectResponse(url="/login", status_code=303)
 
-            # Check if the nickname already exists
-            cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
-            existing_user = cursor.fetchone()
+#@app.post("/register/")
+#async def register_user(nickname: str = Form(...), password: str = Form(...)):
+#    try:
+#        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+#            cursor = conn.cursor()
+#
+#            # Check if the nickname already exists
+#            cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
+#            existing_user = cursor.fetchone()
+#
+#            if existing_user:
+#                logger.info(f"Nickname {nickname} already taken.")
+#                return HTMLResponse(content="nickname already taken", status_code=400)
+#
+#            # Hash the password for security
+#            hashed_password = bcrypt.hash(password)
 
-            if existing_user:
-                logger.info(f"Nickname {nickname} already taken.")
-                return HTMLResponse(content="nickname already taken", status_code=400)
+#            # Insert the new user into the database
+#            cursor.execute("INSERT INTO users (nickname, password) VALUES (?, ?)", (nickname, hashed_password))
+#            conn.commit()
 
-            # Hash the password for security
-            hashed_password = bcrypt.hash(password)
-
-            # Insert the new user into the database
-            cursor.execute("INSERT INTO users (nickname, password) VALUES (?, ?)", (nickname, hashed_password))
-            conn.commit()
-
-            logger.info(f"User {nickname} registered successfully.")
+#            logger.info(f"User {nickname} registered successfully.")
             # Redirect to the login page after successful registration
-            return RedirectResponse(url="/static/login.html", status_code=303)
+#            return RedirectResponse(url="/static/login.html", status_code=303)
 
-    except Exception as e:
-        logger.error(f"Registration error: {e}")
-        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+#    except Exception as e:
+#        logger.error(f"Registration error: {e}")
+#        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+
+#@app.get("/login", response_class=HTMLResponse)
+#def get_login():
+#    """
+#    Serves the login.html file for user login.
+#    """
+#    return FileResponse(app_path / "login.html")
 
 @app.get("/login", response_class=HTMLResponse)
-def get_login():
-    """
-    Serves the login.html file for user login.
-    """
-    return FileResponse(app_path / "login.html")
+async def login_form(request: Request):
+    return templates.TemplateResponse("/login", {"request": request})
 
-@app.post("/login/")
-async def login_user(nickname: str = Form(...), password: str = Form(...)):
-    try:
-        with sqlite3.connect(db_path, check_same_thread=False) as conn:
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
-
-            # Check if the nickname exists
-            cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
-            user = cursor.fetchone()
-
-            if not user:
-                logger.info(f"Invalid login attempt for nickname {nickname}.")
-                return HTMLResponse(content="Invalid nickname or password", status_code=400)
-
-            # Verify the password
-            if not bcrypt.verify(password, user["password"]):
-                logger.info(f"Invalid password for nickname {nickname}.")
-                return HTMLResponse(content="Invalid nickname or password", status_code=400)
-            
-
-            logger.info(f"User {nickname} logged in successfully.")
-            # Redirect to the dashboard with the user's nickname
-            return RedirectResponse(url=f"/welcome?nickname={nickname}", status_code=303)
-
-            
-
-    except Exception as e:
-        logger.error(f"Login error: {e}")
-        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+@app.post("/login/", response_class=HTMLResponse)
+async def login(request: Request, username: str = Form(...), password: str = Form(...)):
+    conn = sqlite3.connect('venues.db')
+    cursor = conn.execute("SELECT password FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+    conn.close()
+    if user and bcrypt.verify(password, user[0]):
+        request.session["user"] = username
+        return RedirectResponse(url="/", status_code=303)
+    return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid username or password"})
 
 
 @app.get("/welcome", response_class=HTMLResponse)

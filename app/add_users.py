@@ -34,9 +34,14 @@ columns_to_add = [
 create_users_table_sql = """
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nickname TEXT,
+    username TEXT,
+    email TEXT,
     password TEXT
 ) """
+
+drop_table_users_sql = """
+DROP TABLE users
+"""
 
 # SQL command to create the 'reviews' table if it doesn't exist
 create_reviews_sql = """
@@ -51,17 +56,18 @@ CREATE TABLE IF NOT EXISTS reviews (
 ) """
 
 # Execute the SQL commands to ensure tables exist
+cursor.execute(drop_table_users_sql)
 cursor.execute(create_users_table_sql)
-cursor.execute(create_reviews_sql)
+# cursor.execute(create_reviews_sql)
 
 # Add the new columns if they do not already exist
-for column_name, column_type in columns_to_add:
+''' for column_name, column_type in columns_to_add:
     if not column_exists("reviews", column_name):
         alter_table_sql = f"ALTER TABLE reviews ADD COLUMN {column_name} {column_type}"
-        cursor.execute(alter_table_sql)
+        cursor.execute(alter_table_sql) '''
 
 # Commit the changes and close the connection
 conn.commit()
 conn.close()
 
-print("Altered the 'reviews' table successfully.")
+print("Altered your table successfully.")
