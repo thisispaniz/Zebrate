@@ -290,7 +290,7 @@ async def filter_venues(
 
 
 @app.get("/venue/{venue_id}", response_class=HTMLResponse)
-async def get_venue(venue_id: int):
+async def get_venue(venue_id: int, request: Request):
     """
     Retrieve and display details for a specific venue based on its ID.
     """
@@ -311,8 +311,8 @@ async def get_venue(venue_id: int):
         template_path = app_path / "venue_page.html"
         with open(template_path, "r") as file:
             template = Template(file.read())
-
-        rendered_html = template.render(venue=venue_dict, venue_id=venue_id)
+            user = request.cookies.get("user")
+        rendered_html = template.render(venue=venue_dict, venue_id=venue_id, user=user)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
