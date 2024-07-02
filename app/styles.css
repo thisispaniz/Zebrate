@@ -814,23 +814,29 @@ input {
     }
 
     .venue-form {
-        max-width: 80%;
-        margin: auto;
         background-color: #fff;
-        padding: 20px;
-        border-radius: 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: auto; /* 10% from the top and centered */
+        padding-top: 5px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 10px;
+        height: auto;
+        border-radius: 20px;
+        width: 80%; 
     }
     
     .form-group {
+        display: flex;
+        flex-direction: column;
         padding-right: 15px;
-        margin-bottom: 20px;
+        gap: 20px;
     }
     
     label {
         display: block;
         margin-bottom: 8px;
-        font-weight: bold;
+        
         color: #333;
     }
     
@@ -840,15 +846,16 @@ input {
     }
     
     .inputnew {
-        width: 100%;
+        width: auto;
         padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
         font-size: 16px;
-        color: #333;
         background-color: #f9f9f9;
         transition: border-color 0.3s ease;
+        height: 30px;
+        border-radius: 5px;
+        border: 2px solid rgba(66, 155, 128, 0.2);
+        color: #25433A;
+        padding: 5px;
     }
 
     .newreviewcontent {
