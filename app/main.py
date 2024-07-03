@@ -162,8 +162,8 @@ async def get_discover(request: Request, query: str = None, filters: str = None)
         # Load the discover.html template and render it with the venues
         with open("discover.html", "r") as file:
             template = Template(file.read())
-
-        rendered_html = template.render(venues=venues, query=query or "")
+            user = request.cookies.get("user")
+        rendered_html = template.render(venues=venues, query=query or "", user = user)
         return HTMLResponse(content=rendered_html)
 
     except sqlite3.Error as e:
@@ -290,7 +290,7 @@ async def filter_venues(
 
 
 @app.get("/venue/{venue_id}", response_class=HTMLResponse)
-async def get_venue(venue_id: int):
+async def get_venue(venue_id: int, request: Request):
     """
     Retrieve and display details for a specific venue based on its ID.
     """
@@ -311,8 +311,8 @@ async def get_venue(venue_id: int):
         template_path = app_path / "venue_page.html"
         with open(template_path, "r") as file:
             template = Template(file.read())
-
-        rendered_html = template.render(venue=venue_dict, venue_id=venue_id)
+            user = request.cookies.get("user")
+        rendered_html = template.render(venue=venue_dict, venue_id=venue_id, user=user)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
@@ -442,6 +442,18 @@ async def logout():
     response.delete_cookie("user")
     return response
 
+@app.get("/aboutus", response_class=HTMLResponse)
+async def read_root(request: Request):
+    user = request.cookies.get("user")
+    content = render_template(app_path / "aboutus.html", user=user)
+    return HTMLResponse(content=content)
+
+
+@app.get("/contactus", response_class=HTMLResponse)
+async def read_root(request: Request):
+    user = request.cookies.get("user")
+    content = render_template(app_path / "contactus.html", user=user)
+    return HTMLResponse(content=content)
 
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")

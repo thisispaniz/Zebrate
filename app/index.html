@@ -12,7 +12,9 @@
     <div class="content">
         <div class="navbar">
             <div class="navbarlogo">
-                <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
+                <a href="/">
+                    <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate" style="cursor: pointer;">
+                </a>
             </div>
             <div class="navbarbtn">
                 <a href="/discover">Discover</a>
@@ -28,7 +30,7 @@
         </div>
     </div>
     
-    <div class="contentsearchbox searchboxbig">
+    <div class="contentsearchbox searchboxbig" style="margin-top: 100px;">
         <form action="/search-venues/" method="get">
             <input type="text" id="inputbox" name="query" placeholder="Search locations..." autocomplete="off" style="width: 470px;">
             <button type="submit" style="font-size: 16px;">Search</button>
@@ -46,17 +48,22 @@
 
     <div class="footer">
         <div class="mainfooter">
-            <img class="footerpic" src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
+            <a href="/">
+                <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate" style="cursor: pointer;">
+            </a>
             <div style="margin-top: 40px; margin-bottom: 0;">
                 <a href="/discover">Discover</a>
-                <!--<a href="/static/review.html">Review</a>-->
-                <a href="/static/contactus.html">Contact Us</a>
-                <a href="/static/aboutus.html">About Us</a>
+                <a href="/contactus">Contact Us</a>
+                <a href="/aboutus">About Us</a>
+                {% if user %}
+                <a href="/welcome">Account</a>
+                {% else %}
                 <a href="/login">Account</a>
+                {% endif %}
             </div>
         </div>
         <div>
-            <p class="rights">©Zebrate 2024 - All rights reserved</p>
+            <p class="rights">Zebrate 2024 - All rights reserved</p>
         </div>
     </div>
     
