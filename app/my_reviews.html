@@ -12,11 +12,15 @@
         <div class="content">
             <div class="navbar">
                 <div class="navbarlogo">
-                    <img src="/images/zebrate_logo(orange).png" alt="Zebrate">
+                    <a href="/">
+                        <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate" style="cursor: pointer;">
+                    </a>
                 </div>
                 <div class="contentsearchbox searchboxsmall">
-                    <input type="text" id="inputbox" placeholder="Search locations..." autocomplete="off" style="width: 180px; height: 60%;">
-                    <button style="font-size: 13px; height: 43px;">Search</button>
+                    <form action="/search-venues/" method="get">
+                        <input type="text" id="inputbox" placeholder="Search locations..." autocomplete="off" style="width: 180px; height: 60%;">
+                        <button style="font-size: 13px; height: 43px;">Search</button>
+                    </form>
                 </div>
                 <div class="navbarbtn">
                     <a href="/discover">Discover</a>
@@ -78,17 +82,22 @@
     </main>
     <div class="footer">
         <div class="mainfooter">
-            <img class="footerpic" src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
+            <a href="/">
+                <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate" style="cursor: pointer;">
+            </a>
             <div style="margin-top: 40px; margin-bottom: 0;">
                 <a href="/discover">Discover</a>
-                <!--<a href="/static/review.html">Review</a>-->
-                <a href="/static/contactus.html">Contact Us</a>
-                <a href="/static/aboutus.html">About Us</a>
+                <a href="/contactus">Contact Us</a>
+                <a href="/aboutus">About Us</a>
+                {% if user %}
+                <a href="/welcome">Account</a>
+                {% else %}
                 <a href="/login">Account</a>
+                {% endif %}
             </div>
         </div>
         <div>
-            <p class="rights">©Zebrate 2024 - All rights reserved</p>
+            <p class="rights">Zebrate 2024 - All rights reserved</p>
         </div>
     </div>
 </body>

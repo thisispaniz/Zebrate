@@ -66,17 +66,26 @@ function getColorByRating(rating) {
     <div class="content">
         <div class="navbar">
             <div class="navbarlogo">
-                <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
+                <a href="/">
+                    <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate" style="cursor: pointer;">
+                </a>
             </div>
             <div class="contentsearchbox searchboxsmall">
-                <input type="text" id="inputbox" placeholder="Search locations..." autocomplete="off" style="width: 180px; height: 60%;">
-                <button style="font-size: 13px; height: 43px;">Search</button>
+                <form action="/search-venues/" method="get">
+                    <input type="text" id="inputbox" placeholder="Search locations..." autocomplete="off" style="width: 180px; height: 60%;">
+                    <button style="font-size: 13px; height: 43px;">Search</button>
+                </form>
             </div>
             <div class="navbarbtn">
                 <a href="/discover">Discover</a>
                 <!--<a href="/static/review.html">Review</a>-->
-                <a href="/static/signup.html">Sign up</a>
-                <a class="button" href="/login">Log in</a>
+                {% if user %}
+                    <a href="/logout">Log out</a>
+                    <a class="button" href="/welcome">My account</a>
+                {% else %}
+                    <a href="/static/signup.html">Sign up</a>
+                    <a class="button" href="/login">Log in</a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -93,8 +102,8 @@ function getColorByRating(rating) {
     </div>
 
     <div style="margin-top: 40px; display: flex; align-items: center;" class="sameparent">
-        <div class="same ratings" style="margin-right: 90px; height: 470px; width: 380px;">
-            <p style="font-size: 30px; font-weight: 500; margin-top: 10px;">About</p>
+        <div class="same ratings" style="margin-right: 90px; height: 490px; width: 380px;">
+            <p style="font-size: 30px; font-weight: 500; margin-top: 0px;">About</p>
                         <!-- Crowd Rating -->
                         <div class="sameparent" style="margin-top: -10px; display: flex; align-items: center; justify-content: space-between; width: 300px;">
                             <p class="same">Crowd</p>
@@ -175,7 +184,7 @@ function getColorByRating(rating) {
             <!-- <p>{{ venue.description }}</p> -->
         </div>
         <div class="same">
-            <div id="location">
+            <div id="location" style="height: 490px;">
                 <!-- Display a default image if venue.image_url is missing -->
                 <img src="{{ venue.photo_url }}" alt="{{ venue.name }}" style="border-radius: 20px;">
             </div>
@@ -191,6 +200,8 @@ function getColorByRating(rating) {
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
+
+            {% if user %}
             <p style="font-size: 30px; font-weight: 600; color: #05241B; line-height: 10px;">{{ venue.name }}</p>
             <div class="reviewcontent" style="width: auto; display: flex; justify-content: space-between;">
                 <div class="reviewbox">
@@ -322,6 +333,13 @@ function getColorByRating(rating) {
                 </form>
                 </div>
             </div>
+            {% else %}
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <p style="font-size: 25px; font-weight: 500; margin-top: 50px; margin-bottom: 30px;">Log in to leave a review!</p>
+                <a style="margin-bottom: 30px;" class="button" href="/login">Log in</a>
+            </div>
+            
+            {% endif %}
         </div>
     </div>
     <div class="sameparent ratings" style="display: flex; align-items: center; justify-content: space-between; height: 330px; font-size: 20px; margin-bottom: 50px;">
@@ -370,17 +388,22 @@ function getColorByRating(rating) {
 
     <div class="footer">
         <div class="mainfooter">
-            <img class="footerpic" src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
+            <a href="/">
+                <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate" style="cursor: pointer;">
+            </a>
             <div style="margin-top: 40px; margin-bottom: 0;">
                 <a href="/discover">Discover</a>
-                <!--<a href="/static/review.html">Review</a>-->
-                <a href="/static/contactus.html">Contact Us</a>
-                <a href="/static/aboutus.html">About Us</a>
+                <a href="/contactus">Contact Us</a>
+                <a href="/aboutus">About Us</a>
+                {% if user %}
+                <a href="/welcome">Account</a>
+                {% else %}
                 <a href="/login">Account</a>
+                {% endif %}
             </div>
         </div>
         <div>
-            <p class="rights">©Zebrate 2024 - All rights reserved</p>
+            <p class="rights">Zebrate 2024 - All rights reserved</p>
         </div>
     </div>
         <script>
