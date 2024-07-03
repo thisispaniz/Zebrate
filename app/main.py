@@ -292,31 +292,39 @@ async def filter_venues(
 @app.get("/venue/{venue_id}", response_class=HTMLResponse)
 async def get_venue(venue_id: int, request: Request):
     """
-    Retrieve and display details for a specific venue based on its ID.
+    Retrieve and display details for a specific venue based on its ID, including reviews.
     """
     try:
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
             conn.row_factory = sqlite3.Row  # Access columns by name
             cursor = conn.cursor()
+            
+            # Fetch venue details
             cursor.execute("SELECT * FROM venues WHERE id = ?", (venue_id,))
             venue = cursor.fetchone()  # Fetch the venue details
 
-        if venue is None:
-            return HTMLResponse(content="Venue not found", status_code=404)
+            if venue is None:
+                return HTMLResponse(content="Venue not found", status_code=404)
 
-        # Convert the sqlite3.Row object to a dictionary for easier handling in the template
+            # Fetch reviews for the venue
+            cursor.execute("SELECT * FROM reviews WHERE venue_id = ?", (venue_id,))
+            reviews = cursor.fetchall()  # Fetch all reviews for the venue
+
+        # Convert the sqlite3.Row objects to dictionaries for easier handling in the template
         venue_dict = dict(venue)
+        reviews_dicts = [dict(review) for review in reviews]
 
-        # Render the template with venue details
+        # Render the template with venue details and reviews
         template_path = app_path / "venue_page.html"
         with open(template_path, "r") as file:
             template = Template(file.read())
             user = request.cookies.get("user")
-        rendered_html = template.render(venue=venue_dict, venue_id=venue_id, user=user)
+        rendered_html = template.render(venue=venue_dict, reviews=reviews_dicts, venue_id=venue_id, user=user)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
-        return HTMLResponse(content=f"An unexpected error occurred {e}", status_code=500)
+        return HTMLResponse(content=f"An unexpected error occurred: {e}", status_code=500)
+
 
 
 # Function to extract venue ID from the link (if needed elsewhere)
