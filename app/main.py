@@ -17,7 +17,6 @@ app = FastAPI()
 # Define the path to the app directory
 app_path = Path(__file__).parent
 
-
 def render_template(template_name: str, **context):
     with open(os.path.join('templates', template_name)) as file_:
         template = Template(file_.read())
