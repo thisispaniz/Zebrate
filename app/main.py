@@ -9,8 +9,9 @@ from passlib.hash import bcrypt
 import logging
 from fastapi import HTTPException
 from typing import Optional
-import json 
+import json  
 import os
+import re
 
 app = FastAPI()
 
@@ -39,6 +40,12 @@ async def read_root(request: Request):
     content = render_template(app_path/ "index.html", user=user)
     return HTMLResponse(content=content)
 
+# Function to extract venue ID from the link (if needed elsewhere)
+def extract_venue_id(link: str) -> int:
+    match = re.search(r'/venue/(\d+)', link)
+    if match:
+        return int(match.group(1))
+    raise ValueError("Invalid venue link. Could not extract venue ID.")
 @app.post("/add-review/")
 async def add_review(
     venue_id: int = Form(...),
@@ -67,15 +74,15 @@ async def add_review(
                 food_variey, playground, fenced, quiet_zones, food_own, defined_duration
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            venue_id, review_title, review_text, colors, smells, quiet, crowdedness, 
+            venue_id, review_title, review_text, colors, smells, quiet, crowdedness,  
             food_variey, playground, fenced, quiet_zones, food_own, defined_duration
         ))
 
         # Commit the transaction
         conn.commit()
 
-        # Return a success message
-        return {"message": "Review added successfully!"}
+        # Redirect to the venue page with the added review
+        return RedirectResponse(url=f"/venue/{venue_id}", status_code=303)
 
     except sqlite3.Error as e:
         conn.rollback()  # Rollback the transaction on error
@@ -162,6 +169,8 @@ async def get_discover(request: Request, query: str = None, filters: str = None)
 
 
 
+
+
     except sqlite3.Error as e:
         error_message = f"SQLite error: {e}"
         raise HTTPException(status_code=500, detail=error_message)
@@ -202,7 +211,7 @@ async def search_venues(request: Request):
             photo_url LIKE ?
         """
         parameters = [f"%{query}%"] * 10  # Apply the search term to all fields
-        
+                
     else:
         sql_query = "SELECT * FROM venues"
         parameters = []  # No parameters needed for a full table query
@@ -309,6 +318,7 @@ async def get_venue(venue_id: int):
         rendered_html = template.render(venue=venue_dict)
         return HTMLResponse(content=rendered_html)
 
+
     except Exception as e:
         return HTMLResponse(content=f"An unexpected error occurred {e}", status_code=500)
 
@@ -373,6 +383,11 @@ async def login_user(nickname: str = Form(...), password: str = Form(...)):
             if not bcrypt.verify(password, user["password"]):
                 logger.info(f"Invalid password for nickname {nickname}.")
                 return HTMLResponse(content="Invalid nickname or password", status_code=400)
+            
+
+            
+
+            
             
 
             
