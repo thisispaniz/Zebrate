@@ -162,8 +162,8 @@ async def get_discover(request: Request, query: str = None, filters: str = None)
         # Load the discover.html template and render it with the venues
         with open("discover.html", "r") as file:
             template = Template(file.read())
-
-        rendered_html = template.render(venues=venues, query=query or "")
+            user = request.cookies.get("user")
+        rendered_html = template.render(venues=venues, query=query or "", user = user)
         return HTMLResponse(content=rendered_html)
 
     except sqlite3.Error as e:

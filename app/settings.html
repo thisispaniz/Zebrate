@@ -15,8 +15,10 @@
                     <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
                 </div>
                 <div class="contentsearchbox searchboxsmall">
-                    <input type="text" id="inputbox" placeholder="Search locations..." autocomplete="off" style="width: 180px; height: 60%;">
-                    <button style="font-size: 13px; height: 43px;">Search</button>
+                    <form action="/search-venues/" method="get">
+                        <input type="text" id="inputbox" placeholder="Search locations..." autocomplete="off" style="width: 180px; height: 60%;">
+                        <button style="font-size: 13px; height: 43px;">Search</button>
+                    </form>
                 </div>
                 <div class="navbarbtn">
                     <a href="/discover">Discover</a>
