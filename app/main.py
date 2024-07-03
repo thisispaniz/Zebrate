@@ -376,7 +376,7 @@ async def login_user(nickname: str = Form(...), password: str = Form(...)):
             cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
             user = cursor.fetchone()
             if user and bcrypt.verify(password, user["password"]):
-                response = RedirectResponse(url=f"/welcome?nickname={nickname}", status_code=303)
+                response = RedirectResponse(url="/welcome", status_code=303)
                 response.set_cookie(key="user", value=nickname)
                 return response
 
