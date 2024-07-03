@@ -427,8 +427,8 @@ async def get_welcome(request: Request):
         template_path = app_path / "dashboard.html"
         with open(template_path, "r") as file:
             template = Template(file.read())
-
-        rendered_html = template.render(reviews=reviews, venues=venues, nickname=nickname)
+        user = request.cookies.get("user")
+        rendered_html = template.render(reviews=reviews, venues=venues, nickname=nickname, user=user)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
