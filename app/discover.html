@@ -120,7 +120,9 @@
     <div class="content">
         <div class="navbar">
             <div class="navbarlogo">
-                <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
+                <a href="/">
+                    <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate" style="cursor: pointer;">
+                </a>
             </div>
             <div class="navbarbtn">
                 <a href="/discover">Discover</a>
@@ -277,24 +279,33 @@
                     {% endfor %}
                 </ol>
                 {% else %}
-                <p>No venues found matching your criteria.</p>
+                <div style="margin-right: 350px; margin-top: 40px;">
+                    <p style="font-size: 20px;">No venues found matching your criteria.</p>
+                </div>
+                
                 {% endif %}
             </div>
         </div>
     </div>
 
     <div class="footer">
-        <div class="footercontent">
-            <div class="footerheading">Zebrate</div>
-            <div class="footerlogo">
-                <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
+        <div class="mainfooter">
+            <a href="/">
+                <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate" style="cursor: pointer;">
+            </a>
+            <div style="margin-top: 40px; margin-bottom: 0;">
+                <a href="/discover">Discover</a>
+                <a href="/contactus">Contact Us</a>
+                <a href="/aboutus">About Us</a>
+                {% if user %}
+                <a href="/welcome">Account</a>
+                {% else %}
+                <a href="/login">Account</a>
+                {% endif %}
             </div>
         </div>
-        <div class="footerlinks">
-            <a href="/">Home</a>
-            <a href="/discover">Discover</a>
-            <a href="/static/review.html">Review</a>
-            <a href="/static/signup.html">Sign Up</a>
+        <div>
+            <p class="rights">Zebrate - All rights reserved</p>
         </div>
     </div>
 </body>

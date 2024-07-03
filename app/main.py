@@ -442,6 +442,18 @@ async def logout():
     response.delete_cookie("user")
     return response
 
+@app.get("/aboutus", response_class=HTMLResponse)
+async def read_root(request: Request):
+    user = request.cookies.get("user")
+    content = render_template(app_path / "aboutus.html", user=user)
+    return HTMLResponse(content=content)
+
+
+@app.get("/contactus", response_class=HTMLResponse)
+async def read_root(request: Request):
+    user = request.cookies.get("user")
+    content = render_template(app_path / "contactus.html", user=user)
+    return HTMLResponse(content=content)
 
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")

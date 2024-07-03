@@ -66,7 +66,9 @@ function getColorByRating(rating) {
     <div class="content">
         <div class="navbar">
             <div class="navbarlogo">
-                <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
+                <a href="/">
+                    <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate" style="cursor: pointer;">
+                </a>
             </div>
             <div class="contentsearchbox searchboxsmall">
                 <form action="/search-venues/" method="get">
@@ -100,8 +102,8 @@ function getColorByRating(rating) {
     </div>
 
     <div style="margin-top: 40px; display: flex; align-items: center;" class="sameparent">
-        <div class="same ratings" style="margin-right: 90px; height: 470px; width: 380px;">
-            <p style="font-size: 30px; font-weight: 500; margin-top: 10px;">About</p>
+        <div class="same ratings" style="margin-right: 90px; height: 490px; width: 380px;">
+            <p style="font-size: 30px; font-weight: 500; margin-top: 0px;">About</p>
                         <!-- Crowd Rating -->
                         <div class="sameparent" style="margin-top: -10px; display: flex; align-items: center; justify-content: space-between; width: 300px;">
                             <p class="same">Crowd</p>
@@ -182,7 +184,7 @@ function getColorByRating(rating) {
             <!-- <p>{{ venue.description }}</p> -->
         </div>
         <div class="same">
-            <div id="location">
+            <div id="location" style="height: 490px;">
                 <!-- Display a default image if venue.image_url is missing -->
                 <img src="{{ venue.photo_url }}" alt="{{ venue.name }}" style="border-radius: 20px;">
             </div>
@@ -386,17 +388,22 @@ function getColorByRating(rating) {
 
     <div class="footer">
         <div class="mainfooter">
-            <img class="footerpic" src="/static/images/zebrate_logo(orange).png" alt="Zebrate">
+            <a href="/">
+                <img src="/static/images/zebrate_logo(orange).png" alt="Zebrate" style="cursor: pointer;">
+            </a>
             <div style="margin-top: 40px; margin-bottom: 0;">
                 <a href="/discover">Discover</a>
-                <!--<a href="/static/review.html">Review</a>-->
-                <a href="/static/contactus.html">Contact Us</a>
-                <a href="/static/aboutus.html">About Us</a>
+                <a href="/contactus">Contact Us</a>
+                <a href="/aboutus">About Us</a>
+                {% if user %}
+                <a href="/welcome">Account</a>
+                {% else %}
                 <a href="/login">Account</a>
+                {% endif %}
             </div>
         </div>
         <div>
-            <p class="rights">©Zebrate 2024 - All rights reserved</p>
+            <p class="rights">Zebrate 2024 - All rights reserved</p>
         </div>
     </div>
         <script>
