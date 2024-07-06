@@ -118,15 +118,14 @@ function getColorByRating(rating) {
                     </a>
                 </div>
                 <div class="contentsearchbox searchboxsmall">
-                    <form action="/search-venues/" method="get">
-                        <input type="text" id="inputbox" placeholder="Search locations..." autocomplete="off" style="width: 180px; height: 60%;">
-                        <button style="font-size: 13px; height: 43px;">Search</button>
+                    <form action="/discover" method="get">
+                        <input type="text" id="inputbox" name="query" placeholder="Search locations..." autocomplete="off" style="width: 180px; height: 60%;">
+                        <button type="submit" style="font-size: 13px; height: 43px;">Search</button>
                     </form>
                 </div>
                 <div class="navbarbtn">
                     <a href="/discover">Discover</a>
-                    <a href="/static/signup.html">Sign up</a>
-                    <a class="button" href="/login">Log in</a>
+                    <a class="button" href="/welcome">My account</a>
                 </div>
             </div>
         </div>

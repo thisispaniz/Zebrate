@@ -10,6 +10,7 @@ import logging
 from fastapi import HTTPException
 from typing import Optional
 import json
+from sqlite3 import connect
 import os
 
 app = FastAPI()
@@ -292,31 +293,39 @@ async def filter_venues(
 @app.get("/venue/{venue_id}", response_class=HTMLResponse)
 async def get_venue(venue_id: int, request: Request):
     """
-    Retrieve and display details for a specific venue based on its ID.
+    Retrieve and display details for a specific venue based on its ID, including reviews.
     """
     try:
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
             conn.row_factory = sqlite3.Row  # Access columns by name
             cursor = conn.cursor()
+            
+            # Fetch venue details
             cursor.execute("SELECT * FROM venues WHERE id = ?", (venue_id,))
             venue = cursor.fetchone()  # Fetch the venue details
 
-        if venue is None:
-            return HTMLResponse(content="Venue not found", status_code=404)
+            if venue is None:
+                return HTMLResponse(content="Venue not found", status_code=404)
 
-        # Convert the sqlite3.Row object to a dictionary for easier handling in the template
+            # Fetch reviews for the venue
+            cursor.execute("SELECT * FROM reviews WHERE venue_id = ?", (venue_id,))
+            reviews = cursor.fetchall()  # Fetch all reviews for the venue
+
+        # Convert the sqlite3.Row objects to dictionaries for easier handling in the template
         venue_dict = dict(venue)
+        reviews_dicts = [dict(review) for review in reviews]
 
-        # Render the template with venue details
+        # Render the template with venue details and reviews
         template_path = app_path / "venue_page.html"
         with open(template_path, "r") as file:
             template = Template(file.read())
             user = request.cookies.get("user")
-        rendered_html = template.render(venue=venue_dict, venue_id=venue_id, user=user)
+        rendered_html = template.render(venue=venue_dict, reviews=reviews_dicts, venue_id=venue_id, user=user)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
-        return HTMLResponse(content=f"An unexpected error occurred {e}", status_code=500)
+        return HTMLResponse(content=f"An unexpected error occurred: {e}", status_code=500)
+
 
 
 # Function to extract venue ID from the link (if needed elsewhere)
@@ -376,7 +385,7 @@ async def login_user(nickname: str = Form(...), password: str = Form(...)):
             cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
             user = cursor.fetchone()
             if user and bcrypt.verify(password, user["password"]):
-                response = RedirectResponse(url=f"/welcome?nickname={nickname}", status_code=303)
+                response = RedirectResponse(url="/welcome", status_code=303)
                 response.set_cookie(key="user", value=nickname)
                 return response
 
@@ -427,8 +436,8 @@ async def get_welcome(request: Request):
         template_path = app_path / "dashboard.html"
         with open(template_path, "r") as file:
             template = Template(file.read())
-
-        rendered_html = template.render(reviews=reviews, venues=venues, nickname=nickname)
+        user = request.cookies.get("user")
+        rendered_html = template.render(reviews=reviews, venues=venues, nickname=nickname, user=user)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
@@ -455,5 +464,49 @@ async def read_root(request: Request):
     content = render_template(app_path / "contactus.html", user=user)
     return HTMLResponse(content=content)
 
+@app.post("/request-venue/", response_class=HTMLResponse)
+async def request_venue(
+    request: Request,
+    new_venue_name: str = Form(...),
+    google_link: str = Form(None),
+    colors: int = Form(None),
+    smells: int = Form(None),
+    quiet: int = Form(None),
+    crowdedness: int = Form(None),
+    food_variey: int = Form(None),
+    playground: str = Form(None),
+    fenced: str = Form(None),
+    quiet_zones: str = Form(None),
+    food_own: str = Form(None),
+    defined_duration: str = Form(None)
+):
+    # Prepare SQL query to insert a new request into the database
+    sql_query = """
+        INSERT INTO requests (
+            new_venue_name, google_link, colors, smells, quiet,
+            crowdedness, food_variey, playground, fenced,
+            quiet_zones, food_own, defined_duration
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+    
+    parameters = (
+        new_venue_name, google_link, colors, smells, quiet,
+        crowdedness, food_variey, playground, fenced,
+        quiet_zones, food_own, defined_duration
+    )
+
+    # Connect to the database and execute the query
+    with connect(db_path, check_same_thread=False) as conn:
+        cursor = conn.cursor()
+        cursor.execute(sql_query, parameters)
+        conn.commit()
+
+    # Load the template to render a response
+    template_path = app_path / "request_confirmation.html"  # Ensure this template exists
+    with open(template_path, "r") as file:
+        template = Template(file.read())
+
+    rendered_html = template.render(message="Venue request submitted successfully!")
+    return HTMLResponse(content=rendered_html)
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")

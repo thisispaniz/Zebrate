@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zebrate - About Us</title>
+    <title>Zebrate - Account Settings</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/z_logo(orange).png">
     <link rel="stylesheet" href="/static/styles.css">
@@ -17,14 +17,14 @@
                     </a>
                 </div>
                 <div class="contentsearchbox searchboxsmall">
-                    <form action="/search-venues/" method="get">
-                        <input type="text" id="inputbox" placeholder="Search locations..." autocomplete="off" style="width: 180px; height: 60%;">
-                        <button style="font-size: 13px; height: 43px;">Search</button>
+                    <form action="/discover" method="get">
+                        <input type="text" id="inputbox" name="query" placeholder="Search locations..." autocomplete="off" style="width: 180px; height: 60%;">
+                        <button type="submit" style="font-size: 13px; height: 43px;">Search</button>
                     </form>
                 </div>
                 <div class="navbarbtn">
                     <a href="/discover">Discover</a>
-                    <a class="button" href="/satic/dashboard.html">My account</a>
+                    <a class="button" href="/welcome">My account</a>
                 </div>
             </div>
         </div>
