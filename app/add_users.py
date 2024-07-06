@@ -50,9 +50,31 @@ CREATE TABLE IF NOT EXISTS reviews (
     FOREIGN KEY (venue_id) REFERENCES venues (id)
 ) """
 
+create_request_sql = """
+CREATE TABLE IF NOT EXISTS requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    new_venue_name TEXT NOT NULL,
+    venue_review TEXT,
+    venue_review_title TEXT,
+    google_link TEXT,
+    colors INTEGER,
+    smells INTEGER,
+    quiet INTEGER ,
+    crowdedness INTEGER,
+    food_variey INTEGER,
+    playground TEXT,
+    fenced TEXT,
+    quiet_zones TEXT,
+    food_own TEXT,
+    defined_duration TEXT 
+    )
+
+"""
+
 # Execute the SQL commands to ensure tables exist
-cursor.execute(create_users_table_sql)
-cursor.execute(create_reviews_sql)
+#cursor.execute(create_users_table_sql)
+#cursor.execute(create_reviews_sql)
+cursor.execute(create_request_sql)
 
 # Add the new columns if they do not already exist
 for column_name, column_type in columns_to_add:
@@ -64,4 +86,4 @@ for column_name, column_type in columns_to_add:
 conn.commit()
 conn.close()
 
-print("Altered the 'reviews' table successfully.")
+print("Created the desired table successfully.")

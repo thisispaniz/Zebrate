@@ -10,6 +10,7 @@ import logging
 from fastapi import HTTPException
 from typing import Optional
 import json
+from sqlite3 import connect
 import os
 
 app = FastAPI()
@@ -463,5 +464,49 @@ async def read_root(request: Request):
     content = render_template(app_path / "contactus.html", user=user)
     return HTMLResponse(content=content)
 
+@app.post("/request-venue/", response_class=HTMLResponse)
+async def request_venue(
+    request: Request,
+    new_venue_name: str = Form(...),
+    google_link: str = Form(None),
+    colors: int = Form(None),
+    smells: int = Form(None),
+    quiet: int = Form(None),
+    crowdedness: int = Form(None),
+    food_variey: int = Form(None),
+    playground: str = Form(None),
+    fenced: str = Form(None),
+    quiet_zones: str = Form(None),
+    food_own: str = Form(None),
+    defined_duration: str = Form(None)
+):
+    # Prepare SQL query to insert a new request into the database
+    sql_query = """
+        INSERT INTO requests (
+            new_venue_name, google_link, colors, smells, quiet,
+            crowdedness, food_variey, playground, fenced,
+            quiet_zones, food_own, defined_duration
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+    
+    parameters = (
+        new_venue_name, google_link, colors, smells, quiet,
+        crowdedness, food_variey, playground, fenced,
+        quiet_zones, food_own, defined_duration
+    )
+
+    # Connect to the database and execute the query
+    with connect(db_path, check_same_thread=False) as conn:
+        cursor = conn.cursor()
+        cursor.execute(sql_query, parameters)
+        conn.commit()
+
+    # Load the template to render a response
+    template_path = app_path / "request_confirmation.html"  # Ensure this template exists
+    with open(template_path, "r") as file:
+        template = Template(file.read())
+
+    rendered_html = template.render(message="Venue request submitted successfully!")
+    return HTMLResponse(content=rendered_html)
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
