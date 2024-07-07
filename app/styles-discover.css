@@ -69,12 +69,15 @@
     color: #F7F9F3;
     background-color: #429B80;
     cursor: pointer;
+    border-style: solid;
+    border-color: #429B80;
+    border-width: 1px;
 }
-.selected:hover {
+/*.selected:hover {
     background-color: #F7A072;
     border-color: #F7F9F3;
     color: #F7F9F3;
-}
+}*/
 .filtergroup {
     display: flex;
     flex-direction: column;
