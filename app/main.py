@@ -1,5 +1,5 @@
 import sqlite3
-from fastapi import FastAPI, Request, Form, Depends
+from fastapi import FastAPI, Request, Form, Depends, Cookie
 from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Template
@@ -57,7 +57,8 @@ async def add_review(
         fenced: str = Form(...),
         quiet_zones: str = Form(...),
         food_own: str = Form(...),
-        defined_duration: str = Form(...)
+        defined_duration: str = Form(...),
+        user: str = Cookie(None)
 ):
     # Connect to the database
     conn = sqlite3.connect(db_path)
@@ -68,11 +69,11 @@ async def add_review(
         cursor.execute("""
             INSERT INTO reviews (
                 venue_id, review_title, review_text, colors, smells, quiet, crowdedness, 
-                food_variey, playground, fenced, quiet_zones, food_own, defined_duration
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                food_variey, playground, fenced, quiet_zones, food_own, defined_duration, nickname
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             venue_id, review_title, review_text, colors, smells, quiet, crowdedness,
-            food_variey, playground, fenced, quiet_zones, food_own, defined_duration
+            food_variey, playground, fenced, quiet_zones, food_own, defined_duration, user
         ))
 
         # Commit the transaction
