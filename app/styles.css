@@ -478,71 +478,6 @@ input {
             font-style: italic;
             width: 456px;
         }
-        
-        .fa-eye,
-        .fa-eye-slash,
-        .show-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #4f4f4f;
-            cursor: pointer;
-        }
-        
-        .password-checklist {
-            top: calc(100% + 10px);
-            width: 100%;
-            padding: 10px 20px;
-            margin-left: 2.5vw;
-            margin-bottom: 5px;
-            padding-bottom: 0;
-        }
-        
-        .accepting {
-            color: #b1b1b1;
-            font-size: 0.6vw;
-            margin-top: 10px;
-            margin-left: 5vw;
-        }
-        
-        .checklist-title {
-            color: #828282;
-            font-weight: 400;
-            font-size: 0.8vw;
-        }
-        
-        .checklist {
-            list-style: none;
-        }
-        
-        .list-item {
-            color: #828282;
-            font-size: 0.75vw;
-            margin-left: 20px;
-        }
-        
-        .list-item::before {
-            content: '\f00d';
-            font-family: FontAwesome;
-            margin-right: 8px;
-            margin-left: -20px;
-            display: inline-block;
-            font-size: 0.6vw;
-        }
-        
-        .list-item.checked {
-            opacity: 0.5;
-        }
-        
-        .list-item.checked::before {
-            content: '\f00c';
-            font-family: FontAwesome;
-            margin-right: 8px;
-            margin-left: -20px;
-            font-size: 0.6vw;
-            color: #429B80;
-        }
 
         .contactabout {
             margin-top: 100px; 
@@ -878,3 +813,37 @@ input {
     #save-username-btn, #save-email-btn, #save-password-btn{
         background-color: #429B80;
     }
+
+    .password-checklist {
+        margin: 10px 0;
+    }
+    .password-checklist .checklist-title {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+    .password-checklist .list-item {
+        font-size: 14px;
+        color: #F7A072;
+    }
+    .password-checklist .list-item.valid {
+        color: #429B80;
+    }
+    .auth-container button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+    .password-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    
+    .password-container .password-input {
+        flex: 1;
+    }
+    
+    .password-container .fa-eye {
+        position: absolute;
+        right: 10px;
+    }
+    
