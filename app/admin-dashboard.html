@@ -11,7 +11,18 @@
     <header>
         <h1>Zebrate Admin Dashboard</h1>
     </header>
-
+<style>
+    table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+</style>
     <main>
         <section id="requests">
             <h2>New Requests</h2>
@@ -19,8 +30,25 @@
                 {% if new_requests %}
                     <ul>
                         {% for request in new_requests %}
-                            <li>{{ request.new_venue_name }}
-                                <button onclick="addVenue('{{ request.new_venue_name }}')">Add Venue</button>
+                            <li>
+                                <h3>{{ request.new_venue_name }}</h3>
+                                <button onclick="showSQL('{{ request.new_venue_name }}')">Show SQL</button>
+                                <div id="sql-output-{{ request.new_venue_name }}"></div>
+                                <table>
+                                    <tr><td><strong>Review:</strong></td><td>{{ request.venue_review }}</td></tr>
+                                    <tr><td><strong>Review Title:</strong></td><td>{{ request.venue_review_title }}</td></tr>
+                                    <tr><td><strong>Google Link:</strong></td><td><a href="{{ request.google_link }}" target="_blank">{{ request.google_link }}</a></td></tr>
+                                    <tr><td><strong>Colors:</strong></td><td>{{ request.colors }}</td></tr>
+                                    <tr><td><strong>Smells:</strong></td><td>{{ request.smells }}</td></tr>
+                                    <tr><td><strong>Quiet:</strong></td><td>{{ request.quiet }}</td></tr>
+                                    <tr><td><strong>Crowdedness:</strong></td><td>{{ request.crowdedness }}</td></tr>
+                                    <tr><td><strong>Food Variey:</strong></td><td>{{ request.food_variey }}</td></tr>
+                                    <tr><td><strong>Playground:</strong></td><td>{{ request.playground }}</td></tr>
+                                    <tr><td><strong>Fenced:</strong></td><td>{{ request.fenced }}</td></tr>
+                                    <tr><td><strong>Quiet Zones:</strong></td><td>{{ request.quiet_zones }}</td></tr>
+                                    <tr><td><strong>Food Own:</strong></td><td>{{ request.food_own }}</td></tr>
+                                    <tr><td><strong>Defined Duration:</strong></td><td>{{ request.defined_duration }}</td></tr>
+                                </table>
                             </li>
                         {% endfor %}
                     </ul>
@@ -112,6 +140,35 @@
         function cancelEdit() {
             window.location.reload();
         }
+
+        function showSQL(newVenueName) {
+    const sqlQuery = `
+        INSERT INTO venues (name, address, photo_url, colors, smells, quiet, crowdedness, food_variey, playground, fenced, quiet_zones, food_own, defined_duration)
+        SELECT 
+            '${newVenueName}' AS name,
+            'not provided yet' AS address,
+            google_link AS photo_url,
+            colors,
+            smells,
+            quiet,
+            crowdedness,
+            food_variey,
+            playground,
+            fenced,
+            quiet_zones,
+            food_own,
+            defined_duration
+        FROM 
+            requests
+        WHERE 
+            new_venue_name = '${newVenueName}';
+    `;
+
+    const sqlOutputDiv = document.getElementById(`sql-output-${newVenueName}`);
+    sqlOutputDiv.textContent = sqlQuery;
+    sqlOutputDiv.style.whiteSpace = 'pre-wrap'; // Preserve formatting
+}
+
     </script>
 </body>
 </html>
