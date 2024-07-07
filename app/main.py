@@ -518,5 +518,71 @@ async def request_venue(
 
     rendered_html = template.render(message="Venue request submitted successfully!")
     return HTMLResponse(content=rendered_html)
+
+@app.post("/login-admin")
+async def login_admin(username: str = Form(...), password: str = Form(...)):
+    try:
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Check if the nickname exists
+            cursor.execute("SELECT * FROM admin WHERE username = ?", (username,))
+            user = cursor.fetchone()
+            if user and bcrypt.verify(password, user["password"]):
+                response = RedirectResponse(url="/admin-dashboard", status_code=303)
+                response.set_cookie(key="user", value=username)
+                return response
+
+            if not user:
+                logger.info(f"Invalid login attempt for nickname {username}.")
+                return HTMLResponse(content="Invalid nickname or password", status_code=400)
+
+            # Verify the password
+            if not bcrypt.verify(password, user["password"]):
+                logger.info(f"Invalid password for nickname {username}.")
+                return HTMLResponse(content="Invalid nickname or password", status_code=400)
+
+    except Exception as e:
+        logger.error(f"Login error: {e}")
+        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+    
+@app.get("/admin-dashboard")
+async def admin_dashboard(request: Request):
+    
+    # Admin dashboard endpoint for viewing and managing venues, users, and new requests.
+    
+    user = request.cookies.get("user")
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    try:
+        # Fetch new venue requests
+        cursor.execute("SELECT * FROM requests")
+        new_requests = cursor.fetchall()
+
+        # Fetch all users
+        cursor.execute("SELECT * FROM users")
+        users = cursor.fetchall()
+
+        # Fetch all venues
+        cursor.execute("SELECT * FROM venues")
+        venues = cursor.fetchall()
+
+    finally:
+        conn.close()
+
+    # Render the admin dashboard template
+    content = render_template("admin-dashboard.html", new_requests=new_requests, users=users, venues=venues, user=user)
+    return HTMLResponse(content=content)
+
+@app.get("/admin-login", response_class=HTMLResponse)
+def get_adminlogin():
+    """
+    Serves the login.html file for admin login.
+    """
+    return FileResponse(app_path / "admin-login.html")
+
+
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
