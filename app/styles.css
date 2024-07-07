@@ -862,3 +862,19 @@ input {
         width: 70%;
         background-color: #f9f9f9;
     }
+
+    #new-username-input, #new-email-input, #new-password-input{
+        border-radius: 25px;
+        border: none;
+        width: 70%;
+        height: 25px;
+        padding: 10px;
+        padding-left: 20px;
+        margin-right: 10px;
+        margin-bottom: 40px;
+        margin-top: 10px;
+    }
+
+    #save-username-btn, #save-email-btn, #save-password-btn{
+        background-color: #429B80;
+    }
