@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/z_logo(orange).png">
     <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/account_update.js"></script>
 </head>
 <body>
         <div class="content">
@@ -40,17 +41,41 @@
                 <div class="detail">
                     <span class="label">Username:</span>
                     <span class="value">{{nickname}}</span>
-                    <button>Change username</button>
+                    <button id="change-username-btn">Change username</button>
+                    <div id="change-username-modal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <p>enter new username:</p>
+                            <input type="text" id="new-username-input">
+                            <button id="save-username-btn">Save</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="detail">
                     <span class="label">Email address:</span>
                     <span class="value">{{email}}</span>
-                    <button>Change email address</button>
+                    <button id="change-email-btn">Change email address</button>
+                    <div id="change-email-modal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <p>Enter new email address:</p>
+                            <input type="text" id="new-email-input">
+                            <button id="save-email-btn">Save</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="detail">
                     <span class="label">Password:</span>
                     <span class="value">**************</span>
-                    <button>Change password</button>
+                    <button id="change-password-btn">Change password</button>
+                    <div id="change-password-modal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <p>Enter new password:</p>
+                            <input type="password" id="new-password-input">
+                            <button id="save-password-btn">Save</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

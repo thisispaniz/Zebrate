@@ -472,7 +472,6 @@ async def get_welcome(request: Request):
                 return HTMLResponse(content="User not found in the database", status_code=404)
             email = user_email["email"]
 
-        # Load dashboard.html template and render it with the reviews and venues data
         template_path = app_path / "settings.html"
         with open(template_path, "r") as file:
             template = Template(file.read())
@@ -550,3 +549,57 @@ async def request_venue(
     return HTMLResponse(content=rendered_html)
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
+
+# Endpoint to update username
+@app.post("/api/update_username")
+async def update_username(request: Request, new_username: str = Form(...)):
+    try:
+        nickname = request.cookies.get("user")
+        if not nickname:
+            return {"success": False, "message": "User not authenticated."}
+
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE users SET nickname = ? WHERE nickname = ?", (new_username, nickname))
+            conn.commit()
+        response = JSONResponse({"success": True, "message": "Username updated successfully."})
+        response.set_cookie(key="user", value=new_username)
+        return response
+
+    except Exception as e:
+        return {"success": False, "message": f"An error occurred: {str(e)}"}
+
+# Similarly, create endpoints for updating email and password
+@app.post("/api/update_email")
+async def update_email(request: Request, new_email: str = Form(...)):
+    try:
+        nickname = request.cookies.get("user")
+        if not nickname:
+            return {"success": False, "message": "User not authenticated."}
+
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE users SET email = ? WHERE nickname = ?", (new_email, nickname))
+            conn.commit()
+
+        return {"success": True, "message": "Email updated successfully."}
+
+    except Exception as e:
+        return {"success": False, "message": f"An error occurred: {str(e)}"}
+
+@app.post("/api/update_password")
+async def update_password(request: Request, new_password: str = Form(...)):
+    try:
+        nickname = request.cookies.get("user")
+        if not nickname:
+            return {"success": False, "message": "User not authenticated."}
+        
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            cursor = conn.cursor()
+            hashed_password = bcrypt.hash(new_password)
+            cursor.execute("UPDATE users SET password = ? WHERE nickname = ?", (hashed_password, nickname))
+            conn.commit()
+        return {"success": True, "message": "Password updated successfully."}
+
+    except Exception as e:
+        return {"success": False, "message": f"An error occurred: {str(e)}"}
