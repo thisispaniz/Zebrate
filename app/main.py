@@ -343,29 +343,33 @@ def extract_venue_id(link: str) -> int:
 
 
 @app.post("/register/")
-async def register_user(nickname: str = Form(...), password: str = Form(...)):
+async def register_user(nickname: str = Form(...), email: str = Form(...), password: str = Form(...)):
     try:
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
             cursor = conn.cursor()
 
             # Check if the nickname already exists
-            cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
+            cursor.execute("SELECT * FROM users WHERE nickname = ? OR email = ?", (nickname, email))
             existing_user = cursor.fetchone()
 
             if existing_user:
-                logger.info(f"Nickname {nickname} already taken.")
-                return HTMLResponse(content="nickname already taken", status_code=400)
+                if existing_user[1] == nickname:
+                    logger.info(f"Username {nickname} already taken.")
+                    return HTMLResponse(content="Username already taken", status_code=400)
+                if existing_user[2] == email:
+                    logger.info(f"Email {email} already taken.")
+                    return HTMLResponse(content="Email already taken", status_code=400)
 
             # Hash the password for security
             hashed_password = bcrypt.hash(password)
 
             # Insert the new user into the database
-            cursor.execute("INSERT INTO users (nickname, password) VALUES (?, ?)", (nickname, hashed_password))
+            cursor.execute("INSERT INTO users (nickname, email, password) VALUES (?, ?, ?)", (nickname, email, hashed_password))
             conn.commit()
 
             logger.info(f"User {nickname} registered successfully.")
             # Redirect to the login page after successful registration
-            return RedirectResponse(url="/static/login.html", status_code=303)
+            return RedirectResponse(url="/login", status_code=303)
 
     except Exception as e:
         logger.error(f"Registration error: {e}")
