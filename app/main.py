@@ -1,6 +1,6 @@
 import sqlite3
 from fastapi import FastAPI, Request, Form, Depends
-from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Template
 from pathlib import Path
@@ -10,6 +10,7 @@ import logging
 from fastapi import HTTPException
 from typing import Optional
 import json
+from sqlite3 import connect
 import os
 
 app = FastAPI()
@@ -93,19 +94,38 @@ async def add_review(
 
 @app.get("/discover", response_class=HTMLResponse)
 async def get_discover(request: Request, query: str = None, filters: str = None):
-    """
-    Fetches and displays venues based on search query and filters.
-    """
+    try:
+        venues = fetch_venues(query, filters)
+        with open("discover.html", "r") as file:
+            template = Template(file.read())
+            user = request.cookies.get("user")
+        rendered_html = template.render(venues=venues, query=query or "", filters=filters or "{}", user=user, len = len(venues))
+        return HTMLResponse(content=rendered_html)
+    except Exception as e:
+        error_message = f"An error occurred: {e}"
+        raise HTTPException(status_code=500, detail=error_message)
+    
+
+
+@app.get("/api/discover", response_class=JSONResponse)
+async def api_discover(query: str = None, filters: str = None):
+    try:
+        venues = fetch_venues(query, filters)
+        venues_list = [dict(venue) for venue in venues]
+        return JSONResponse(content={"venues": venues_list})
+    except Exception as e:
+        error_message = f"An error occurred: {e}"
+        return JSONResponse(content={"error": error_message}, status_code=500)
+
+def fetch_venues(query: str, filters: str):
     try:
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
-        # Base SQL query to fetch all venues
         sql_query = "SELECT * FROM venues"
         parameters = []
 
-        # Apply search query if provided
         if query:
             sql_query += """
                 WHERE (
@@ -123,60 +143,47 @@ async def get_discover(request: Request, query: str = None, filters: str = None)
                 )
             """
             parameters.extend([f"%{query}%"] * 11)
-
-        # Initialize ordering clause
-        order_by_clauses = []
-
-        # Apply filters if provided
+        
         if filters:
             filters_dict = json.loads(filters)
+            filter_clauses = []
             for key, value in filters_dict.items():
-                if key in ['colors', 'smells', 'quiet', 'crowdedness']:
-                    # Ensure the value is numeric before adding to ordering
-                    try:
-                        value = int(value)
-                        if 1 <= value <= 4:
-                            order_by_clauses.append(f" {key} ASC")
-                    except ValueError:
-                        pass  # Handle the case where value is not an integer
-
+                if key == 'smells' or key == 'colors':
+                    filter_clauses.append(f"{key} <= ?")
+                    parameters.append(2)  # Restrict to values <= 2 for smells and colors
+                
                 elif key == 'food_variey':
-                    # Special case for food_variety to order descending
-                    order_by_clauses.append(f" {key} DESC")
+                    filter_clauses.append(f"{key} >= ?")
+                    parameters.append(3)  # Restrict to values >= 3 for food_variey
 
-                elif key in ['playground', 'fenced', 'quiet_zones', 'food_own', 'defined_duration']:
-                    # Filter for YES values only
-                    if value == 'YES':
-                        sql_query += f" WHERE {key} = ?"
-                        parameters.append('YES')
+                elif key == 'defined_duration':
+                    if value == 'NO':
+                        filter_clauses.append(f"{key} = ?")
+                        parameters.append(value)
 
-        # Apply ordering if any order_by clauses were added
-        if order_by_clauses:
-            sql_query += f" ORDER BY {', '.join(order_by_clauses)}"
+                elif key in ['quiet_zones', 'playground', 'fenced', 'food_own']:
+                    filter_clauses.append(f"{key} = ?")
+                    parameters.append(value)
+
+            if filter_clauses:
+                if "WHERE" in sql_query:
+                    sql_query += " AND " + " AND ".join(filter_clauses)
+                else:
+                    sql_query += " WHERE " + " AND ".join(filter_clauses)
 
         cursor.execute(sql_query, parameters)
         venues = cursor.fetchall()
-
         conn.close()
-
-        # Load the discover.html template and render it with the venues
-        with open("discover.html", "r") as file:
-            template = Template(file.read())
-            user = request.cookies.get("user")
-        rendered_html = template.render(venues=venues, query=query or "", user = user)
-        return HTMLResponse(content=rendered_html)
+        return venues
 
     except sqlite3.Error as e:
-        error_message = f"SQLite error: {e}"
-        raise HTTPException(status_code=500, detail=error_message)
+        raise Exception(f"SQLite error: {e}")
 
     except json.JSONDecodeError as e:
-        error_message = f"JSON decoding error: {e}"
-        raise HTTPException(status_code=400, detail=error_message)
+        raise Exception(f"JSON decoding error: {e}")
 
     except Exception as e:
-        error_message = f"An error occurred: {e}"
-        raise HTTPException(status_code=500, detail=error_message)
+        raise Exception(f"An error occurred: {e}")
 
 
 @app.get("/signup", response_class=HTMLResponse)
@@ -292,31 +299,39 @@ async def filter_venues(
 @app.get("/venue/{venue_id}", response_class=HTMLResponse)
 async def get_venue(venue_id: int, request: Request):
     """
-    Retrieve and display details for a specific venue based on its ID.
+    Retrieve and display details for a specific venue based on its ID, including reviews.
     """
     try:
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
             conn.row_factory = sqlite3.Row  # Access columns by name
             cursor = conn.cursor()
+            
+            # Fetch venue details
             cursor.execute("SELECT * FROM venues WHERE id = ?", (venue_id,))
             venue = cursor.fetchone()  # Fetch the venue details
 
-        if venue is None:
-            return HTMLResponse(content="Venue not found", status_code=404)
+            if venue is None:
+                return HTMLResponse(content="Venue not found", status_code=404)
 
-        # Convert the sqlite3.Row object to a dictionary for easier handling in the template
+            # Fetch reviews for the venue
+            cursor.execute("SELECT * FROM reviews WHERE venue_id = ?", (venue_id,))
+            reviews = cursor.fetchall()  # Fetch all reviews for the venue
+
+        # Convert the sqlite3.Row objects to dictionaries for easier handling in the template
         venue_dict = dict(venue)
+        reviews_dicts = [dict(review) for review in reviews]
 
-        # Render the template with venue details
+        # Render the template with venue details and reviews
         template_path = app_path / "venue_page.html"
         with open(template_path, "r") as file:
             template = Template(file.read())
             user = request.cookies.get("user")
-        rendered_html = template.render(venue=venue_dict, venue_id=venue_id, user=user)
+        rendered_html = template.render(venue=venue_dict, reviews=reviews_dicts, venue_id=venue_id, user=user)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
-        return HTMLResponse(content=f"An unexpected error occurred {e}", status_code=500)
+        return HTMLResponse(content=f"An unexpected error occurred: {e}", status_code=500)
+
 
 
 # Function to extract venue ID from the link (if needed elsewhere)
@@ -455,5 +470,49 @@ async def read_root(request: Request):
     content = render_template(app_path / "contactus.html", user=user)
     return HTMLResponse(content=content)
 
+@app.post("/request-venue/", response_class=HTMLResponse)
+async def request_venue(
+    request: Request,
+    new_venue_name: str = Form(...),
+    google_link: str = Form(None),
+    colors: int = Form(None),
+    smells: int = Form(None),
+    quiet: int = Form(None),
+    crowdedness: int = Form(None),
+    food_variey: int = Form(None),
+    playground: str = Form(None),
+    fenced: str = Form(None),
+    quiet_zones: str = Form(None),
+    food_own: str = Form(None),
+    defined_duration: str = Form(None)
+):
+    # Prepare SQL query to insert a new request into the database
+    sql_query = """
+        INSERT INTO requests (
+            new_venue_name, google_link, colors, smells, quiet,
+            crowdedness, food_variey, playground, fenced,
+            quiet_zones, food_own, defined_duration
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+    
+    parameters = (
+        new_venue_name, google_link, colors, smells, quiet,
+        crowdedness, food_variey, playground, fenced,
+        quiet_zones, food_own, defined_duration
+    )
+
+    # Connect to the database and execute the query
+    with connect(db_path, check_same_thread=False) as conn:
+        cursor = conn.cursor()
+        cursor.execute(sql_query, parameters)
+        conn.commit()
+
+    # Load the template to render a response
+    template_path = app_path / "request_confirmation.html"  # Ensure this template exists
+    with open(template_path, "r") as file:
+        template = Template(file.read())
+
+    rendered_html = template.render(message="Venue request submitted successfully!")
+    return HTMLResponse(content=rendered_html)
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
