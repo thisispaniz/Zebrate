@@ -1,6 +1,6 @@
 import sqlite3
 from fastapi import FastAPI, Request, Form, Depends
-from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Template
 from pathlib import Path
@@ -94,19 +94,38 @@ async def add_review(
 
 @app.get("/discover", response_class=HTMLResponse)
 async def get_discover(request: Request, query: str = None, filters: str = None):
-    """
-    Fetches and displays venues based on search query and filters.
-    """
+    try:
+        venues = fetch_venues(query, filters)
+        with open("discover.html", "r") as file:
+            template = Template(file.read())
+            user = request.cookies.get("user")
+        rendered_html = template.render(venues=venues, query=query or "", filters=filters or "{}", user=user, len = len(venues))
+        return HTMLResponse(content=rendered_html)
+    except Exception as e:
+        error_message = f"An error occurred: {e}"
+        raise HTTPException(status_code=500, detail=error_message)
+    
+
+
+@app.get("/api/discover", response_class=JSONResponse)
+async def api_discover(query: str = None, filters: str = None):
+    try:
+        venues = fetch_venues(query, filters)
+        venues_list = [dict(venue) for venue in venues]
+        return JSONResponse(content={"venues": venues_list})
+    except Exception as e:
+        error_message = f"An error occurred: {e}"
+        return JSONResponse(content={"error": error_message}, status_code=500)
+
+def fetch_venues(query: str, filters: str):
     try:
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
-        # Base SQL query to fetch all venues
         sql_query = "SELECT * FROM venues"
         parameters = []
 
-        # Apply search query if provided
         if query:
             sql_query += """
                 WHERE (
@@ -124,60 +143,47 @@ async def get_discover(request: Request, query: str = None, filters: str = None)
                 )
             """
             parameters.extend([f"%{query}%"] * 11)
-
-        # Initialize ordering clause
-        order_by_clauses = []
-
-        # Apply filters if provided
+        
         if filters:
             filters_dict = json.loads(filters)
+            filter_clauses = []
             for key, value in filters_dict.items():
-                if key in ['colors', 'smells', 'quiet', 'crowdedness']:
-                    # Ensure the value is numeric before adding to ordering
-                    try:
-                        value = int(value)
-                        if 1 <= value <= 4:
-                            order_by_clauses.append(f" {key} ASC")
-                    except ValueError:
-                        pass  # Handle the case where value is not an integer
-
+                if key == 'smells' or key == 'colors':
+                    filter_clauses.append(f"{key} <= ?")
+                    parameters.append(2)  # Restrict to values <= 2 for smells and colors
+                
                 elif key == 'food_variey':
-                    # Special case for food_variety to order descending
-                    order_by_clauses.append(f" {key} DESC")
+                    filter_clauses.append(f"{key} >= ?")
+                    parameters.append(3)  # Restrict to values >= 3 for food_variey
 
-                elif key in ['playground', 'fenced', 'quiet_zones', 'food_own', 'defined_duration']:
-                    # Filter for YES values only
-                    if value == 'YES':
-                        sql_query += f" WHERE {key} = ?"
-                        parameters.append('YES')
+                elif key == 'defined_duration':
+                    if value == 'NO':
+                        filter_clauses.append(f"{key} = ?")
+                        parameters.append(value)
 
-        # Apply ordering if any order_by clauses were added
-        if order_by_clauses:
-            sql_query += f" ORDER BY {', '.join(order_by_clauses)}"
+                elif key in ['quiet_zones', 'playground', 'fenced', 'food_own']:
+                    filter_clauses.append(f"{key} = ?")
+                    parameters.append(value)
+
+            if filter_clauses:
+                if "WHERE" in sql_query:
+                    sql_query += " AND " + " AND ".join(filter_clauses)
+                else:
+                    sql_query += " WHERE " + " AND ".join(filter_clauses)
 
         cursor.execute(sql_query, parameters)
         venues = cursor.fetchall()
-
         conn.close()
-
-        # Load the discover.html template and render it with the venues
-        with open("discover.html", "r") as file:
-            template = Template(file.read())
-            user = request.cookies.get("user")
-        rendered_html = template.render(venues=venues, query=query or "", user = user)
-        return HTMLResponse(content=rendered_html)
+        return venues
 
     except sqlite3.Error as e:
-        error_message = f"SQLite error: {e}"
-        raise HTTPException(status_code=500, detail=error_message)
+        raise Exception(f"SQLite error: {e}")
 
     except json.JSONDecodeError as e:
-        error_message = f"JSON decoding error: {e}"
-        raise HTTPException(status_code=400, detail=error_message)
+        raise Exception(f"JSON decoding error: {e}")
 
     except Exception as e:
-        error_message = f"An error occurred: {e}"
-        raise HTTPException(status_code=500, detail=error_message)
+        raise Exception(f"An error occurred: {e}")
 
 
 @app.get("/signup", response_class=HTMLResponse)
@@ -337,29 +343,33 @@ def extract_venue_id(link: str) -> int:
 
 
 @app.post("/register/")
-async def register_user(nickname: str = Form(...), password: str = Form(...)):
+async def register_user(nickname: str = Form(...), email: str = Form(...), password: str = Form(...)):
     try:
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
             cursor = conn.cursor()
 
             # Check if the nickname already exists
-            cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
+            cursor.execute("SELECT * FROM users WHERE nickname = ? OR email = ?", (nickname, email))
             existing_user = cursor.fetchone()
 
             if existing_user:
-                logger.info(f"Nickname {nickname} already taken.")
-                return HTMLResponse(content="nickname already taken", status_code=400)
+                if existing_user[1] == nickname:
+                    logger.info(f"Username {nickname} already taken.")
+                    return HTMLResponse(content="Username already taken", status_code=400)
+                if existing_user[2] == email:
+                    logger.info(f"Email {email} already taken.")
+                    return HTMLResponse(content="Email already taken", status_code=400)
 
             # Hash the password for security
             hashed_password = bcrypt.hash(password)
 
             # Insert the new user into the database
-            cursor.execute("INSERT INTO users (nickname, password) VALUES (?, ?)", (nickname, hashed_password))
+            cursor.execute("INSERT INTO users (nickname, email, password) VALUES (?, ?, ?)", (nickname, email, hashed_password))
             conn.commit()
 
             logger.info(f"User {nickname} registered successfully.")
             # Redirect to the login page after successful registration
-            return RedirectResponse(url="/static/login.html", status_code=303)
+            return RedirectResponse(url="/login", status_code=303)
 
     except Exception as e:
         logger.error(f"Registration error: {e}")

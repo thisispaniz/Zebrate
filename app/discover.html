@@ -8,115 +8,14 @@
     <link rel="icon" href="/static/images/z_logo(orange).png">
     <link rel="stylesheet" href="/static/styles.css">
     <link rel="stylesheet" href="/static/styles-discover.css">
-    <script>
-        // Function to toggle filter button state
-        function toggleFilter(button, filterName) {
-            if (button.classList.contains('unselected')) {
-                button.classList.remove('unselected');
-                button.classList.add('selected');
-            } else {
-                button.classList.remove('selected');
-                button.classList.add('unselected');
-            }
-            updateFilters();
-            submitFilters(); // Automatically submit the form
-        }
-    
-        // Function to collect and update the selected filters
-        function updateFilters() {
-            let selectedFilters = {};
-            document.querySelectorAll('.filterbtn.selected').forEach(button => {
-                selectedFilters[button.getAttribute('data-filter')] = 'YES';
-            });
-            document.getElementById('filters').value = JSON.stringify(selectedFilters);
-        }
-    
-        // Collect filters and submit the form
-        function submitFilters() {
-            updateFilters();
-            document.getElementById('filterForm').submit(); // Submit the form automatically
-        }
-    
-        // Function to reset all filters
-        function resetFilters() {
-            // Remove 'selected' class and add 'unselected' to all filter buttons
-            document.querySelectorAll('.filterbtn').forEach(button => {
-                button.classList.remove('selected');
-                button.classList.add('unselected');
-            });
-            // Clear the hidden filters input
-            document.getElementById('filters').value = '';
-            // Submit the form to reset filters
-            document.getElementById('filterForm').submit();
-        }
-
-        // Function to update the "Showing results for" text based on selected filters
-        function updateResultsText(selectedFilters) {
-            let resultsText = 'Showing results';
-            let filtersApplied = false;
-
-            // Check each filter type and append to results text if selected
-            if (selectedFilters['crowdedness']) {
-                resultsText += ` for uncrowded venues,`;
-                filtersApplied = true;
-            }
-            if (selectedFilters['quiet']) {
-                resultsText += ` for quiet venues,`;
-                filtersApplied = true;
-            }
-            if (selectedFilters['quiet_zones']) {
-                resultsText += ` with quiet zones,`;
-                filtersApplied = true;
-            }
-            if (selectedFilters['playground']) {
-                resultsText += ` with play area,`;
-                filtersApplied = true;
-            }
-            if (selectedFilters['fenced']) {
-                resultsText += ` with fenced play area,`;
-                filtersApplied = true;
-            }
-            if (selectedFilters['colors']) {
-                resultsText += ` with no flashy colors,`;
-                filtersApplied = true;
-            }
-            if (selectedFilters['food_variey']) {
-                resultsText += ` with food options,`;
-                filtersApplied = true;
-            }
-            if (selectedFilters['smells']) {
-                resultsText += ` with no extreme smells,`;
-                filtersApplied = true;
-            }
-            if (selectedFilters['food_own']) {
-                resultsText += ` where bringing your own food is allowed,`;
-                filtersApplied = true;
-            }
-            if (selectedFilters['defined_duration']) {
-                resultsText += ` with defined stay duration,`;
-                filtersApplied = true;
-            }
-
-            // Remove trailing comma and display results text
-            resultsText = resultsText.slice(0, -1) + ` for "${document.getElementById('inputbox').value}"`;
-            document.getElementById('resultsText').innerText = resultsText;
-
-            // Hide results text if no filters applied
-            document.getElementById('resultsText').style.display = filtersApplied ? 'block' : 'none';
-        }
-
-        // Function to update the query placeholder with the selected filter text
-        function updateQueryPlaceholder(filterText) {
-            document.getElementById('queryPlaceholder').innerText = filterText;
-        }
-    </script>
+    <script src="/static/filter-search.js"></script>
     
     <style>
         /* Add data-filter attributes to filter buttons */
         .filterbtn[data-filter] { cursor: pointer; }
     </style>
 </head>
-<body>
+<body onload="initializeFilters()">
     <div class="content">
         <div class="navbar">
             <div class="navbarlogo">
@@ -138,23 +37,36 @@
         </div>
     </div>
     
-    <div class="contentsearchbox searchboxbig" style="margin-top: 10px;">
-        <form id="filterForm" action="/discover" method="get" onsubmit="submitFilters()">
-            <input type="text" id="inputbox" name="query" placeholder="Search locations..." autocomplete="off" style="width: 470px;">
+    <div class="contentsearchbox searchboxbig search-container" style="margin-top: 10px; display: none;">
+        <form id="filterForm" onsubmit="applyFilters()">
+            <input type="text" id="search-query" value="{{ query }}" placeholder="Search locations..." autocomplete="off" style="width: 470px;">
             <!-- Hidden input to hold selected filters -->
             <input type="hidden" id="filters" name="filters" value="">
             <button type="submit" style="font-size: 16px;">Search</button>
-        
+        </form>
+    </div>
+    <div class="contentsearchbox searchboxbig" style="margin-top: 10px;">
+        <form action="/discover" method="get">
+            <input type="text" id="inputbox" name="query" placeholder="Search locations..." autocomplete="off" style="width: 470px;">
+            <button type="submit" style="font-size: 16px;">Search</button>
+        </form>
     </div>
 
+    
     <div class="discovercontent">
+        {% if query %}
+        <div id="numm" style="margin-left: 35px;"><p style="font-size: 20px; font-weight: 500;">Showing {{len}} results for "{{query}}"</p></div>
+        {% else %}
+        <div id="numm" style="margin-left: 35px;"><p style="font-size: 20px; font-weight: 500;">Showing {{len}} results</p></div>
+        {% endif %}
+        <div id="results-count" style="margin-left: 35px;"></div>
         <h1 id="resultsText" class="res-heading" style="display: none;">Showing results for "<span id="queryPlaceholder"></span>"</h1> <!-- Dynamic search term display -->
         <div class="discoverven maingrid">
             <div style="width: 320px;">
-                <div class="border" style="padding: 10px 30px 50px 30px; border-radius: 20px;">
+                <div class="border filters-container" style="padding: 10px 30px 50px 30px; border-radius: 20px;">
                     <h1 class="res-heading">Filters</h1>
                     <h2 class="head2">Select any requirements for your best experience</h2>
-                    <button type="button" onclick="resetFilters()" style="margin-left: 10px; font-size: 16px;">Reset Filters</button>
+                    <!--button type="button" onclick="resetFilters()" style="margin-left: 10px; font-size: 16px;">Reset Filters</button-->
                     <div style="margin-top: 30px;">
                         <!--h3 class="filterlabel">Venue must be:</h3>
                         <div class="filtergroup">
@@ -174,13 +86,13 @@
                         <h3 class="filterlabel">Venue must allow:</h3>
                         <div class="filtergroup">
                             <div class="filterbtn unselected" data-filter="food_own" onclick="toggleFilter(this, 'food_own')">Bringing your own food</div>
-                            <div class="filterbtn unselected" data-filter="defined_duration" onclick="toggleFilter(this, 'defined_duration')">Defined stay duration</div>
+                            <div class="filterbtn unselected" data-filter="defined_duration" onclick="toggleFilter(this, 'defined_duration')">Undefined stay duration</div>
                         </div>
                     </div>
                 </div>
             </div>
-        
-            <div class="venuelist" style="margin-top: -17px;">
+            <input type="hidden" id="filters" value="{{ filters }}">
+            <div class="venuelist results-container" style="margin-top: -17px;">
                 {% if venues %}
                 <ol>
                     {% for venue in venues %}
@@ -199,7 +111,7 @@
                                 </div>
                                 <div class="listrate">
                                     <!-- Crowd Rating -->
-                                    <div class="sameparent" style="margin-top: -10px; display: flex; align-items: center; justify-content: space-between; width: 300px;">
+                                    <div class="sameparent" style=" display: flex; align-items: center; justify-content: space-between; width: 300px;">
                                         <p class="same">Crowd</p>
                                         <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
                                             {% for i in range(5) %}
