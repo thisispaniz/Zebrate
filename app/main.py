@@ -99,7 +99,7 @@ async def get_discover(request: Request, query: str = None, filters: str = None)
         with open("discover.html", "r") as file:
             template = Template(file.read())
             user = request.cookies.get("user")
-        rendered_html = template.render(venues=venues, query=query or "", filters=filters or "{}", user=user)
+        rendered_html = template.render(venues=venues, query=query or "", filters=filters or "{}", user=user, len = len(venues))
         return HTMLResponse(content=rendered_html)
     except Exception as e:
         error_message = f"An error occurred: {e}"

@@ -34,10 +34,18 @@ function updateFilters() {
 
 function updateResults(venues) {
     let resultsContainer = document.querySelector('.results-container');
+    let counter = document.getElementById('numm');
+    let query = document.getElementById('search-query').value;
     resultsContainer.innerHTML = '';
 
     if (venues.length > 0) {
         let ol = document.createElement('ol');
+        if (query){
+            counter.innerHTML= `<p style="font-size: 20px; font-weight: 500;">Showing ${venues.length} results for "${query}"</p>`
+        } else{
+            counter.innerHTML= `<p style="font-size: 20px; font-weight: 500;">Showing ${venues.length} results</p>`
+        }
+        
         venues.forEach(venue => {
             let li = document.createElement('li');
             li.classList.add('listedvenue', 'border');
@@ -79,6 +87,11 @@ function updateResults(venues) {
         });
         resultsContainer.appendChild(ol);
     } else {
+        if (query){
+            counter.innerHTML= `<p style="font-size: 20px; font-weight: 500;">Showing ${venues.length} results for "${query}"</p>`
+        } else{
+            counter.innerHTML= `<p style="font-size: 20px; font-weight: 500;">Showing ${venues.length} results</p>`
+        }
         let message = document.createElement('div');
         message.style.marginRight = '350px';
         message.style.marginTop = '40px';
