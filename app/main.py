@@ -4,7 +4,6 @@ from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse, JSON
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Template
 from pathlib import Path
-from fastapi import Form
 from passlib.hash import bcrypt
 import logging
 from fastapi import HTTPException
@@ -12,6 +11,7 @@ from typing import Optional
 import json
 from sqlite3 import connect
 import os
+from fastapi import Query
 
 app = FastAPI()
 
@@ -512,7 +512,7 @@ async def request_venue(
         conn.commit()
 
     # Load the template to render a response
-    template_path = app_path / "request_confirmation.html"  # Ensure this template exists
+    template_path = app_path / "request_a_new_venue.html"  # Ensure this template exists
     with open(template_path, "r") as file:
         template = Template(file.read())
 
@@ -548,14 +548,12 @@ async def login_admin(username: str = Form(...), password: str = Form(...)):
         return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
     
 @app.get("/admin-dashboard", response_class=HTMLResponse)
-async def get_admin_dashboard(request: Request):
+async def get_admin_dashboard(request: Request, user_query: str = ""):
     try:
-        # Check if the 'admin' cookie is present
         admin = request.cookies.get("admin")
         if not admin:
             return HTMLResponse(content="Nickname not found in the request", status_code=400)
 
-        # Open the database connection and execute queries
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
@@ -564,8 +562,19 @@ async def get_admin_dashboard(request: Request):
             cursor.execute("SELECT * FROM requests")
             new_requests = cursor.fetchall()
 
-            # Fetch all users
-            cursor.execute("SELECT * FROM users")
+            # SQL query for searching users
+            if user_query:
+                user_sql_query = """
+                    SELECT * FROM users WHERE
+                    nickname LIKE ? OR
+                    email LIKE ?
+                """
+                user_parameters = [f"%{user_query}%"] * 2  # Apply the search term to all fields
+            else:
+                user_sql_query = "SELECT * FROM users"
+                user_parameters = []  # No parameters needed for a full table query
+
+            cursor.execute(user_sql_query, user_parameters)
             users = cursor.fetchall()
 
             # Fetch all venues
@@ -576,23 +585,47 @@ async def get_admin_dashboard(request: Request):
         logger.error(f"Error loading admin page: {e}")
         return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
 
-    # Render the admin dashboard template
     try:
         template_path = app_path / "admin-dashboard.html"
         with open(template_path, "r") as file:
             template = Template(file.read())
-        
-        content = template.render(
-            new_requests=new_requests,
-            users=users,
-            venues=venues,
-            user=admin
-        )
+            content = template.render(
+                new_requests=new_requests,
+                users=users,
+                venues=venues,
+                user=admin,
+                search_query=user_query  # Pass the search query back to the template for displaying
+            )
         return HTMLResponse(content=content)
 
     except Exception as e:
         logger.error(f"Error rendering template: {e}")
         return HTMLResponse(content=f"An error occurred while rendering the page: {e}", status_code=500)
+
+@app.post("/update-user")
+async def update_user(
+    user_id: int = Form(...),
+    new_nickname: str = Form(""),
+    new_email: str = Form("")
+):
+    try:
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            cursor = conn.cursor()
+
+            # Update user information based on the provided new values
+            if new_nickname:
+                cursor.execute("UPDATE users SET nickname = ? WHERE id = ?", (new_nickname, user_id))
+            if new_email:
+                cursor.execute("UPDATE users SET email = ? WHERE id = ?", (new_email, user_id))
+
+            conn.commit()
+            logger.info(f"Updated user {user_id} with new nickname '{new_nickname}' and new email '{new_email}'")
+
+        return RedirectResponse(url="/admin-dashboard", status_code=302)
+
+    except Exception as e:
+        logger.error(f"Error updating user: {e}")
+        return HTMLResponse(content=f"An error occurred while updating the user: {e}", status_code=500)
 
 @app.get("/admin-login", response_class=HTMLResponse)
 async def get_admin_login():
@@ -600,5 +633,29 @@ async def get_admin_login():
     Serves the admin-login.html file for admin login.
     """
     return FileResponse(app_path / "admin-login.html")
+
+
+@app.get("/add-venue")
+
+# We need to alter the query according to our "venues" table; also we need to alter the corresponding javascript.
+# so far, the method add_venue is out of order
+async def add_venue(name: str = Query(...)):
+    try:
+        # Here you can add the venue to the database with the provided name
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            cursor = conn.cursor()
+
+            # Perform the insertion of the new venue
+            cursor.execute("INSERT INTO venues (name) VALUES (?)", (name,))
+            conn.commit()
+
+            logger.info(f"Added new venue: {name}")
+
+        return RedirectResponse(url="/admin-dashboard", status_code=302)
+
+    except Exception as e:
+        logger.error(f"Error adding venue: {e}")
+        return HTMLResponse(content=f"An error occurred while adding the venue: {e}", status_code=500)
+
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")

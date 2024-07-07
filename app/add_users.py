@@ -78,11 +78,16 @@ CREATE TABLE IF NOT EXISTS admin (
 )
 """
 
+delete_from_venues_sql = """
+DELETE FROM requests WHERE id = 2;
+"""
+
 # Execute the SQL commands to ensure tables exist
 #cursor.execute(create_users_table_sql)
 #cursor.execute(create_reviews_sql)
 #cursor.execute(create_request_sql)
-cursor.execute(create_admin_table_sql)
+#cursor.execute(create_admin_table_sql)
+cursor.execute(delete_from_venues_sql)
 
 # Add the new columns if they do not already exist
 for column_name, column_type in columns_to_add:
