@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/dashboard-styles.css">
+</head>
+<body>
+    <header>
+        <h1>Zebrate Admin Dashboard</h1>
+    </header>
+<style>
+    table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+</style>
+    <main>
+        <section id="requests">
+            <h2>New Requests</h2>
+            <div class="request-list">
+                {% if new_requests %}
+                    <ul>
+                        {% for request in new_requests %}
+                            <li>
+                                <h3>{{ request.new_venue_name }}</h3>
+                                <button onclick="showSQL('{{ request.new_venue_name }}')">Show SQL</button>
+                                <div id="sql-output-{{ request.new_venue_name }}"></div>
+                                <table>
+                                    <tr><td><strong>Review:</strong></td><td>{{ request.venue_review }}</td></tr>
+                                    <tr><td><strong>Review Title:</strong></td><td>{{ request.venue_review_title }}</td></tr>
+                                    <tr><td><strong>Google Link:</strong></td><td><a href="{{ request.google_link }}" target="_blank">{{ request.google_link }}</a></td></tr>
+                                    <tr><td><strong>Colors:</strong></td><td>{{ request.colors }}</td></tr>
+                                    <tr><td><strong>Smells:</strong></td><td>{{ request.smells }}</td></tr>
+                                    <tr><td><strong>Quiet:</strong></td><td>{{ request.quiet }}</td></tr>
+                                    <tr><td><strong>Crowdedness:</strong></td><td>{{ request.crowdedness }}</td></tr>
+                                    <tr><td><strong>Food Variey:</strong></td><td>{{ request.food_variey }}</td></tr>
+                                    <tr><td><strong>Playground:</strong></td><td>{{ request.playground }}</td></tr>
+                                    <tr><td><strong>Fenced:</strong></td><td>{{ request.fenced }}</td></tr>
+                                    <tr><td><strong>Quiet Zones:</strong></td><td>{{ request.quiet_zones }}</td></tr>
+                                    <tr><td><strong>Food Own:</strong></td><td>{{ request.food_own }}</td></tr>
+                                    <tr><td><strong>Defined Duration:</strong></td><td>{{ request.defined_duration }}</td></tr>
+                                </table>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No new requests.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <section id="user-accounts">
+            <h2>User Accounts</h2>
+            <div class="search-bar">
+                <form action="/admin-dashboard" method="get">
+                    <input type="text" id="user-search" name="user_query" placeholder="Search users..." value="{{ search_query|default('') }}">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div id="user-list">
+                {% if users %}
+                    <ul>
+                        {% for user in users %}
+                            <li id="user-{{ user.id }}" class="user-item">
+                                <span onclick="editUser('{{ user.nickname }}', '{{ user.email }}', '{{ user.id }}')">{{ user.nickname }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No users found.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <section id="venues">
+            <h2>Venues</h2>
+            <div class="search-bar">
+                <input type="text" id="venue-search" placeholder="Search for venues...">
+                <button onclick="searchVenues()">Search</button>
+            </div>
+            <div id="venue-list">
+                {% if venues %}
+                    <ul>
+                        {% for venue in venues %}
+                            <li class="venue-item">{{ venue.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No venues found.</p>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    <!-- Include the JavaScript after the content for better performance -->
+    <script>
+
+        function searchVenues() {
+            const input = document.getElementById('venue-search').value.toLowerCase();
+            const venueList = document.getElementById('venue-list');
+            const venues = venueList.getElementsByClassName('venue-item');
+
+            for (let i = 0; i < venues.length; i++) {
+                const venueName = venues[i].textContent || venues[i].innerText;
+                if (venueName.toLowerCase().indexOf(input) > -1) {
+                    venues[i].style.display = "";
+                } else {
+                    venues[i].style.display = "none";
+                }
+            }
+        }
+
+
+        function editUser(nickname, email, userId) {
+            const formHtml = `
+                <form id="edit-user-form" action="/update-user" method="post">
+                    <input type="hidden" name="user_id" value="${userId}">
+                    <label for="new_nickname">New Nickname:</label>
+                    <input type="text" id="new_nickname" name="new_nickname" value="${nickname}">
+                    <label for="new_email">New Email:</label>
+                    <input type="email" id="new_email" name="new_email" value="${email}">
+                    <button type="submit">Update</button>
+                    <button type="button" onclick="cancelEdit()">Cancel</button>
+                </form>
+            `;
+
+            const userItem = document.getElementById(`user-${userId}`);
+            userItem.innerHTML = formHtml;
+        }
+
+        function cancelEdit() {
+            window.location.reload();
+        }
+
+        function showSQL(newVenueName) {
+    const sqlQuery = `
+        INSERT INTO venues (name, address, photo_url, colors, smells, quiet, crowdedness, food_variey, playground, fenced, quiet_zones, food_own, defined_duration)
+        SELECT 
+            '${newVenueName}' AS name,
+            'not provided yet' AS address,
+            google_link AS photo_url,
+            colors,
+            smells,
+            quiet,
+            crowdedness,
+            food_variey,
+            playground,
+            fenced,
+            quiet_zones,
+            food_own,
+            defined_duration
+        FROM 
+            requests
+        WHERE 
+            new_venue_name = '${newVenueName}';
+    `;
+
+    const sqlOutputDiv = document.getElementById(`sql-output-${newVenueName}`);
+    sqlOutputDiv.textContent = sqlQuery;
+    sqlOutputDiv.style.whiteSpace = 'pre-wrap'; // Preserve formatting
+}
+
+    </script>
+</body>
+</html>
