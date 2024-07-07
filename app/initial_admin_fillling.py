@@ -11,9 +11,15 @@ cursor = conn.cursor()
 
 fill_admin = """ 
 INSERT INTO admin (username, password)
-VALUES ('Zebrate', 'Zebrate-admin1234'); """
+VALUES ('Zebrate', '$2a$12$Zl4XqePN/Qr7Wd3RgjKsJe58twIUIT1mdF2oktuNLZQd30Vk2rJQi'); """
 
-cursor.execute(fill_admin)
+delete_row = """
+DELETE FROM admin WHERE id = 1;
+
+"""
+
+#cursor.execute(fill_admin)
+cursor.execute(delete_row)
 
 # Commit the changes and close the connection
 conn.commit()

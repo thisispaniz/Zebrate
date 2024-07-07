@@ -334,12 +334,12 @@ async def get_venue(venue_id: int, request: Request):
 
 
 
-# Function to extract venue ID from the link (if needed elsewhere)
+""" # Function to extract venue ID from the link (if needed elsewhere)
 def extract_venue_id(link: str) -> int:
     match = re.search(r'/venue/(\d+)', link)
     if match:
         return int(match.group(1))
-    raise ValueError("Invalid venue link. Could not extract venue ID.")
+    raise ValueError("Invalid venue link. Could not extract venue ID.") """
 
 
 @app.post("/register/")
@@ -519,7 +519,7 @@ async def request_venue(
     rendered_html = template.render(message="Venue request submitted successfully!")
     return HTMLResponse(content=rendered_html)
 
-@app.post("/login-admin")
+@app.post("/login-admin/")
 async def login_admin(username: str = Form(...), password: str = Form(...)):
     try:
         with sqlite3.connect(db_path, check_same_thread=False) as conn:
@@ -531,7 +531,7 @@ async def login_admin(username: str = Form(...), password: str = Form(...)):
             user = cursor.fetchone()
             if user and bcrypt.verify(password, user["password"]):
                 response = RedirectResponse(url="/admin-dashboard", status_code=303)
-                response.set_cookie(key="user", value=username)
+                response.set_cookie(key="admin", value=username)
                 return response
 
             if not user:
@@ -547,42 +547,58 @@ async def login_admin(username: str = Form(...), password: str = Form(...)):
         logger.error(f"Login error: {e}")
         return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
     
-@app.get("/admin-dashboard")
-async def admin_dashboard(request: Request):
-    
-    # Admin dashboard endpoint for viewing and managing venues, users, and new requests.
-    
-    user = request.cookies.get("user")
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
+@app.get("/admin-dashboard", response_class=HTMLResponse)
+async def get_admin_dashboard(request: Request):
     try:
-        # Fetch new venue requests
-        cursor.execute("SELECT * FROM requests")
-        new_requests = cursor.fetchall()
+        # Check if the 'admin' cookie is present
+        admin = request.cookies.get("admin")
+        if not admin:
+            return HTMLResponse(content="Nickname not found in the request", status_code=400)
 
-        # Fetch all users
-        cursor.execute("SELECT * FROM users")
-        users = cursor.fetchall()
+        # Open the database connection and execute queries
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
 
-        # Fetch all venues
-        cursor.execute("SELECT * FROM venues")
-        venues = cursor.fetchall()
+            # Fetch new venue requests
+            cursor.execute("SELECT * FROM requests")
+            new_requests = cursor.fetchall()
 
-    finally:
-        conn.close()
+            # Fetch all users
+            cursor.execute("SELECT * FROM users")
+            users = cursor.fetchall()
+
+            # Fetch all venues
+            cursor.execute("SELECT * FROM venues")
+            venues = cursor.fetchall()
+
+    except Exception as e:
+        logger.error(f"Error loading admin page: {e}")
+        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
 
     # Render the admin dashboard template
-    content = render_template("admin-dashboard.html", new_requests=new_requests, users=users, venues=venues, user=user)
-    return HTMLResponse(content=content)
+    try:
+        template_path = app_path / "admin-dashboard.html"
+        with open(template_path, "r") as file:
+            template = Template(file.read())
+        
+        content = template.render(
+            new_requests=new_requests,
+            users=users,
+            venues=venues,
+            user=admin
+        )
+        return HTMLResponse(content=content)
+
+    except Exception as e:
+        logger.error(f"Error rendering template: {e}")
+        return HTMLResponse(content=f"An error occurred while rendering the page: {e}", status_code=500)
 
 @app.get("/admin-login", response_class=HTMLResponse)
-def get_adminlogin():
+async def get_admin_login():
     """
-    Serves the login.html file for admin login.
+    Serves the admin-login.html file for admin login.
     """
     return FileResponse(app_path / "admin-login.html")
-
-
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
