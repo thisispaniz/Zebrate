@@ -453,6 +453,36 @@ async def get_welcome(request: Request):
     except Exception as e:
         logger.error(f"Error loading welcome page: {e}")
         return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+    
+@app.get("/account/settings", response_class=HTMLResponse)
+async def get_welcome(request: Request): 
+    try:
+        nickname = request.cookies.get("user")
+        if not nickname:
+            return HTMLResponse(content="Nickname not found in the request", status_code=400)
+
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Fetch all venues to populate the dropdown
+            cursor.execute("SELECT email FROM users WHERE nickname = ?", (nickname,))
+            user_email = cursor.fetchone()
+            if not user_email:
+                return HTMLResponse(content="User not found in the database", status_code=404)
+            email = user_email["email"]
+
+        # Load dashboard.html template and render it with the reviews and venues data
+        template_path = app_path / "settings.html"
+        with open(template_path, "r") as file:
+            template = Template(file.read())
+        user = request.cookies.get("user")
+        rendered_html = template.render(email=email, nickname=nickname, user=user)
+        return HTMLResponse(content=rendered_html)
+
+    except Exception as e:
+        logger.error(f"Error loading welcome page: {e}")
+        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
 
 
 @app.get("/logout")
