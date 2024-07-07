@@ -52,8 +52,14 @@
         </form>
     </div>
 
-
+    
     <div class="discovercontent">
+        {% if query %}
+        <div id="numm" style="margin-left: 35px;"><p style="font-size: 20px; font-weight: 500;">Showing {{len}} results for "{{query}}"</p></div>
+        {% else %}
+        <div id="numm" style="margin-left: 35px;"><p style="font-size: 20px; font-weight: 500;">Showing {{len}} results</p></div>
+        {% endif %}
+        <div id="results-count" style="margin-left: 35px;"></div>
         <h1 id="resultsText" class="res-heading" style="display: none;">Showing results for "<span id="queryPlaceholder"></span>"</h1> <!-- Dynamic search term display -->
         <div class="discoverven maingrid">
             <div style="width: 320px;">
