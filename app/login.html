@@ -6,8 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/z_logo(orange).png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <title>Zebrate - Login</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <script defer src="/static/password.js"></script>
+    <script></script>
 </head>
 <body>
     <div class="auth-container login-container">
@@ -17,9 +20,12 @@
         <h1>Login</h1>
         <form action="/login/" method="post">
             <label for="nickname">Username:</label>
-            <input type="text" id="nickname" name="nickname" required>
+            <input placeholder="Enter your username..." type="text" id="nickname" name="nickname" required>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+            <div class="password-input-box">
+                <input  type="password" placeholder="Enter your password..." id="passwordInp" class="password-input" name="password" required>
+                <i class="fa-solid fa-eye show-password" style="color: #4f4f4f;"></i>
+            </div>
             <button type="submit">Log in</button>
         </form>
         <div class="auth-links login-links">
