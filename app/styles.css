@@ -827,6 +827,13 @@ input {
         font-size: 14px;
         color: #F7A072;
     }
+    .password-checklist2 .list-item {
+        font-size: 14px;
+        color: #F7F9F3;
+    }
+    .password-checklist2 .list-item.valid {
+        color: #429B80;
+    }
     .password-checklist .list-item.valid {
         color: #429B80;
     }
