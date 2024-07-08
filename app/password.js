@@ -46,3 +46,14 @@ document.addEventListener('DOMContentLoaded', function () {
     passwordInput.addEventListener('input', validatePassword);
     
 });
+
+let showPasswordBtn = document.querySelector('.show-password');
+let passwordInp = document.querySelector('.password-input');
+let passwordChecklist = document.querySelectorAll('.list-item');
+
+showPasswordBtn.addEventListener('click', () => {
+    showPasswordBtn.classList.toggle('fa-eye');
+    showPasswordBtn.classList.toggle('fa-eye-slash');
+
+    passwordInp.type = (passwordInp.type === 'password') ? 'text' : 'password';
+});
