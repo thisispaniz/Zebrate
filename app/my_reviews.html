@@ -31,12 +31,12 @@
         </div>
     <main style="margin-top: 50px;">
         <div>
-            <div class="title-container" style="margin-bottom: 70px;">
-                <p class="title" style="margin: auto;">My reviews</p>
+            <div class="title-container" style="margin-bottom: 70px; padding: 0px !important;">
+                <p class="title" >My reviews</p>
             </div>
         </div>
         {% if reviews|length == 0 %}
-    <p style="text-align: center; margin-top: ;">No reviews yet. Be the first to write a review!</p>
+    <p style="text-align: center; margin-top: ;">No reviews yet!</p>
 {% else %}
     {% for review in reviews %}
                 <div class="sameparent ratings" style="display: flex; align-items: center; justify-content: space-between; height: 330px; font-size: 20px; margin-bottom: 50px;">
