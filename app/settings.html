@@ -5,9 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zebrate - Account Settings</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" href="/static/images/z_logo(orange).png">
     <link rel="stylesheet" href="/static/styles.css">
     <script src="/static/account_update.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const passwordInput = document.getElementById('new-password-input');
+    const submitBtn = document.getElementById('save-password-btn');
+    const checklist = {
+        length: document.getElementById('length'),
+        number: document.getElementById('number'),
+        lowercase: document.getElementById('lowercase'),
+        uppercase: document.getElementById('uppercase')
+    };
+
+    const validatePassword = () => {
+        const password = passwordInput.value;
+        let valid = true;
+
+        if (password.length >= 8) {
+            checklist.length.classList.add('valid');
+        } else {
+            checklist.length.classList.remove('valid');
+            valid = false;
+        }
+
+        if (/\d/.test(password)) {
+            checklist.number.classList.add('valid');
+        } else {
+            checklist.number.classList.remove('valid');
+            valid = false;
+        }
+
+        if (/[a-z]/.test(password)) {
+            checklist.lowercase.classList.add('valid');
+        } else {
+            checklist.lowercase.classList.remove('valid');
+            valid = false;
+        }
+
+        if (/[A-Z]/.test(password)) {
+            checklist.uppercase.classList.add('valid');
+        } else {
+            checklist.uppercase.classList.remove('valid');
+            valid = false;
+        }
+
+        submitBtn.disabled = !valid;
+    };
+
+    passwordInput.addEventListener('input', validatePassword);
+    
+});
+
+let showPasswordBtn = document.querySelector('.show-password');
+let passwordInp = document.querySelector('.password-input');
+let passwordChecklist = document.querySelectorAll('.list-item');
+
+showPasswordBtn.addEventListener('click', () => {
+    showPasswordBtn.classList.toggle('fa-eye');
+    showPasswordBtn.classList.toggle('fa-eye-slash');
+
+    passwordInp.type = (passwordInp.type === 'password') ? 'text' : 'password';
+});
+    </script>
 </head>
 <body>
         <div class="content">
@@ -73,7 +136,19 @@
                         <div class="modal-content" style="max-width: 30%;">
                             <span class="close">&times;</span>
                             <p style="margin-left: 10px; color: #000; font-weight: 500; font-size: 20px;">Enter new password:</p>
-                            <input placeholder="Choose a new password..." type="password" id="new-password-input">
+                            <input placeholder="Choose a new password..." type="password" id="new-password-input" class="password-input">
+                            <i class="fa-solid fa-eye show-password" style="color: #4f4f4f;"></i>
+                            <div>
+                                <div class="password-checklist2" style="margin-left: 10px; margin-top: -40px; margin-bottom: 20px;">
+                                    <h3 class="checklist-title">Password must:</h3>
+                                    <ul class="checklist">
+                                        <li id="length" class="list-item">Be at least 8 characters long</li>
+                                        <li id="number" class="list-item">Include Numbers</li>
+                                        <li id="lowercase" class="list-item">Include at least one Lowercase letter</li>
+                                        <li id="uppercase" class="list-item">Include at least one Uppercase letter</li>
+                                    </ul>
+                                </div>
+                            </div>
                             <button id="save-password-btn">Save</button>
                         </div>
                     </div>
