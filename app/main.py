@@ -743,3 +743,49 @@ async def update_password(request: Request, new_password: str = Form(...)):
 
     except Exception as e:
         return {"success": False, "message": f"An error occurred: {str(e)}"}
+
+@app.get("/myreviews", response_class=HTMLResponse)
+async def get_venue(request: Request):
+    """
+    Retrieve and display details for a specific venue based on its ID, including reviews.
+    """
+    try:
+        nickname = request.cookies.get("user")
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row  # Access columns by name
+            cursor = conn.cursor()
+            
+            # Fetch venue details
+            cursor.execute("SELECT * FROM venues")
+            venue = cursor.fetchone()  # Fetch the venue details
+
+            if venue is None:
+                return HTMLResponse(content="Venue not found", status_code=404)
+
+            # Fetch reviews for the venue
+            cursor.execute("SELECT * FROM reviews WHERE nickname = ?", (nickname,))
+            reviews = cursor.fetchall()  # Fetch all reviews for the venue
+
+        # Convert the sqlite3.Row objects to dictionaries for easier handling in the template
+        venue_dict = dict(venue)
+        reviews_dicts = [dict(review) for review in reviews]
+
+        # Render the template with venue details and reviews
+        template_path = app_path / "my_reviews.html"
+        with open(template_path, "r") as file:
+            template = Template(file.read())
+            user = request.cookies.get("user")
+        rendered_html = template.render(venue=venue_dict, reviews=reviews_dicts, user=user)
+        return HTMLResponse(content=rendered_html)
+
+    except Exception as e:
+        return HTMLResponse(content=f"An unexpected error occurred: {e}", status_code=500)
+
+
+
+""" # Function to extract venue ID from the link (if needed elsewhere)
+def extract_venue_id(link: str) -> int:
+    match = re.search(r'/venue/(\d+)', link)
+    if match:
+        return int(match.group(1))
+    raise ValueError("Invalid venue link. Could not extract venue ID.") """
