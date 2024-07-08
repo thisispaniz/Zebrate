@@ -210,6 +210,7 @@ function getColorByRating(rating) {
                         <input type="hidden" name="venue_id" value="{{ venue_id }}">
                         <input class="reviewtitle" name="review_title" type="text" placeholder="Title of your review">
                         <textarea class="reviewtext" name="review_text" placeholder="Write your review here..."></textarea>
+                        <input type="hidden" name="user" value="{{ user }}">
                         <button type="submit" style="color: #F7F9F3; font-size: 15px; width: 220px; margin-top: 20px;">Submit review </button>
                     
                 </div>
@@ -350,7 +351,7 @@ function getColorByRating(rating) {
                 <div class="sameparent ratings" style="display: flex; align-items: center; justify-content: space-between; height: 330px; font-size: 20px; margin-bottom: 50px;">
                     <div class="same" style="width: 650px; margin-top: -30px;">
                         
-                        <!--<p style="width: 650px; color: #25433A; font-weight: 600;">{{ review.user_name }}</p><br>-->
+                        <p style="width: 650px; color: #25433A; font-weight: 600;">{{ review.nickname }}</p><br>
                         <p style="color: rgba(37, 67, 58, 0.7); margin-top: -15px;">{{ review.review_title }}</p>
                         <div style="width: 600px; word-wrap: break-word;"><p style="font-size: 15px;">{{ review.review_text }}</p></div>
                     </div>
