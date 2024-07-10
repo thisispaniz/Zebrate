@@ -12,6 +12,7 @@ import json
 from sqlite3 import connect
 import os
 from fastapi import Query
+from typing import Optional, Union
 
 app = FastAPI()
 
@@ -48,16 +49,16 @@ async def add_review(
         venue_id: int = Form(...),
         review_title: str = Form(...),
         review_text: str = Form(...),
-        colors: int = Form(...),
-        smells: int = Form(...),
-        quiet: int = Form(...),
-        crowdedness: int = Form(...),
-        food_variey: int = Form(...),
-        playground: str = Form(...),
-        fenced: str = Form(...),
-        quiet_zones: str = Form(...),
-        food_own: str = Form(...),
-        defined_duration: str = Form(...),
+        colors: int = Form(None),
+        smells: int = Form(None),
+        quiet: int = Form(None),
+        crowdedness: int = Form(None),
+        food_variey: int = Form(None),
+        playground: str = Form(None),
+        fenced: str = Form(None),
+        quiet_zones: str = Form(None),
+        food_own: str = Form(None),
+        defined_duration: str = Form(None),
         user: str = Cookie(None)
 ):
     # Connect to the database
@@ -327,7 +328,8 @@ async def get_venue(venue_id: int, request: Request):
         with open(template_path, "r") as file:
             template = Template(file.read())
             user = request.cookies.get("user")
-        rendered_html = template.render(venue=venue_dict, reviews=reviews_dicts, venue_id=venue_id, user=user)
+            nada = None
+        rendered_html = template.render(venue=venue_dict, reviews=reviews_dicts, venue_id=venue_id, user=user, nada = nada)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
