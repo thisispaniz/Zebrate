@@ -9,7 +9,7 @@
     <link rel="icon" href="/static/images/z_logo(orange).png">
     <title>Zebrate - Register</title>
     <link rel="stylesheet" href="/static/styles.css">
-    <script defer src="/static/script.js"></script>
+    <script defer src="/static/password.js"></script>
 </head>
 <body>
     <div class="auth-container signup-container">
@@ -25,24 +25,27 @@
             <label for="nickname">Username:</label>
             <input type="text" placeholder="Choose a username..." id="nickname" name="nickname" required>
             <label for="password">Password:</label>
-            <input type="password" class="password-input" placeholder="Choose a password..." id="passwordInp" name="password" required>
-            <!--<div>
+            <div class="password-input-box">
+                <input  type="password" placeholder="Choose a password..." id="passwordInp" class="password-input" name="password" required>
+                <i class="fa-solid fa-eye show-password" style="color: #4f4f4f;"></i>
+            </div>
+            <!--<input type="password" class="password-input" placeholder="Choose a password..." id="passwordInp" name="password" required>-->
+            <div>
                 <div class="password-checklist">
                     <h3 class="checklist-title">Password must:</h3>
                     <ul class="checklist">
-                        <li class="list-item">be at least 8 characters long</li>
-                        <li class="list-item">include Numbers</li>
-                        <li class="list-item">include at least one Lowercase letter</li>
-                        <li class="list-item">include at least one Uppercase letter</li>
-                        <li class="list-item">include Symbols</li>
+                        <li id="length" class="list-item">Be at least 8 characters long</li>
+                        <li id="number" class="list-item">Include Numbers</li>
+                        <li id="lowercase" class="list-item">Include at least one Lowercase letter</li>
+                        <li id="uppercase" class="list-item">Include at least one Uppercase letter</li>
                     </ul>
                 </div>
-            </div>-->
-            <button type="submit">Sign Up</button>
+            </div>
+            <button type="submit" id="submitBtn" disabled>Sign Up</button>
         </form>
 
         <div class="auth-links signup-links">
-            <a href="/login">Login</a> | 
+            <a href="/login">Login</a>
         </div>
         
     </div>

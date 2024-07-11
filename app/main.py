@@ -12,6 +12,7 @@ import json
 from sqlite3 import connect
 import os
 from fastapi import Query
+from typing import Optional, Union
 
 app = FastAPI()
 
@@ -48,16 +49,16 @@ async def add_review(
         venue_id: int = Form(...),
         review_title: str = Form(...),
         review_text: str = Form(...),
-        colors: int = Form(...),
-        smells: int = Form(...),
-        quiet: int = Form(...),
-        crowdedness: int = Form(...),
-        food_variey: int = Form(...),
-        playground: str = Form(...),
-        fenced: str = Form(...),
-        quiet_zones: str = Form(...),
-        food_own: str = Form(...),
-        defined_duration: str = Form(...),
+        colors: int = Form(None),
+        smells: int = Form(None),
+        quiet: int = Form(None),
+        crowdedness: int = Form(None),
+        food_variey: int = Form(None),
+        playground: str = Form(None),
+        fenced: str = Form(None),
+        quiet_zones: str = Form(None),
+        food_own: str = Form(None),
+        defined_duration: str = Form(None),
         user: str = Cookie(None)
 ):
     # Connect to the database
@@ -327,7 +328,8 @@ async def get_venue(venue_id: int, request: Request):
         with open(template_path, "r") as file:
             template = Template(file.read())
             user = request.cookies.get("user")
-        rendered_html = template.render(venue=venue_dict, reviews=reviews_dicts, venue_id=venue_id, user=user)
+            nada = None
+        rendered_html = template.render(venue=venue_dict, reviews=reviews_dicts, venue_id=venue_id, user=user, nada = nada)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
@@ -449,6 +451,35 @@ async def get_welcome(request: Request):
             template = Template(file.read())
         user = request.cookies.get("user")
         rendered_html = template.render(reviews=reviews, venues=venues, nickname=nickname, user=user)
+        return HTMLResponse(content=rendered_html)
+
+    except Exception as e:
+        logger.error(f"Error loading welcome page: {e}")
+        return HTMLResponse(content=f"An error occurred: {e}", status_code=500)
+    
+@app.get("/account/settings", response_class=HTMLResponse)
+async def get_welcome(request: Request): 
+    try:
+        nickname = request.cookies.get("user")
+        if not nickname:
+            return HTMLResponse(content="Nickname not found in the request", status_code=400)
+
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Fetch all venues to populate the dropdown
+            cursor.execute("SELECT email FROM users WHERE nickname = ?", (nickname,))
+            user_email = cursor.fetchone()
+            if not user_email:
+                return HTMLResponse(content="User not found in the database", status_code=404)
+            email = user_email["email"]
+
+        template_path = app_path / "settings.html"
+        with open(template_path, "r") as file:
+            template = Template(file.read())
+        user = request.cookies.get("user")
+        rendered_html = template.render(email=email, nickname=nickname, user=user)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
@@ -660,3 +691,103 @@ async def add_venue(name: str = Query(...)):
 
 # Serve the entire app directory as static files
 app.mount("/static", StaticFiles(directory=app_path, html=True), name="static")
+
+# Endpoint to update username
+@app.post("/api/update_username")
+async def update_username(request: Request, new_username: str = Form(...)):
+    try:
+        nickname = request.cookies.get("user")
+        if not nickname:
+            return {"success": False, "message": "User not authenticated."}
+
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE users SET nickname = ? WHERE nickname = ?", (new_username, nickname))
+            conn.commit()
+        response = JSONResponse({"success": True, "message": "Username updated successfully."})
+        response.set_cookie(key="user", value=new_username)
+        return response
+
+    except Exception as e:
+        return {"success": False, "message": f"An error occurred: {str(e)}"}
+
+# Similarly, create endpoints for updating email and password
+@app.post("/api/update_email")
+async def update_email(request: Request, new_email: str = Form(...)):
+    try:
+        nickname = request.cookies.get("user")
+        if not nickname:
+            return {"success": False, "message": "User not authenticated."}
+
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE users SET email = ? WHERE nickname = ?", (new_email, nickname))
+            conn.commit()
+
+        return {"success": True, "message": "Email updated successfully."}
+
+    except Exception as e:
+        return {"success": False, "message": f"An error occurred: {str(e)}"}
+
+@app.post("/api/update_password")
+async def update_password(request: Request, new_password: str = Form(...)):
+    try:
+        nickname = request.cookies.get("user")
+        if not nickname:
+            return {"success": False, "message": "User not authenticated."}
+        
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            cursor = conn.cursor()
+            hashed_password = bcrypt.hash(new_password)
+            cursor.execute("UPDATE users SET password = ? WHERE nickname = ?", (hashed_password, nickname))
+            conn.commit()
+        return {"success": True, "message": "Password updated successfully."}
+
+    except Exception as e:
+        return {"success": False, "message": f"An error occurred: {str(e)}"}
+
+@app.get("/myreviews", response_class=HTMLResponse)
+async def get_venue(request: Request):
+    """
+    Retrieve and display details for a specific venue based on its ID, including reviews.
+    """
+    try:
+        nickname = request.cookies.get("user")
+        with sqlite3.connect(db_path, check_same_thread=False) as conn:
+            conn.row_factory = sqlite3.Row  # Access columns by name
+            cursor = conn.cursor()
+            
+            # Fetch venue details
+            cursor.execute("SELECT * FROM venues")
+            venue = cursor.fetchone()  # Fetch the venue details
+
+            if venue is None:
+                return HTMLResponse(content="Venue not found", status_code=404)
+
+            # Fetch reviews for the venue
+            cursor.execute("SELECT * FROM reviews WHERE nickname = ?", (nickname,))
+            reviews = cursor.fetchall()  # Fetch all reviews for the venue
+
+        # Convert the sqlite3.Row objects to dictionaries for easier handling in the template
+        venue_dict = dict(venue)
+        reviews_dicts = [dict(review) for review in reviews]
+
+        # Render the template with venue details and reviews
+        template_path = app_path / "my_reviews.html"
+        with open(template_path, "r") as file:
+            template = Template(file.read())
+            user = request.cookies.get("user")
+        rendered_html = template.render(venue=venue_dict, reviews=reviews_dicts, user=user)
+        return HTMLResponse(content=rendered_html)
+
+    except Exception as e:
+        return HTMLResponse(content=f"An unexpected error occurred: {e}", status_code=500)
+
+
+
+""" # Function to extract venue ID from the link (if needed elsewhere)
+def extract_venue_id(link: str) -> int:
+    match = re.search(r'/venue/(\d+)', link)
+    if match:
+        return int(match.group(1))
+    raise ValueError("Invalid venue link. Could not extract venue ID.") """
