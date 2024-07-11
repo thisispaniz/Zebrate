@@ -1,6 +1,0 @@
-2024-07-07 10:08:03,425 ERROR:Table 'users' does not exist.
-2024-07-07 10:08:42,359 DEBUG:Starting the add_email_column function.
-2024-07-07 10:08:42,359 DEBUG:Connecting to the SQLite database at venues.db.
-2024-07-07 10:08:42,360 DEBUG:Checking if the 'users' table exists.
-2024-07-07 10:08:42,360 ERROR:Table 'users' does not exist.
-2024-07-07 10:08:42,360 DEBUG:Closing the database connection.
