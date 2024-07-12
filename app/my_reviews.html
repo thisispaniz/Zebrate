@@ -36,7 +36,7 @@
             </div>
         </div>
         {% if reviews|length == 0 %}
-    <p style="text-align: center; margin-top: ;">No reviews yet. Be the first to write a review!</p>
+    <p style="text-align: center; margin-top: 120px;">No reviews yet. Be the first to write a review!</p>
 {% else %}
     {% for review in reviews %}
                 <div class="sameparent ratings" style="display: flex; align-items: center; justify-content: space-between; height: 330px; font-size: 20px; margin-bottom: 50px;">
@@ -47,14 +47,19 @@
                         <div style="width: 600px; word-wrap: break-word;"><p style="font-size: 15px;">{{ review.review_text }}</p></div>
                     </div>
                     <div class="same" style="border-left: #25433A; font-size: 12.4px; margin-left: 60px;">
+                        {% if review.crowdedness != nada %}
                         <div class="sameparent" style="display: flex; align-items: center; justify-content: space-between; width: 300px;">
                             <p class="same">Crowd</p>
                             <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
+                                
                                 {% for i in range(5) %}
                                     <circle style="fill: {{ '#429B80' if i < review.crowdedness else '#EDDEA4' }}" cx="{{ 8 + i * 15 }}" cy="10" r="5.5" class="circle" />
                                 {% endfor %}
+                                
                             </svg>
                         </div>
+                        {% endif %}
+                        {% if review.quiet != nada %}
                         <div class="sameparent" style="margin-top: -15px; display: flex; align-items: center; justify-content: space-between; width: 300px;">
                             <p class="same">Noise</p>
                             <svg class="same" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
@@ -63,47 +68,64 @@
                                 {% endfor %}
                             </svg>
                         </div>
+                        {% endif %}
                         <!-- Yes/No Criteria -->
+                        {% if review.food_variey != nada %}
                         {% if review.food_variey >= 3 %}
                         <p class="ratingyes">+ Broader variety of food</p>
                         {% else %}
                         <p class="ratingno">- Limited food variety</p>
                         {% endif %}
-                    
-                        {% if review.food_own == 'YES' %}
+                        {% endif %}
+                        
+                        {% if review.food_own != nada %}
+                        {% if review.food_own == 'yes' %}
                         <p class="ratingyes">+ Bringing your own food allowed</p>
                         {% else %}
                         <p class="ratingno">- Bringing your own food not allowed</p>
                         {% endif %}
-                    
-                        {% if review.defined_duration == 'NO' %}
+                        {% endif %}
+
+                        {% if review.defined_duration != nada %}
+                        {% if review.defined_duration == 'no' %}
                         <p class="ratingyes">+ No defined time frame</p>
                         {% endif %}
+                        {% endif %}
                     
-                        {% if review.quiet_zones == 'YES' %}
+                        {% if review.quiet_zones != nada %}
+                        {% if review.quiet_zones == 'yes' %}
                         <p class="ratingyes"> + Quiet zones available</p>
                         {% else %}
                         <p class="ratingno">- No quiet zones available</p>
                         {% endif %}
+                        {% endif %}
                     
+                        {% if review.playground != nada %}
                         {% if review.playground == 'YES' %}
                         <p class="ratingyes"> + Play area available</p>
                         {% endif %}
-                    
-                        {% if review.fenced == 'YES' %}
-                        <p class="ratingyes"> + Fenced play area</p>
                         {% endif %}
                     
+                        {% if review.fenced != nada %}
+                        {% if review.fenced == 'yes' %}
+                        <p class="ratingyes"> + Fenced play area</p>
+                        {% endif %}
+                        {% endif %}
+                    
+                        {% if review.colors != nada %}
                         {% if review.colors <= 2 %}
                         <p class="ratingyes"> + No flashy colors</p>
                         {% else %}
                         <p class="ratingno">- Flashy colors might be apparent</p>
                         {% endif %}
+                        {% endif %}
                     
+                        {% if review.smells != nada %}
                         {% if review.smells <= 2 %}
                         <p class="ratingyes"> + No extreme smells</p>
                         {% else %}
                         <p class="ratingno">- Extreme smells might be apparent</p>
+                        {% endif %}
                         {% endif %}
                     </div>
                 </div>

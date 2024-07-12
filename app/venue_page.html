@@ -402,7 +402,7 @@ function getColorByRating(rating) {
                         {% endif %}
                         
                         {% if review.food_own != nada %}
-                        {% if review.food_own == 'YES' %}
+                        {% if review.food_own == 'yes' %}
                         <p class="ratingyes">+ Bringing your own food allowed</p>
                         {% else %}
                         <p class="ratingno">- Bringing your own food not allowed</p>
@@ -410,13 +410,13 @@ function getColorByRating(rating) {
                         {% endif %}
 
                         {% if review.defined_duration != nada %}
-                        {% if review.defined_duration == 'NO' %}
+                        {% if review.defined_duration == 'no' %}
                         <p class="ratingyes">+ No defined time frame</p>
                         {% endif %}
                         {% endif %}
                     
                         {% if review.quiet_zones != nada %}
-                        {% if review.quiet_zones == 'YES' %}
+                        {% if review.quiet_zones == 'yes' %}
                         <p class="ratingyes"> + Quiet zones available</p>
                         {% else %}
                         <p class="ratingno">- No quiet zones available</p>
@@ -430,7 +430,7 @@ function getColorByRating(rating) {
                         {% endif %}
                     
                         {% if review.fenced != nada %}
-                        {% if review.fenced == 'YES' %}
+                        {% if review.fenced == 'yes' %}
                         <p class="ratingyes"> + Fenced play area</p>
                         {% endif %}
                         {% endif %}

@@ -777,7 +777,8 @@ async def get_venue(request: Request):
         with open(template_path, "r") as file:
             template = Template(file.read())
             user = request.cookies.get("user")
-        rendered_html = template.render(venue=venue_dict, reviews=reviews_dicts, user=user)
+            nada = None
+        rendered_html = template.render(venue=venue_dict, reviews=reviews_dicts, user=user, nada = nada)
         return HTMLResponse(content=rendered_html)
 
     except Exception as e:
