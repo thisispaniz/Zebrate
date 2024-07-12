@@ -1,6 +1,6 @@
 # Zebrate: Autism-Friendly Social Entertainment
 
-Deployed: https://zebrate-73xg.onrender.com/
+Deployed: https://zebrate-73xg.onrender.com/ (Since we are using the free plan, if the website is not accessed by anyone for 15 minutes, it is taken down by render, so accessing the website after that would require about 1-2 minutes of loading time!)
 
 Welcome to Zebrate! This project aims to assist parents and caregivers of autistic children in finding suitable entertainment venues that cater to their specific needs. Our platform offers detailed venue reviews and filters to ensure an enjoyable experience for all.
 
